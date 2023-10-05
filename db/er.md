@@ -5,11 +5,9 @@ erDiagram
   workers ||--o{ attendances : "出勤退勤"
   workers ||--o{ shifts : "シフト"
   workers ||--o{ desired_shifts : "希望シフト"
-  workers ||--o{ default_shifts : "基本シフト"
   companies ||--o{ attendances : "出勤退勤"
   companies ||--o{ shifts : "シフト"
   companies ||--o{ desired_shifts : "希望シフト"
-  companies ||--o{ default_shifts : "基本シフト"
 
   companies {
     bigint id PK
@@ -45,13 +43,6 @@ erDiagram
     bigint staff_id FK "staffs"
   }
   desired_shifts {
-    bigint id PK
-    datetime since
-    datetime till
-    bigint staff_id FK "staffs"
-    bigint company_id FK "companies"
-  }
-  default_shifts {
     bigint id PK
     datetime since
     datetime till
