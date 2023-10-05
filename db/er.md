@@ -2,10 +2,10 @@
 erDiagram
   companies ||--o{ affiliations : "従業員の所属"
   workers ||--o{ affiliations : "会社への所属"
-  workers ||--o{ attendances : "出勤退勤"
+  workers ||--o{ stamps : "打刻"
   workers ||--o{ shifts : "シフト"
   workers ||--o{ desired_shifts : "希望シフト"
-  companies ||--o{ attendances : "出勤退勤"
+  companies ||--o{ stamps : "打刻"
   companies ||--o{ shifts : "シフト"
   companies ||--o{ desired_shifts : "希望シフト"
 
@@ -28,10 +28,9 @@ erDiagram
     string last_name "姓"
   }
 
-  attendances {
+  stamps {
     bigint id PK
-    datetime since
-    datetime till
+    datetime stamped_at
     bigint staff_id FK "staffs"
     bigint company_id FK "companies"
   }
