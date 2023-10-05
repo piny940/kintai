@@ -52,6 +52,7 @@ erDiagram
   tags {
     bigint id PK
     string name
+    string color
     bigint company_id FK "companies"
   }
   schedules {
