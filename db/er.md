@@ -27,24 +27,26 @@ erDiagram
   attendances {
     bigint id PK
     bigint staff_id FK "staffs"
+    datetime since
+    datetime till
   }
 
   shifts {
     bigint id PK
-    datetime start_time
-    datetime end_time
+    datetime since
+    datetime till
     bigint staff_id FK "staffs"
   }
   desired_shifts {
     bigint id PK
-    datetime start_time
-    datetime end_time
+    datetime since
+    datetime till
     bigint staff_id FK "staffs"
   }
   default_shifts {
     bigint id PK
-    datetime start_time
-    datetime end_time
+    datetime since
+    datetime till
     bigint staff_id FK "staffs"
   }
   
@@ -62,13 +64,13 @@ erDiagram
   paid_holidays {
     bigint id PK
     bigint staff_id FK "staffs"
-    datetime start_time
-    datetime end_time
+    datetime since
+    datetime till
   }
   vacation_requests {
     bigint id PK
     bigint staff_id FK "staffs"
-    datetime start_time
-    datetime end_time
+    datetime since
+    datetime till
   }
 ```
