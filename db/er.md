@@ -1,7 +1,9 @@
 ```mermaid
 erDiagram
   companies ||--o{ workers : "従業員"
-  companies ||--o{ tags : "タグ付け"
+  companies ||--o{ schedules : "タグ付け"
+  companies ||--o{ tags : "タグ"
+  tags ||--o{ schedules : "タグ付け"
   workers ||--o{ attendances : "出勤退勤"
   workers ||--o{ shifts : "シフト"
   workers ||--o{ desired_shifts : "希望シフト"
@@ -15,10 +17,11 @@ erDiagram
   }
   workers {
     bigint id PK
+    bigint company_id FK "companies"
     int kind
+    string email "メールアドレス"
     string first_name "名"
     string last_name "姓"
-    bigint company_id FK "companies"
   }
 
   attendances {
@@ -48,16 +51,24 @@ erDiagram
   tags {
     bigint id PK
     string name
-    datetime date
     bigint company_id FK "companies"
+  }
+  schedules {
+    bigint id PK
+    datetime date
+    bigint tag_id FK "tags"
   }
 
   paid_holidays {
     bigint id PK
     bigint staff_id FK "staffs"
+    datetime start_time
+    datetime end_time
   }
   vacation_requests {
     bigint id PK
     bigint staff_id FK "staffs"
+    datetime start_time
+    datetime end_time
   }
 ```
