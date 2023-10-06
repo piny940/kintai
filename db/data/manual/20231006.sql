@@ -6,7 +6,7 @@ insert into workers (status, email, first_name, last_name, created_at, updated_a
   (0, 'foo1@example.com', '太郎', '佐藤', '2023-10-06 12:17:01', '2023-10-06 12:17:01'),
   (0, 'foo2@example.com', '次郎', '鈴木', '2023-10-06 12:17:01', '2023-10-06 12:17:01'),
   (0, 'foo3@example.com', '三郎', '高橋', '2023-10-06 12:17:01', '2023-10-06 12:17:01'),
-  (0, 'foo4@@example.com', '四郎', '田中', '2023-10-06 12:17:01', '2023-10-06 12:17:01');
+  (0, 'foo4@example.com', '四郎', '田中', '2023-10-06 12:17:01', '2023-10-06 12:17:01');
 
 insert into affiliations (kind, status, worker_id, company_id) values
   (1, 0, 1, 1),
