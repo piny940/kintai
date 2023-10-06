@@ -17,8 +17,8 @@ erDiagram
     bigint id PK
     int kind "管理職か一般職か"
     int status "アクティブか否か,退職済みか"
-    bigint company_id FK "companies"
     bigint worker_id FK "workers"
+    bigint company_id FK "companies"
   }
   workers {
     bigint id PK
@@ -31,7 +31,7 @@ erDiagram
   stamps {
     bigint id PK
     datetime stamped_at
-    bigint staff_id FK "staffs"
+    bigint worker_id FK "workers"
     bigint company_id FK "companies"
   }
 
@@ -39,13 +39,14 @@ erDiagram
     bigint id PK
     datetime since
     datetime till
-    bigint staff_id FK "staffs"
+    bigint worker_id FK "workers"
+    bigint company_id FK "companies"
   }
   desired_shifts {
     bigint id PK
     datetime since
     datetime till
-    bigint staff_id FK "staffs"
+    bigint worker_id FK "workers"
     bigint company_id FK "companies"
   }
 ```
