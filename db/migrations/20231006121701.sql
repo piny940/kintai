@@ -28,7 +28,7 @@ create unique index if not exists index_affiliations_on_worker_id_and_company_id
 
 create table if not exists stamps (
   id bigserial not null unique primary key,
-  datetime stamped_at not null,
+  stamped_at timestamp not null,
   worker_id bigint not null references workers,
   company_id bigint not null references companies,
   created_at timestamp not null,
@@ -39,8 +39,8 @@ create index if not exists index_stamps_on_company_id on stamps(company_id);
 
 create table if not exists shifts (
   id bigserial not null unique primary key,
-  datetime since not null,
-  datetime till not null,
+  since timestamp not null,
+  till timestamp not null,
   worker_id bigint not null references workers,
   company_id bigint not null references companies,
   created_at timestamp not null,
@@ -51,8 +51,8 @@ create index if not exists index_shifts_on_company_id on shifts(company_id);
 
 create table if not exists desired_shifts (
   id bigserial not null unique primary key,
-  datetime since not null,
-  datetime till not null,
+  since timestamp not null,
+  till timestamp not null,
   worker_id bigint not null references workers,
   company_id bigint not null references companies,
   created_at timestamp not null,
