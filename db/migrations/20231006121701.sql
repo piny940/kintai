@@ -1,8 +1,8 @@
 create table if not exists companies (
   id bigserial not null unique primary key,
   name varchar not null,
-  created_at timestamp not null,
-  updated_at timestamp not null
+  created_at timestamp not null default current_timestamp,
+  updated_at timestamp not null default current_timestamp
 );
 
 create table if not exists workers (
@@ -11,8 +11,8 @@ create table if not exists workers (
   email varchar not null unique,
   first_name varchar not null,
   last_name varchar not null,
-  created_at timestamp not null,
-  updated_at timestamp not null
+  created_at timestamp not null default current_timestamp,
+  updated_at timestamp not null default current_timestamp
 );
 
 create table if not exists affiliations (
@@ -31,8 +31,8 @@ create table if not exists stamps (
   stamped_at timestamp not null,
   worker_id bigint not null references workers,
   company_id bigint not null references companies,
-  created_at timestamp not null,
-  updated_at timestamp not null
+  created_at timestamp not null default current_timestamp,
+  updated_at timestamp not null default current_timestamp
 );
 create index if not exists index_stamps_on_worker_id on stamps(worker_id);
 create index if not exists index_stamps_on_company_id on stamps(company_id);
@@ -43,8 +43,8 @@ create table if not exists shifts (
   till timestamp not null,
   worker_id bigint not null references workers,
   company_id bigint not null references companies,
-  created_at timestamp not null,
-  updated_at timestamp not null
+  created_at timestamp not null default current_timestamp,
+  updated_at timestamp not null default current_timestamp
 );
 create index if not exists index_shifts_on_worker_id on shifts(worker_id);
 create index if not exists index_shifts_on_company_id on shifts(company_id);
@@ -55,8 +55,8 @@ create table if not exists desired_shifts (
   till timestamp not null,
   worker_id bigint not null references workers,
   company_id bigint not null references companies,
-  created_at timestamp not null,
-  updated_at timestamp not null
+  created_at timestamp not null default current_timestamp,
+  updated_at timestamp not null default current_timestamp
 );
 create index if not exists index_desired_shifts_on_worker_id on desired_shifts(worker_id);
 create index if not exists index_desired_shifts_on_company_id on desired_shifts(company_id);
