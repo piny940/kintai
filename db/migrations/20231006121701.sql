@@ -22,8 +22,41 @@ create table if not exists affiliations (
   worker_id bigint not null references workers,
   company_id bigint not null references companies
 );
-create index index_affiliations_on_worker_id on affiliations(worker_id);
-create index index_affiliations_on_company_id on affiliations(company_id);
-create unique index index_affiliations_on_worker_id_and_company_id on affiliations(worker_id, company_id);
+create index if not exists index_affiliations_on_worker_id on affiliations(worker_id);
+create index if not exists index_affiliations_on_company_id on affiliations(company_id);
+create unique index if not exists index_affiliations_on_worker_id_and_company_id on affiliations(worker_id, company_id);
 
+create table if not exists stamps (
+  id bigserial not null unique primary key,
+  datetime stamped_at not null,
+  worker_id bigint not null references workers,
+  company_id bigint not null references companies,
+  created_at timestamp not null,
+  updated_at timestamp not null
+);
+create index if not exists index_stamps_on_worker_id on stamps(worker_id);
+create index if not exists index_stamps_on_company_id on stamps(company_id);
 
+create table if not exists shifts (
+  id bigserial not null unique primary key,
+  datetime since not null,
+  datetime till not null,
+  worker_id bigint not null references workers,
+  company_id bigint not null references companies,
+  created_at timestamp not null,
+  updated_at timestamp not null
+);
+create index if not exists index_shifts_on_worker_id on shifts(worker_id);
+create index if not exists index_shifts_on_company_id on shifts(company_id);
+
+create table if not exists desired_shifts (
+  id bigserial not null unique primary key,
+  datetime since not null,
+  datetime till not null,
+  worker_id bigint not null references workers,
+  company_id bigint not null references companies,
+  created_at timestamp not null,
+  updated_at timestamp not null
+);
+create index if not exists index_desired_shifts_on_worker_id on desired_shifts(worker_id);
+create index if not exists index_desired_shifts_on_company_id on desired_shifts(company_id);
