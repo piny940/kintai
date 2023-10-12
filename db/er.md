@@ -21,7 +21,7 @@ erDiagram
     bigint id PK
     int status "アクティブか否か"
     string email "メールアドレス"
-    string password "パスワード"
+    string encrypted_password "暗号化済みパスワード"
     string first_name "名"
     string last_name "姓"
   }
