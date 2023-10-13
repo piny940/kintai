@@ -29,8 +29,12 @@ func (u *workersController) Create(c echo.Context) error {
 	registry := registry.GetRegistry()
 	email := c.FormValue("email")
 	password := c.FormValue("password")
+	firstName := c.FormValue("first_name")
+	lastName := c.FormValue("last_name")
 	worker, err := registry.WorkerUseCase().SignUp(
-		domain.WorkerEmail(email), domain.WorkerRawPassword(password),
+		domain.WorkerEmail(email),
+		domain.WorkerRawPassword(password),
+		domain.NewWorkerName(firstName, lastName),
 	)
 	if err != nil {
 		return err

@@ -7,7 +7,7 @@ import (
 
 type IWorkerUseCase interface {
 	List() ([]*domain.Worker, error)
-	SignUp(email domain.WorkerEmail, password domain.WorkerRawPassword) (*domain.Worker, error)
+	SignUp(email domain.WorkerEmail, password domain.WorkerRawPassword, name *domain.WorkerName) (*domain.Worker, error)
 }
 
 type workerUseCase struct {
@@ -22,14 +22,14 @@ func (u *workerUseCase) List() ([]*domain.Worker, error) {
 	return u.workerRepo.List()
 }
 
-func (u *workerUseCase) SignUp(email domain.WorkerEmail, rawPassword domain.WorkerRawPassword) (*domain.Worker, error) {
+func (u *workerUseCase) SignUp(email domain.WorkerEmail, rawPassword domain.WorkerRawPassword, name *domain.WorkerName) (*domain.Worker, error) {
 	password, err := domain.NewWorkerPassword(rawPassword)
 	if err != nil {
 		return nil, err
 	}
-	worker, err := domain.NewWorker(email, password)
+	worker, err := domain.NewWorker(email, password, name)
 	if err != nil {
 		return nil, err
 	}
-	return u.workerRepo.Create(worker.Email, worker.Password.HashedPassword)
+	return u.workerRepo.Create(worker)
 }

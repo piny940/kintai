@@ -17,6 +17,9 @@ type WorkerTable struct {
 	ID                uint      `json:"id"`
 	Email             string    `json:"email"`
 	EncryptedPassword string    `json:"-"`
+	Status            int       `json:"status"`
+	FirstName         string    `json:"first_name"`
+	LastName          string    `json:"last_name"`
 	CreatedAt         time.Time `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
 }
@@ -30,6 +33,9 @@ func (u *workerRepo) FindByEmail(email domain.WorkerEmail) (*domain.Worker, erro
 		&workerTable.ID,
 		&workerTable.Email,
 		&workerTable.EncryptedPassword,
+		&workerTable.Status,
+		&workerTable.FirstName,
+		&workerTable.LastName,
 		&workerTable.CreatedAt,
 		&workerTable.UpdatedAt,
 	); err != nil {
@@ -53,6 +59,9 @@ func (u *workerRepo) List() ([]*domain.Worker, error) {
 			&workerTable.ID,
 			&workerTable.Email,
 			&workerTable.EncryptedPassword,
+			&workerTable.Status,
+			&workerTable.FirstName,
+			&workerTable.LastName,
 			&workerTable.CreatedAt,
 			&workerTable.UpdatedAt,
 		); err != nil {
@@ -65,12 +74,12 @@ func (u *workerRepo) List() ([]*domain.Worker, error) {
 	return workers, nil
 }
 
-func (u *workerRepo) Create(email domain.WorkerEmail, password domain.WorkerHashedPassword) (*domain.Worker, error) {
+func (u *workerRepo) Create(worker *domain.Worker) (*domain.Worker, error) {
 	var workerTable WorkerTable
 	if err := u.db.Client.QueryRow(
 		"insert into workers (email, password) values ($1, $2) returning *",
-		email,
-		password,
+		worker.Email,
+		worker.Password.HashedPassword,
 	).Scan(
 		&workerTable.ID,
 		&workerTable.Email,
