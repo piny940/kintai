@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: kintai_backend
+    image: kintai_backend
+    build:
+      context: ./backend
+      target: final
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+  frontend:
+    container_name: kintai_frontend
+    image: kintai_frontend
+    build:
+      context: ./frontend
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3001:4400
+    depends_on:
+      - backend
+
+  db:
+    container_name: kintai_db
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kintai_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
