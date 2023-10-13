@@ -15,14 +15,13 @@ func NewUsersController() *usersController {
 	return &usersController{}
 }
 
-func (u *usersController) Index(c echo.Context) error {
-	registry := registry.GetRegistry()
-	users, err := registry.UserUseCase().List()
+func (u *usersController) Show(c echo.Context) error {
+	user, err := auth.CurrentUser(c)
 	if err != nil {
-		return err
+		render400(c, "ログインしてください")
 	}
 	return c.JSON(http.StatusOK, echo.Map{
-		"users": users,
+		"user": user,
 	})
 }
 
