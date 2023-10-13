@@ -20,7 +20,7 @@ services:
     environment:
       NODE_ENV: development
     ports:
-      - 3001:4400
+      - 3001:3001
     depends_on:
       - backend
 
