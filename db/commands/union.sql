@@ -1,5 +1,7 @@
-select worker_id from desired_shifts
-  where company_id = 1
-union
-select worker_id from shifts
-  where company_id = 1;
+select worker_id from employments
+  inner join (
+    select employment_id from desired_shifts
+    union
+    select employment_id from shifts
+  ) as shifts on employments.id = shifts.employment_id
+  where employments.company_id = 1;
