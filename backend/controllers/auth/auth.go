@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"kintai_backend/domain"
 
 	"github.com/gorilla/sessions"
@@ -20,9 +21,12 @@ func setSession(c echo.Context, key string, value interface{}) {
 	session.Save(c.Request(), c.Response())
 }
 
-func getSession(c echo.Context, key string) interface{} {
-	session, _ := session.Get("session", c)
-	return session.Values[key]
+func getSession(c echo.Context, key string) (interface{}, error) {
+	session, err := session.Get("session", c)
+	if err != nil {
+		return nil, err
+	}
+	return session.Values[key], nil
 }
 
 func Login(c echo.Context, worker *domain.Worker) {
@@ -34,8 +38,9 @@ func Logout(c echo.Context) {
 }
 
 func CurrentWorker(c echo.Context) (*domain.Worker, error) {
-	worker := getSession(c, "worker")
-	if worker == nil {
+	fmt.Println("before get session")
+	worker, err := getSession(c, "worker")
+	if err != nil || worker == nil {
 		return nil, echo.ErrUnauthorized
 	}
 	u := worker.(domain.Worker)
