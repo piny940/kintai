@@ -22,10 +22,7 @@ func setSession(c echo.Context, key string, value interface{}) {
 }
 
 func getSession(c echo.Context, key string) (interface{}, error) {
-	session, err := session.Get("session", c)
-	if err != nil {
-		return nil, err
-	}
+	session, _ := session.Get("session", c)
 	return session.Values[key], nil
 }
 
