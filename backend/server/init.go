@@ -8,13 +8,13 @@ import (
 
 func Init() error {
 	c := config.GetConfig()
-	router, err := NewRouter()
+	echo, err := NewRouter()
 	if err != nil {
 		return err
 	}
-	router.Use(middleware.Logger())
-	router.Use(middleware.Recover())
+	echo.Use(middleware.Logger())
+	echo.Use(middleware.Recover())
 
-	router.Logger.Fatal(router.Start(":" + c.GetString("server.port")))
+	echo.Logger.Fatal(echo.Start(":" + c.GetString("server.port")))
 	return nil
 }
