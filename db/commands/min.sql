@@ -1,4 +1,4 @@
 select min(count) from (
-  select count(*) from affiliations
+  select count(*) from employments
     group by company_id
 ) as counts;
