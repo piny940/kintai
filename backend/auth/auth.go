@@ -1,0 +1,56 @@
+package auth
+
+import (
+	"kintai_backend/domain"
+	"kintai_backend/registry"
+	"os"
+
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo/v4"
+)
+
+const SESSION_NAME = "kintai_backend"
+
+var (
+	key   = []byte(os.Getenv("SESSION_SECRET"))
+	store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+)
+
+var sessionsOptions = &sessions.Options{
+	HttpOnly: true,
+	Secure:   true,
+	MaxAge:   86400 * 7,
+}
+
+func setSession(c echo.Context, key string, value interface{}) error {
+	session, _ := store.Get(c.Request(), SESSION_NAME)
+	session.Options = sessionsOptions
+	session.Values[key] = value
+	return session.Save(c.Request(), c.Response().Writer)
+}
+
+func getSession(c echo.Context, key string) (interface{}, error) {
+	session, err := store.Get(c.Request(), SESSION_NAME)
+	return session.Values[key], err
+}
+
+func Login(c echo.Context, worker *domain.Worker) {
+	setSession(c, "worker_id", uint(worker.ID))
+}
+
+func Logout(c echo.Context) {
+	setSession(c, "worker_id", nil)
+}
+
+func CurrentWorker(c echo.Context) (*domain.Worker, error) {
+	registry := registry.GetRegistry()
+	workerId, err := getSession(c, "worker_id")
+	if err != nil || workerId == nil {
+		return nil, err
+	}
+	worker, err := registry.WorkerRepo().FindById(domain.WorkerID(workerId.(uint)))
+	if err != nil {
+		return nil, err
+	}
+	return worker, nil
+}
