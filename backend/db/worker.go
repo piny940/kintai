@@ -24,6 +24,27 @@ type WorkerTable struct {
 	UpdatedAt         time.Time `json:"updated_at"`
 }
 
+func (u *workerRepo) FindById(id domain.WorkerID) (*domain.Worker, error) {
+	var workerTable WorkerTable
+	if err := u.db.Client.QueryRow(
+		"select * from workers where id = $1",
+		id,
+	).Scan(
+		&workerTable.ID,
+		&workerTable.Status,
+		&workerTable.Email,
+		&workerTable.EncryptedPassword,
+		&workerTable.FirstName,
+		&workerTable.LastName,
+		&workerTable.CreatedAt,
+		&workerTable.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+
+	return workerTable.toDomain(), nil
+}
+
 func (u *workerRepo) FindByEmail(email domain.WorkerEmail) (*domain.Worker, error) {
 	var workerTable WorkerTable
 	if err := u.db.Client.QueryRow(
