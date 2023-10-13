@@ -1,14 +1,14 @@
 import { serialize } from 'object-to-formdata'
 
-const getToken = async (): Promise<string> => {
-  const url = `/api/csrf`
-  const response = await fetch(url, {
-    credentials: 'include',
-  })
-  const json = await response.json()
+// const getToken = async (): Promise<string> => {
+//   const url = `/api/csrf`
+//   const response = await fetch(url, {
+//     credentials: 'include',
+//   })
+//   const json = await response.json()
 
-  return json.data.token
-}
+//   return json.data.token
+// }
 
 export const fetchApi = async (params: {
   url: string
@@ -18,7 +18,7 @@ export const fetchApi = async (params: {
   const response = await fetch(`/api${params.url}`, {
     method: params.method,
     headers: {
-      'X-CSRF-Token': await getToken(),
+      // 'X-CSRF-Token': await getToken(),
     },
     body: params.method === 'GET' ? null : serialize(params.data),
     credentials: 'include',
@@ -30,8 +30,6 @@ export const postData = async (params: {
   url: string
   data: object
   scope?: string
-  onSuccess: (json: any) => void
-  onFail: (json: any) => void
 }) => {
   const response = await fetchApi({
     url: params.url,
