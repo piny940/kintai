@@ -22,10 +22,10 @@ func NewRouter() (*echo.Echo, error) {
 		todos.POST(":id/complete", todosController.Complete)
 	}
 	{
-		users := version.Group("/users")
-		usersController := controllers.NewUsersController()
-		users.GET("", usersController.Index)
-		users.POST("", usersController.Create)
+		workers := version.Group("/workers")
+		workersController := controllers.NewWorkersController()
+		workers.GET("/me", workersController.Show)
+		workers.POST("/me", workersController.Create)
 	}
 	{
 		sessions := version.Group("/sessions")
