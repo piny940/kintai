@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"kintai_backend/controllers/auth"
+	"kintai_backend/auth"
 	"kintai_backend/domain"
 	"kintai_backend/registry"
 	"net/http"
