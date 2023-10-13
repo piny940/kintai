@@ -1,3 +1,5 @@
-select shifts.id, shifts.since, shifts.till from shifts
-  inner join companies on shifts.company_id = companies.id
-  where companies.name = 'Company 1';
+select employments.worker_id from companies
+  natural join (
+    select company_id as id, worker_id from employments
+  ) as employments
+  where companies.id = 1;
