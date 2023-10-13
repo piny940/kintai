@@ -18,7 +18,7 @@ func NewWorkersController() *workersController {
 func (u *workersController) Show(c echo.Context) error {
 	worker, err := auth.CurrentWorker(c)
 	if err != nil {
-		return render400(c, "ログインしてください")
+		return render400(c, "ログインしてください", err)
 	}
 	return c.JSON(http.StatusOK, echo.Map{
 		"worker": worker,

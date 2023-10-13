@@ -21,10 +21,10 @@ func (c *sessionsController) Create(ctx echo.Context) error {
 
 	worker, err := registry.WorkerRepo().FindByEmail(domain.WorkerEmail(email))
 	if err != nil {
-		return render400(ctx, "メールアドレスまたはパスワードが間違っています")
+		return render400(ctx, "メールアドレスまたはパスワードが間違っています", err)
 	}
 	if !worker.Password.Check(domain.WorkerRawPassword(password)) {
-		return render400(ctx, "メールアドレスまたはパスワードが間違っています")
+		return render400(ctx, "メールアドレスまたはパスワードが間違っています", nil)
 	}
 	auth.Login(ctx, worker)
 	return ctx.JSON(200, echo.Map{

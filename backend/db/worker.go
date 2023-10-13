@@ -31,9 +31,9 @@ func (u *workerRepo) FindByEmail(email domain.WorkerEmail) (*domain.Worker, erro
 		email,
 	).Scan(
 		&workerTable.ID,
+		&workerTable.Status,
 		&workerTable.Email,
 		&workerTable.EncryptedPassword,
-		&workerTable.Status,
 		&workerTable.FirstName,
 		&workerTable.LastName,
 		&workerTable.CreatedAt,
@@ -57,9 +57,9 @@ func (u *workerRepo) List() ([]*domain.Worker, error) {
 		var workerTable WorkerTable
 		if err := rows.Scan(
 			&workerTable.ID,
+			&workerTable.Status,
 			&workerTable.Email,
 			&workerTable.EncryptedPassword,
-			&workerTable.Status,
 			&workerTable.FirstName,
 			&workerTable.LastName,
 			&workerTable.CreatedAt,
@@ -82,8 +82,11 @@ func (u *workerRepo) Create(worker *domain.Worker) (*domain.Worker, error) {
 		worker.Password.HashedPassword,
 	).Scan(
 		&workerTable.ID,
+		&workerTable.Status,
 		&workerTable.Email,
 		&workerTable.EncryptedPassword,
+		&workerTable.FirstName,
+		&workerTable.LastName,
 		&workerTable.CreatedAt,
 		&workerTable.UpdatedAt,
 	); err != nil {
@@ -101,6 +104,8 @@ func (workerTable *WorkerTable) toDomain() *domain.Worker {
 		ID:        domain.WorkerID(workerTable.ID),
 		Email:     domain.WorkerEmail(workerTable.Email),
 		Password:  password,
+		Status:    domain.WorkerStatus(workerTable.Status),
+		Name:      *domain.NewWorkerName(workerTable.FirstName, workerTable.LastName),
 		CreatedAt: workerTable.CreatedAt,
 		UpdatedAt: workerTable.UpdatedAt,
 	}
