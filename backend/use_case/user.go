@@ -5,31 +5,31 @@ import (
 	"kintai_backend/domain/repository"
 )
 
-type IUserUseCase interface {
-	List() ([]*domain.User, error)
-	SignUp(email domain.UserEmail, password domain.UserRawPassword) (*domain.User, error)
+type IWorkerUseCase interface {
+	List() ([]*domain.Worker, error)
+	SignUp(email domain.WorkerEmail, password domain.WorkerRawPassword) (*domain.Worker, error)
 }
 
-type userUseCase struct {
-	userRepo repository.IUserRepo
+type workerUseCase struct {
+	workerRepo repository.IWorkerRepo
 }
 
-func NewUserUseCase(userRepo repository.IUserRepo) IUserUseCase {
-	return &userUseCase{userRepo: userRepo}
+func NewWorkerUseCase(workerRepo repository.IWorkerRepo) IWorkerUseCase {
+	return &workerUseCase{workerRepo: workerRepo}
 }
 
-func (u *userUseCase) List() ([]*domain.User, error) {
-	return u.userRepo.List()
+func (u *workerUseCase) List() ([]*domain.Worker, error) {
+	return u.workerRepo.List()
 }
 
-func (u *userUseCase) SignUp(email domain.UserEmail, rawPassword domain.UserRawPassword) (*domain.User, error) {
-	password, err := domain.NewUserPassword(rawPassword)
+func (u *workerUseCase) SignUp(email domain.WorkerEmail, rawPassword domain.WorkerRawPassword) (*domain.Worker, error) {
+	password, err := domain.NewWorkerPassword(rawPassword)
 	if err != nil {
 		return nil, err
 	}
-	user, err := domain.NewUser(email, password)
+	worker, err := domain.NewWorker(email, password)
 	if err != nil {
 		return nil, err
 	}
-	return u.userRepo.Create(user.Email, user.Password.HashedPassword)
+	return u.workerRepo.Create(worker.Email, worker.Password.HashedPassword)
 }

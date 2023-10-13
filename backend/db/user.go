@@ -5,15 +5,15 @@ import (
 	"time"
 )
 
-type userRepo struct {
+type workerRepo struct {
 	db *DB
 }
 
-func NewUserRepo(db *DB) *userRepo {
-	return &userRepo{db: db}
+func NewWorkerRepo(db *DB) *workerRepo {
+	return &workerRepo{db: db}
 }
 
-type UserTable struct {
+type WorkerTable struct {
 	ID                uint      `json:"id"`
 	Email             string    `json:"email"`
 	EncryptedPassword string    `json:"-"`
@@ -21,79 +21,79 @@ type UserTable struct {
 	UpdatedAt         time.Time `json:"updated_at"`
 }
 
-func (u *userRepo) FindByEmail(email domain.UserEmail) (*domain.User, error) {
-	var userTable UserTable
+func (u *workerRepo) FindByEmail(email domain.WorkerEmail) (*domain.Worker, error) {
+	var workerTable WorkerTable
 	if err := u.db.Client.QueryRow(
-		"select * from users where email = $1",
+		"select * from workers where email = $1",
 		email,
 	).Scan(
-		&userTable.ID,
-		&userTable.Email,
-		&userTable.EncryptedPassword,
-		&userTable.CreatedAt,
-		&userTable.UpdatedAt,
+		&workerTable.ID,
+		&workerTable.Email,
+		&workerTable.EncryptedPassword,
+		&workerTable.CreatedAt,
+		&workerTable.UpdatedAt,
 	); err != nil {
 		return nil, err
 	}
 
-	return userTable.toDomain(), nil
+	return workerTable.toDomain(), nil
 }
 
-func (u *userRepo) List() ([]*domain.User, error) {
-	var users = make([]*domain.User, 0)
-	rows, err := u.db.Client.Query("select * from users")
+func (u *workerRepo) List() ([]*domain.Worker, error) {
+	var workers = make([]*domain.Worker, 0)
+	rows, err := u.db.Client.Query("select * from workers")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var userTable UserTable
+		var workerTable WorkerTable
 		if err := rows.Scan(
-			&userTable.ID,
-			&userTable.Email,
-			&userTable.EncryptedPassword,
-			&userTable.CreatedAt,
-			&userTable.UpdatedAt,
+			&workerTable.ID,
+			&workerTable.Email,
+			&workerTable.EncryptedPassword,
+			&workerTable.CreatedAt,
+			&workerTable.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
 
-		users = append(users, userTable.toDomain())
+		workers = append(workers, workerTable.toDomain())
 	}
 
-	return users, nil
+	return workers, nil
 }
 
-func (u *userRepo) Create(email domain.UserEmail, password domain.UserHashedPassword) (*domain.User, error) {
-	var userTable UserTable
+func (u *workerRepo) Create(email domain.WorkerEmail, password domain.WorkerHashedPassword) (*domain.Worker, error) {
+	var workerTable WorkerTable
 	if err := u.db.Client.QueryRow(
-		"insert into users (email, password) values ($1, $2) returning *",
+		"insert into workers (email, password) values ($1, $2) returning *",
 		email,
 		password,
 	).Scan(
-		&userTable.ID,
-		&userTable.Email,
-		&userTable.EncryptedPassword,
-		&userTable.CreatedAt,
-		&userTable.UpdatedAt,
+		&workerTable.ID,
+		&workerTable.Email,
+		&workerTable.EncryptedPassword,
+		&workerTable.CreatedAt,
+		&workerTable.UpdatedAt,
 	); err != nil {
 		return nil, err
 	}
 
-	return userTable.toDomain(), nil
+	return workerTable.toDomain(), nil
 }
 
-func (userTable *UserTable) toDomain() *domain.User {
-	password := domain.UserPassword{
-		HashedPassword: domain.UserHashedPassword(userTable.EncryptedPassword),
+func (workerTable *WorkerTable) toDomain() *domain.Worker {
+	password := domain.WorkerPassword{
+		HashedPassword: domain.WorkerHashedPassword(workerTable.EncryptedPassword),
 	}
-	user := domain.User{
-		ID:        domain.UserID(userTable.ID),
-		Email:     domain.UserEmail(userTable.Email),
+	worker := domain.Worker{
+		ID:        domain.WorkerID(workerTable.ID),
+		Email:     domain.WorkerEmail(workerTable.Email),
 		Password:  password,
-		CreatedAt: userTable.CreatedAt,
-		UpdatedAt: userTable.UpdatedAt,
+		CreatedAt: workerTable.CreatedAt,
+		UpdatedAt: workerTable.UpdatedAt,
 	}
-	return &user
+	return &worker
 }

@@ -2,23 +2,23 @@ package domain
 
 import "golang.org/x/crypto/bcrypt"
 
-type UserRawPassword string
-type UserHashedPassword string
+type WorkerRawPassword string
+type WorkerHashedPassword string
 
-type UserPassword struct {
-	HashedPassword UserHashedPassword
+type WorkerPassword struct {
+	HashedPassword WorkerHashedPassword
 }
 
-func NewUserPassword(rawPassword UserRawPassword) (*UserPassword, error) {
+func NewWorkerPassword(rawPassword WorkerRawPassword) (*WorkerPassword, error) {
 	hash, err := encryptPassword(string(rawPassword))
 	if err != nil {
 		return nil, err
 	}
-	hashedPassword := UserHashedPassword(string(hash))
-	return &UserPassword{HashedPassword: hashedPassword}, nil
+	hashedPassword := WorkerHashedPassword(string(hash))
+	return &WorkerPassword{HashedPassword: hashedPassword}, nil
 }
 
-func (p *UserPassword) Check(rawPassword UserRawPassword) bool {
+func (p *WorkerPassword) Check(rawPassword WorkerRawPassword) bool {
 	return comparePassword(string(p.HashedPassword), string(rawPassword))
 }
 

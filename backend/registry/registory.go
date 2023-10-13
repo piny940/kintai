@@ -9,8 +9,8 @@ import (
 type IRegistry interface {
 	TodoUseCase() use_case.ITodoUseCase
 	TodoRepo() repository.ITodoRepo
-	UserUseCase() use_case.IUserUseCase
-	UserRepo() repository.IUserRepo
+	WorkerUseCase() use_case.IWorkerUseCase
+	WorkerRepo() repository.IWorkerRepo
 }
 
 type registry struct {
@@ -35,10 +35,10 @@ func (r *registry) TodoUseCase() use_case.ITodoUseCase {
 	return use_case.NewTodoUseCase(r.TodoRepo())
 }
 
-func (r *registry) UserRepo() repository.IUserRepo {
-	return db.NewUserRepo(r.db)
+func (r *registry) WorkerRepo() repository.IWorkerRepo {
+	return db.NewWorkerRepo(r.db)
 }
 
-func (r *registry) UserUseCase() use_case.IUserUseCase {
-	return use_case.NewUserUseCase(r.UserRepo())
+func (r *registry) WorkerUseCase() use_case.IWorkerUseCase {
+	return use_case.NewWorkerUseCase(r.WorkerRepo())
 }

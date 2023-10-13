@@ -15,7 +15,7 @@ type Todo struct {
 	ID        TodoID     `json:"id"`
 	Title     TodoTitle  `json:"title"`
 	Status    TodoStatus `json:"status"`
-	UserID    UserID     `json:"user_id"`
+	WorkerID  WorkerID   `json:"worker_id"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 }

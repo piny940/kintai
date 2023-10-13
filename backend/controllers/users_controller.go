@@ -9,34 +9,34 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type usersController struct{}
+type workersController struct{}
 
-func NewUsersController() *usersController {
-	return &usersController{}
+func NewWorkersController() *workersController {
+	return &workersController{}
 }
 
-func (u *usersController) Show(c echo.Context) error {
-	user, err := auth.CurrentUser(c)
+func (u *workersController) Show(c echo.Context) error {
+	worker, err := auth.CurrentWorker(c)
 	if err != nil {
 		render400(c, "ログインしてください")
 	}
 	return c.JSON(http.StatusOK, echo.Map{
-		"user": user,
+		"worker": worker,
 	})
 }
 
-func (u *usersController) Create(c echo.Context) error {
+func (u *workersController) Create(c echo.Context) error {
 	registry := registry.GetRegistry()
 	email := c.FormValue("email")
 	password := c.FormValue("password")
-	user, err := registry.UserUseCase().SignUp(
-		domain.UserEmail(email), domain.UserRawPassword(password),
+	worker, err := registry.WorkerUseCase().SignUp(
+		domain.WorkerEmail(email), domain.WorkerRawPassword(password),
 	)
 	if err != nil {
 		return err
 	}
-	auth.Login(c, user)
+	auth.Login(c, worker)
 	return c.JSON(http.StatusOK, echo.Map{
-		"user": user,
+		"worker": worker,
 	})
 }

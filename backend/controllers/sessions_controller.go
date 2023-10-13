@@ -19,16 +19,16 @@ func (c *sessionsController) Create(ctx echo.Context) error {
 	email := ctx.FormValue("email")
 	password := ctx.FormValue("password")
 
-	user, err := registry.UserRepo().FindByEmail(domain.UserEmail(email))
+	worker, err := registry.WorkerRepo().FindByEmail(domain.WorkerEmail(email))
 	if err != nil {
 		return render400(ctx, "メールアドレスまたはパスワードが間違っています")
 	}
-	if !user.Password.Check(domain.UserRawPassword(password)) {
+	if !worker.Password.Check(domain.WorkerRawPassword(password)) {
 		return render400(ctx, "メールアドレスまたはパスワードが間違っています")
 	}
-	auth.Login(ctx, user)
+	auth.Login(ctx, worker)
 	return ctx.JSON(200, echo.Map{
 		"message": "ログインしました",
-		"user":    user,
+		"worker":  worker,
 	})
 }

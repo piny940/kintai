@@ -4,19 +4,19 @@ import (
 	"time"
 )
 
-type UserID uint
-type UserEmail string
+type WorkerID uint
+type WorkerEmail string
 
-type User struct {
-	ID        UserID       `json:"id"`
-	Email     UserEmail    `json:"email"`
-	Password  UserPassword `json:"-"`
-	CreatedAt time.Time    `json:"created_at"`
-	UpdatedAt time.Time    `json:"updated_at"`
+type Worker struct {
+	ID        WorkerID       `json:"id"`
+	Email     WorkerEmail    `json:"email"`
+	Password  WorkerPassword `json:"-"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
-func NewUser(email UserEmail, password *UserPassword) (*User, error) {
-	return &User{
+func NewWorker(email WorkerEmail, password *WorkerPassword) (*Worker, error) {
+	return &Worker{
 		Email:    email,
 		Password: *password,
 	}, nil
