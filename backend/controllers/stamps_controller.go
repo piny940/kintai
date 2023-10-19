@@ -15,7 +15,7 @@ func NewStampsController() *stampsController {
 	return &stampsController{}
 }
 
-func (sc *stampsController) Create(c echo.Context) error {
+func (sc *stampsController) CreateNow(c echo.Context) error {
 	registry := registry.GetRegistry()
 	worker, err := auth.CurrentWorker(c)
 	if err != nil {

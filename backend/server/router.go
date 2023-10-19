@@ -38,7 +38,7 @@ func NewRouter() (*echo.Echo, error) {
 		{
 			stamps := member.Group("/stamps")
 			stampsController := controllers.NewStampsController()
-			stamps.POST("", stampsController.Create)
+			stamps.POST("/now", stampsController.CreateNow)
 		}
 	}
 
