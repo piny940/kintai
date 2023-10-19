@@ -14,6 +14,7 @@ type IRegistry interface {
 	StampUseCase() use_case.IStampUseCase
 	StampRepo() repository.IStampRepo
 	EmploymentRepo() repository.IEmploymentRepo
+	CompanyRepo() repository.ICompanyRepo
 }
 
 type registry struct {
@@ -56,4 +57,8 @@ func (r *registry) StampUseCase() use_case.IStampUseCase {
 
 func (r *registry) EmploymentRepo() repository.IEmploymentRepo {
 	return db.NewEmploymentRepo(r.db)
+}
+
+func (r *registry) CompanyRepo() repository.ICompanyRepo {
+	return db.NewCompanyRepo(r.db)
 }

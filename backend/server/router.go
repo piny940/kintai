@@ -38,12 +38,13 @@ func NewRouter() (*echo.Echo, error) {
 			companies := member.Group("/companies")
 			companiesController := controllers.NewCompaniesController()
 			companies.GET("", companiesController.Index)
-		}
-		{
-			stamps := member.Group("/stamps")
-			stampsController := controllers.NewStampsController()
-			stamps.GET("", stampsController.Index)
-			stamps.POST("/now", stampsController.CreateNow)
+
+			{
+				stamps := member.Group(":id/stamps")
+				stampsController := controllers.NewStampsController()
+				stamps.GET("", stampsController.Index)
+				stamps.POST("/now", stampsController.CreateNow)
+			}
 		}
 	}
 
