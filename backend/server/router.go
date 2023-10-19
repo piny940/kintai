@@ -34,7 +34,11 @@ func NewRouter() (*echo.Echo, error) {
 	}
 	{
 		member := version.Group("/member")
-
+		{
+			companies := member.Group("/companies")
+			companiesController := controllers.NewCompaniesController()
+			companies.GET("", companiesController.Index)
+		}
 		{
 			stamps := member.Group("/stamps")
 			stampsController := controllers.NewStampsController()
