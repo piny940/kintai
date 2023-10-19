@@ -7,4 +7,5 @@ type IWorkerRepo interface {
 	FindById(id domain.WorkerID) (*domain.Worker, error)
 	List() ([]*domain.Worker, error)
 	Create(worker *domain.Worker) (*domain.Worker, error)
+	ListCompanies(workerId domain.WorkerID) ([]*domain.Company, error)
 }
