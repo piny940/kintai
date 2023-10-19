@@ -8,6 +8,7 @@ import (
 
 type IStampUseCase interface {
 	Stamp(workerId domain.WorkerID) (*domain.Stamp, error)
+	List(workerId domain.WorkerID) ([]*domain.Stamp, error)
 }
 
 type stampUseCase struct {
@@ -16,6 +17,10 @@ type stampUseCase struct {
 
 func NewStampUseCase(stampRepo repository.IStampRepo) IStampUseCase {
 	return &stampUseCase{stampRepo: stampRepo}
+}
+
+func (u *stampUseCase) List(workerId domain.WorkerID) ([]*domain.Stamp, error) {
+	return u.stampRepo.List(workerId)
 }
 
 func (u *stampUseCase) Stamp(workerId domain.WorkerID) (*domain.Stamp, error) {

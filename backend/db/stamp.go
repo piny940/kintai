@@ -10,6 +10,33 @@ func NewStampRepo(db *DB) *stampRepo {
 	return &stampRepo{db: db}
 }
 
+func (r *stampRepo) List(workerId domain.WorkerID) ([]*domain.Stamp, error) {
+	stamps := make([]*domain.Stamp, 0)
+	rows, err := r.db.Client.Query(
+		"select * from stamps where worker_id = $1",
+		workerId,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var stamp domain.Stamp
+		if err := rows.Scan(
+			&stamp.ID,
+			&stamp.StampedAt,
+			&stamp.WorkerID,
+			&stamp.CreatedAt,
+			&stamp.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		stamps = append(stamps, &stamp)
+	}
+	return stamps, nil
+}
+
 func (r *stampRepo) Create(stamp *domain.Stamp) (*domain.Stamp, error) {
 	var stampResult domain.Stamp
 	if err := r.db.Client.QueryRow(
