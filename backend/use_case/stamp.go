@@ -7,25 +7,31 @@ import (
 )
 
 type IStampUseCase interface {
-	Stamp(workerId domain.WorkerID) (*domain.Stamp, error)
+	Stamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error)
 	List(workerId domain.WorkerID) ([]*domain.Stamp, error)
 }
 
 type stampUseCase struct {
-	stampRepo repository.IStampRepo
+	stampRepo      repository.IStampRepo
+	employmentRepo repository.IEmploymentRepo
 }
 
-func NewStampUseCase(stampRepo repository.IStampRepo) IStampUseCase {
-	return &stampUseCase{stampRepo: stampRepo}
+func NewStampUseCase(stampRepo repository.IStampRepo, employmentRepo repository.IEmploymentRepo) IStampUseCase {
+	return &stampUseCase{stampRepo: stampRepo, employmentRepo: employmentRepo}
 }
 
 func (u *stampUseCase) List(workerId domain.WorkerID) ([]*domain.Stamp, error) {
 	return u.stampRepo.List(workerId)
 }
 
-func (u *stampUseCase) Stamp(workerId domain.WorkerID) (*domain.Stamp, error) {
+func (u *stampUseCase) Stamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error) {
 	stampedAt := time.Now()
-	stamp, err := domain.NewStamp(stampedAt, workerId)
+
+	employment, err := u.employmentRepo.Find(companyId, workerId)
+	if err != nil {
+		return nil, err
+	}
+	stamp, err := domain.NewStamp(stampedAt, employment.ID)
 	if err != nil {
 		return nil, err
 	}

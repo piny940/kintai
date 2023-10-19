@@ -26,7 +26,7 @@ func (r *stampRepo) List(workerId domain.WorkerID) ([]*domain.Stamp, error) {
 		if err := rows.Scan(
 			&stamp.ID,
 			&stamp.StampedAt,
-			&stamp.WorkerID,
+			&stamp.EmploymentID,
 			&stamp.CreatedAt,
 			&stamp.UpdatedAt,
 		); err != nil {
@@ -39,14 +39,15 @@ func (r *stampRepo) List(workerId domain.WorkerID) ([]*domain.Stamp, error) {
 
 func (r *stampRepo) Create(stamp *domain.Stamp) (*domain.Stamp, error) {
 	var stampResult domain.Stamp
+
 	if err := r.db.Client.QueryRow(
-		"insert into stamps (stamped_at, worker_id) values ($1, $2) returning *",
+		"insert into stamps (stamped_at, employment_id) values ($1, $2) returning *",
 		stamp.StampedAt,
-		stamp.WorkerID,
+		stamp.EmploymentID,
 	).Scan(
 		&stampResult.ID,
 		&stampResult.StampedAt,
-		&stampResult.WorkerID,
+		&stampResult.EmploymentID,
 		&stampResult.CreatedAt,
 		&stampResult.UpdatedAt,
 	); err != nil {
