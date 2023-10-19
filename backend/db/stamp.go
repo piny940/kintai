@@ -10,11 +10,12 @@ func NewStampRepo(db *DB) *stampRepo {
 	return &stampRepo{db: db}
 }
 
-func (r *stampRepo) List(workerId domain.WorkerID) ([]*domain.Stamp, error) {
+func (r *stampRepo) List(workerId domain.WorkerID, companyId domain.CompanyID) ([]*domain.Stamp, error) {
 	stamps := make([]*domain.Stamp, 0)
 	rows, err := r.db.Client.Query(
-		"select * from stamps where worker_id = $1",
+		"select * from stamps where employment_id in (select id from employments where worker_id = $1 and company_id = $2)",
 		workerId,
+		companyId,
 	)
 	if err != nil {
 		return nil, err

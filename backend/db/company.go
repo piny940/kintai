@@ -13,7 +13,7 @@ func NewCompanyRepo(db *DB) *companyRepo {
 func (r *companyRepo) FindById(workerId domain.WorkerID, companyId domain.CompanyID) (*domain.Company, error) {
 	var company domain.Company
 	if err := r.db.Client.QueryRow(
-		"select * from companies where id = $1 and worker_id = $2",
+		"select * from companies where id = $1 and id in (select company_id from employments where worker_id = $2)",
 		companyId,
 		workerId,
 	).Scan(
@@ -30,7 +30,7 @@ func (r *companyRepo) FindById(workerId domain.WorkerID, companyId domain.Compan
 func (r *companyRepo) List(workerId domain.WorkerID) ([]*domain.Company, error) {
 	companies := make([]*domain.Company, 0)
 	rows, err := r.db.Client.Query(
-		"select * from companies where id in (select company_id from employments where worker_id = $1))",
+		"select * from companies where id in (select company_id from employments where worker_id = $1)",
 		workerId,
 	)
 	if err != nil {
