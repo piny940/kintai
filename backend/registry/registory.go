@@ -11,6 +11,8 @@ type IRegistry interface {
 	TodoRepo() repository.ITodoRepo
 	WorkerUseCase() use_case.IWorkerUseCase
 	WorkerRepo() repository.IWorkerRepo
+	StampUseCase() use_case.IStampUseCase
+	StampRepo() repository.IStampRepo
 }
 
 type registry struct {
@@ -41,4 +43,12 @@ func (r *registry) WorkerRepo() repository.IWorkerRepo {
 
 func (r *registry) WorkerUseCase() use_case.IWorkerUseCase {
 	return use_case.NewWorkerUseCase(r.WorkerRepo())
+}
+
+func (r *registry) StampRepo() repository.IStampRepo {
+	return db.NewStampRepo(r.db)
+}
+
+func (r *registry) StampUseCase() use_case.IStampUseCase {
+	return use_case.NewStampUseCase(r.StampRepo())
 }

@@ -14,8 +14,8 @@ type stampUseCase struct {
 	stampRepo repository.IStampRepo
 }
 
-func NewStampUseCase() IStampUseCase {
-	return &stampUseCase{}
+func NewStampUseCase(stampRepo repository.IStampRepo) IStampUseCase {
+	return &stampUseCase{stampRepo: stampRepo}
 }
 
 func (u *stampUseCase) Stamp(workerId domain.WorkerID) (*domain.Stamp, error) {
