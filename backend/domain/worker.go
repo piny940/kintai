@@ -32,10 +32,3 @@ func NewWorker(email WorkerEmail, password *WorkerPassword, name *WorkerName) (*
 		Name:     *name,
 	}, nil
 }
-
-func (w *Worker) NewStamp(stampedAt time.Time) (*Stamp, error) {
-	return &Stamp{
-		StampedAt: stampedAt,
-		WorkerID:  w.ID,
-	}, nil
-}
