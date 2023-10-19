@@ -32,6 +32,15 @@ func NewRouter() (*echo.Echo, error) {
 		sessionsController := controllers.NewSessionsController()
 		sessions.POST("", sessionsController.Create)
 	}
+	{
+		member := version.Group("/member")
+
+		{
+			stamps := member.Group("/stamps")
+			stampsController := controllers.NewStampsController()
+			stamps.POST("", stampsController.Create)
+		}
+	}
 
 	return router, nil
 }
