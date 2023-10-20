@@ -23,7 +23,10 @@ export const App: React.FC = () => {
         <CompanySelect />
         {company && (
           <div className="mt-5">
-            <button className="btn btn-primary btn-lg" onClick={createStamp}>
+            <button
+              className="btn btn-primary btn-lg w-100 py-5 fs-2"
+              onClick={createStamp}
+            >
               打刻する
             </button>
           </div>
