@@ -1,5 +1,7 @@
+import SignIn from '@/containers/SignIn'
+
 const SignInPage = (): JSX.Element => {
-  return <div>SignInPage</div>
+  return <SignIn />
 }
 
 export default SignInPage
