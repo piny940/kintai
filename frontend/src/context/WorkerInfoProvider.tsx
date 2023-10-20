@@ -11,16 +11,16 @@ import { fetchApi } from '@/utils/api'
 interface WorkerInfoInterface {
   worker: Worker | null
   company: Company | null
-  setWorker: (worker: Worker) => void
-  setCompany: (company: Company) => void
+  setWorker: (worker: Worker | null) => void
+  setCompany: (company: Company | null) => void
   loading: boolean
 }
 
 const defaultWorkerInfoState: WorkerInfoInterface = {
   worker: null,
   company: null,
-  setWorker: (worker: Worker) => undefined,
-  setCompany: (company: Company) => undefined,
+  setWorker: (worker: Worker | null) => undefined,
+  setCompany: (company: Company | null) => undefined,
   loading: false,
 }
 
