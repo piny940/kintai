@@ -6,7 +6,6 @@ import (
 )
 
 type IWorkerUseCase interface {
-	List() ([]*domain.Worker, error)
 	SignUp(email domain.WorkerEmail, password domain.WorkerRawPassword, name *domain.WorkerName) (*domain.Worker, error)
 }
 
@@ -16,10 +15,6 @@ type workerUseCase struct {
 
 func NewWorkerUseCase(workerRepo repository.IWorkerRepo) IWorkerUseCase {
 	return &workerUseCase{workerRepo: workerRepo}
-}
-
-func (u *workerUseCase) List() ([]*domain.Worker, error) {
-	return u.workerRepo.List()
 }
 
 func (u *workerUseCase) SignUp(email domain.WorkerEmail, rawPassword domain.WorkerRawPassword, name *domain.WorkerName) (*domain.Worker, error) {
