@@ -30,14 +30,14 @@ export const postData = async (params: {
   url: string
   data: object
   scope?: string
-}) => {
+}): Promise<[Response, any]> => {
   const response = await fetchApi({
     url: params.url,
     method: 'POST',
     data: params.scope ? { [params.scope]: params.data } : params.data,
   })
 
-  return await response.json()
+  return [response, await response.json()]
 }
 
 export const updateData = async (params: {
@@ -50,5 +50,5 @@ export const updateData = async (params: {
     method: 'PATCH',
     data: params.scope ? { [params.scope]: params.data } : params.data,
   })
-  return await response.json()
+  return [response, await response.json()]
 }

@@ -28,7 +28,7 @@ func NewRouter() (*echo.Echo, error) {
 		workers.POST("/me", workersController.Create)
 	}
 	{
-		sessions := version.Group("/sessions")
+		sessions := version.Group("/session")
 		sessionsController := controllers.NewSessionsController()
 		sessions.POST("", sessionsController.Create)
 	}
