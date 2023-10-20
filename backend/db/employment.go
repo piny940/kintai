@@ -18,6 +18,8 @@ func (r *employmentRepo) Find(companyId domain.CompanyID, workerId domain.Worker
 		workerId,
 	).Scan(
 		&employment.ID,
+		&employment.Kind,
+		&employment.Status,
 		&employment.CompanyID,
 		&employment.WorkerID,
 		&employment.CreatedAt,
