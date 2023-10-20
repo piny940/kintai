@@ -9,15 +9,6 @@ export const App: React.FC = () => {
   const { company } = useWorkerInfo()
   const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null)
 
-  const createStamp = useCallback(async () => {
-    if (!company) return
-
-    await postData({
-      url: `/member/companies/${company.id}/stamps/now`,
-      data: {},
-    })
-  }, [company])
-
   const fetchWorkStatus = useCallback(async () => {
     if (!company) return
 
@@ -27,6 +18,16 @@ export const App: React.FC = () => {
 
     setWorkStatus(json.work_status)
   }, [company])
+
+  const createStamp = useCallback(async () => {
+    if (!company) return
+
+    await postData({
+      url: `/member/companies/${company.id}/stamps/now`,
+      data: {},
+    })
+    void fetchWorkStatus()
+  }, [company, fetchWorkStatus])
 
   useEffect(() => {
     void fetchWorkStatus()
@@ -39,6 +40,11 @@ export const App: React.FC = () => {
         <CompanySelect />
         {company && (
           <div className="mt-5">
+            {workStatus != null && (
+              <div className="">
+                <p className="work-status h2">{workStatusLabels[workStatus]}</p>
+              </div>
+            )}
             <div className="stamp">
               <button
                 className="btn btn-primary btn-lg w-100 py-5 fs-2"
@@ -46,9 +52,6 @@ export const App: React.FC = () => {
               >
                 打刻する
               </button>
-            </div>
-            <div className="work-status">
-              {workStatus != null ? workStatusLabels[workStatus] : '---'}
             </div>
           </div>
         )}
