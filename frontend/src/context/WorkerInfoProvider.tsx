@@ -13,6 +13,7 @@ interface WorkerInfoInterface {
   company: Company | null
   setWorker: (worker: Worker) => void
   setCompany: (company: Company) => void
+  loading: boolean
 }
 
 const defaultWorkerInfoState: WorkerInfoInterface = {
@@ -20,6 +21,7 @@ const defaultWorkerInfoState: WorkerInfoInterface = {
   company: null,
   setWorker: (worker: Worker) => undefined,
   setCompany: (company: Company) => undefined,
+  loading: false,
 }
 
 const WorkerInfoContext = createContext(defaultWorkerInfoState)
@@ -35,12 +37,14 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
 }) => {
   const [worker, setWorker] = useState<Worker | null>(null)
   const [company, setCompany] = useState<Company | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
   const value: WorkerInfoInterface = {
     worker,
     company,
     setWorker,
     setCompany,
+    loading,
   }
 
   const setCurrentUser = async () => {
@@ -49,8 +53,8 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
       method: 'GET',
     })
     const json = await res.json()
-    console.log(json)
     setWorker(json.worker || null)
+    setLoading(false)
   }
 
   useEffect(() => {

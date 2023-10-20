@@ -14,7 +14,7 @@ func NewRouter() (*echo.Echo, error) {
 	version := router.Group("/" + c.GetString("server.version"))
 
 	homesController := controllers.NewHomesController()
-	version.GET("/", homesController.Index)
+	version.GET("", homesController.Index)
 	{
 		todos := version.Group("/todos")
 		todosController := controllers.NewTodosController()
@@ -28,7 +28,7 @@ func NewRouter() (*echo.Echo, error) {
 		workers.POST("/me", workersController.Create)
 	}
 	{
-		sessions := version.Group("/sessions")
+		sessions := version.Group("/session")
 		sessionsController := controllers.NewSessionsController()
 		sessions.POST("", sessionsController.Create)
 	}
