@@ -45,6 +45,11 @@ func NewRouter() (*echo.Echo, error) {
 				stamps.GET("", stampsController.Index)
 				stamps.POST("/now", stampsController.CreateNow)
 			}
+			{
+				workReports := companies.Group("/:company_id/work_reports")
+				workReportsController := controllers.NewWorkReportsController()
+				workReports.GET("", workReportsController.List)
+			}
 		}
 	}
 
