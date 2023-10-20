@@ -22,6 +22,15 @@ export const App: React.FC = () => {
   return (
     <div id="app" data-testid={TestID.APP}>
       <h1>勤怠プラス+</h1>
+      <div className="container">
+        <select name="" id="" className="form-select">
+          {companies.map((company) => (
+            <option key={company.id} value={company.id}>
+              {company.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   )
 }
