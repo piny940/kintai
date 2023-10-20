@@ -22,3 +22,12 @@ export type Company = {
   created_at: Date
   updated_at: Date
 }
+
+export enum WorkStatus {
+  WORKING = 0,
+  LEFT = 1,
+}
+export const workStatusLabels: { [key in WorkStatus]: string } = {
+  0: '勤務中',
+  1: '退勤済み',
+}

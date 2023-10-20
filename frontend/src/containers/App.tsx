@@ -1,11 +1,23 @@
 import { TestID } from '@/resources/TestID'
 import CompanySelect from './CompanySelect'
-import { postData } from '@/utils/api'
+import { getData, postData } from '@/utils/api'
 import { useWorkerInfo } from '@/context/WorkerInfoProvider'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { WorkStatus, workStatusLabels } from '@/resources/types'
 
 export const App: React.FC = () => {
   const { company } = useWorkerInfo()
+  const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null)
+
+  const fetchWorkStatus = useCallback(async () => {
+    if (!company) return
+
+    const json = (
+      await getData(`/member/companies/${company.id}/work_status`)
+    )[1]
+
+    setWorkStatus(json.work_status)
+  }, [company])
 
   const createStamp = useCallback(async () => {
     if (!company) return
@@ -14,7 +26,12 @@ export const App: React.FC = () => {
       url: `/member/companies/${company.id}/stamps/now`,
       data: {},
     })
-  }, [company])
+    void fetchWorkStatus()
+  }, [company, fetchWorkStatus])
+
+  useEffect(() => {
+    void fetchWorkStatus()
+  }, [fetchWorkStatus])
 
   return (
     <div id="app" data-testid={TestID.APP}>
@@ -23,9 +40,19 @@ export const App: React.FC = () => {
         <CompanySelect />
         {company && (
           <div className="mt-5">
-            <button className="btn btn-primary btn-lg" onClick={createStamp}>
-              打刻する
-            </button>
+            {workStatus != null && (
+              <div className="">
+                <p className="work-status h2">{workStatusLabels[workStatus]}</p>
+              </div>
+            )}
+            <div className="stamp">
+              <button
+                className="btn btn-primary btn-lg w-100 py-5 fs-2"
+                onClick={createStamp}
+              >
+                打刻する
+              </button>
+            </div>
           </div>
         )}
       </div>

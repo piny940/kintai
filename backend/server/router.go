@@ -51,6 +51,11 @@ func NewRouter() (*echo.Echo, error) {
 				workReportsController := controllers.NewWorkReportsController()
 				workReports.GET("", workReportsController.List)
 			}
+			{
+				workStatus := companies.Group("/:company_id/work_status")
+				workStatusController := controllers.NewWorkStatusController()
+				workStatus.GET("", workStatusController.Show)
+			}
 		}
 	}
 
