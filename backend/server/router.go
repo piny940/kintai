@@ -14,7 +14,7 @@ func NewRouter() (*echo.Echo, error) {
 	version := router.Group("/" + c.GetString("server.version"))
 
 	homesController := controllers.NewHomesController()
-	version.GET("/", homesController.Index)
+	version.GET("", homesController.Index)
 	{
 		todos := version.Group("/todos")
 		todosController := controllers.NewTodosController()
