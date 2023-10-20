@@ -1,49 +1,33 @@
-import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { TestID } from '@/resources/TestID'
-import { Company } from '@/resources/types'
-import { getData } from '@/utils/api'
-import { useCallback, useEffect, useState } from 'react'
+import CompanySelect from './CompanySelect'
+import { postData } from '@/utils/api'
+import { useWorkerInfo } from '@/context/WorkerInfoProvider'
+import { useCallback } from 'react'
 
 export const App: React.FC = () => {
-  const { worker, company, setCompany } = useWorkerInfo()
-  const [companies, setCompanies] = useState<Company[]>([])
+  const { company } = useWorkerInfo()
 
-  const fetchCompanies = useCallback(async () => {
-    const json = (await getData('/member/companies'))[1]
-    setCompanies(json.companies)
-  }, [worker])
+  const createStamp = useCallback(async () => {
+    if (!company) return
 
-  const onCompanyChange = useCallback(
-    (value: string) => {
-      const newCompany = companies.find((c) => c.id.toString() === value)
-      setCompany(newCompany || null)
-    },
-    [companies, setCompany]
-  )
-
-  useEffect(() => {
-    if (!worker) return
-    void fetchCompanies()
-  }, [worker, fetchCompanies])
+    await postData({
+      url: `/member/companies/${company.id}/stamps/now`,
+      data: {},
+    })
+  }, [company])
 
   return (
     <div id="app" data-testid={TestID.APP}>
       <h1>勤怠プラス+</h1>
       <div className="container">
-        <select
-          name=""
-          id=""
-          className="form-select"
-          value={company?.id || ''}
-          onChange={(e) => onCompanyChange(e.target.value)}
-        >
-          <option value="">--</option>
-          {companies.map((company) => (
-            <option key={company.id} value={company.id}>
-              {company.name}
-            </option>
-          ))}
-        </select>
+        <CompanySelect />
+        {company && (
+          <div className="mt-5">
+            <button className="btn btn-primary btn-lg" onClick={createStamp}>
+              打刻する
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
