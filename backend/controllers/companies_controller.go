@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"kintai_backend/auth"
-	"kintai_backend/domain"
 	"kintai_backend/registry"
 	"net/http"
 
@@ -22,9 +21,9 @@ func (u *companiesController) Index(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, "ログインしてください")
 	}
 
-	companies, err := registry.WorkerUseCase().ListCompanies(domain.WorkerID(worker.ID))
+	companies, err := registry.CompanyRepo().List(worker.ID)
 	if err != nil {
-		return render400(c, "会社の取得に失敗しました", nil)
+		return render400(c, "会社の取得に失敗しました", err)
 	}
 	return c.JSON(http.StatusOK, echo.Map{
 		"companies": companies,

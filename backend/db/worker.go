@@ -24,33 +24,6 @@ type WorkerTable struct {
 	UpdatedAt         time.Time `json:"updated_at"`
 }
 
-func (u *workerRepo) ListCompanies(id domain.WorkerID) ([]*domain.Company, error) {
-	var companies = make([]*domain.Company, 0)
-	rows, err := u.db.Client.Query(
-		"select * from companies where id in (select company_id from employments where worker_id = $1)",
-		id,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var companyTable domain.Company
-		if err := rows.Scan(
-			&companyTable.ID,
-			&companyTable.Name,
-			&companyTable.CreatedAt,
-			&companyTable.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-
-		companies = append(companies, &companyTable)
-	}
-	return companies, nil
-}
-
 func (u *workerRepo) FindById(id domain.WorkerID) (*domain.Worker, error) {
 	var workerTable WorkerTable
 	if err := u.db.Client.QueryRow(

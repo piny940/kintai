@@ -8,7 +8,6 @@ import (
 type IWorkerUseCase interface {
 	List() ([]*domain.Worker, error)
 	SignUp(email domain.WorkerEmail, password domain.WorkerRawPassword, name *domain.WorkerName) (*domain.Worker, error)
-	ListCompanies(workerId domain.WorkerID) ([]*domain.Company, error)
 }
 
 type workerUseCase struct {
@@ -33,8 +32,4 @@ func (u *workerUseCase) SignUp(email domain.WorkerEmail, rawPassword domain.Work
 		return nil, err
 	}
 	return u.workerRepo.Create(worker)
-}
-
-func (u *workerUseCase) ListCompanies(workerId domain.WorkerID) ([]*domain.Company, error) {
-	return u.workerRepo.ListCompanies(workerId)
 }
