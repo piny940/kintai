@@ -17,6 +17,7 @@ type IRegistry interface {
 	CompanyRepo() repository.ICompanyRepo
 	WorkReportRepo() repository.IWorkReportRepo
 	WorkReportUseCase() use_case.IWorkReportUseCase
+	WorkStatusUseCase() use_case.IWorkStatusUseCase
 }
 
 type registry struct {
@@ -71,4 +72,8 @@ func (r *registry) WorkReportRepo() repository.IWorkReportRepo {
 
 func (r *registry) WorkReportUseCase() use_case.IWorkReportUseCase {
 	return use_case.NewWorkReportUseCase(r.WorkReportRepo(), r.EmploymentRepo())
+}
+
+func (r *registry) WorkStatusUseCase() use_case.IWorkStatusUseCase {
+	return use_case.NewWorkStatusUseCase(r.WorkReportRepo())
 }

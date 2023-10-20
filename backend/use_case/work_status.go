@@ -14,8 +14,8 @@ type workStatusUseCase struct {
 	workReportRepo repository.IWorkReportRepo
 }
 
-func NewWorkStatusUseCase() IWorkStatusUseCase {
-	return &workStatusUseCase{}
+func NewWorkStatusUseCase(workReportRepo repository.IWorkReportRepo) IWorkStatusUseCase {
+	return &workStatusUseCase{workReportRepo: workReportRepo}
 }
 
 func (u *workStatusUseCase) Show(employmentId domain.EmploymentID) (domain.WorkStatus, error) {
