@@ -18,6 +18,12 @@ func NewWorkReportsController() *workReportsController {
 	return &workReportsController{}
 }
 
+type workReport struct {
+	Stamps []*domain.Stamp `json:"stamps"`
+	Since  time.Time       `json:"since"`
+	Until  time.Time       `json:"until"`
+}
+
 func (wc *workReportsController) List(c echo.Context) error {
 	registry := registry.GetRegistry()
 	worker, err := auth.CurrentWorker(c)
@@ -48,8 +54,22 @@ func (wc *workReportsController) List(c echo.Context) error {
 	if err != nil {
 		return render400(c, "勤怠の取得に失敗しました", err)
 	}
+
+	// データの整形
+	reports := make([]*workReport, 0)
+	for _, report := range workReports {
+		reports = append(reports, &workReport{
+			Stamps: report.Stamps,
+			Since:  report.Since,
+			Until:  report.Until,
+		})
+	}
+
 	return c.JSON(http.StatusOK, echo.Map{
-		"work_reports": workReports,
+		"work_reports":  reports,
+		"employment_id": employment.ID,
+		"since":         since,
+		"until":         until,
 	})
 }
 
