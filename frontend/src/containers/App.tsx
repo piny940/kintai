@@ -9,9 +9,8 @@ export const App: React.FC = () => {
   const [companies, setCompanies] = useState<Company[]>([])
 
   const fetchCompanies = useCallback(async () => {
-    const [_, json] = await getData('/member/companies')
+    const json = (await getData('/member/companies'))[1]
     setCompanies(json.companies)
-    console.log(json.companies)
   }, [worker])
 
   const onCompanyChange = useCallback(
