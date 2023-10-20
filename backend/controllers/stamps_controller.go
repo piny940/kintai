@@ -31,7 +31,7 @@ func (sc *stampsController) Index(c echo.Context) error {
 	if err != nil {
 		return render400(c, "会社の取得に失敗しました", err)
 	}
-	stamps, err := registry.StampUseCase().List(worker.ID, company.ID)
+	stamps, err := registry.StampRepo().List(worker.ID, company.ID)
 	if err != nil {
 		return render400(c, "打刻の取得に失敗しました", err)
 	}
