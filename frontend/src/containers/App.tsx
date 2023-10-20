@@ -5,7 +5,7 @@ import { getData } from '@/utils/api'
 import { useCallback, useEffect, useState } from 'react'
 
 export const App: React.FC = () => {
-  const { worker } = useWorkerInfo()
+  const { worker, company, setCompany } = useWorkerInfo()
   const [companies, setCompanies] = useState<Company[]>([])
 
   const fetchCompanies = useCallback(async () => {
@@ -13,6 +13,14 @@ export const App: React.FC = () => {
     setCompanies(json.companies)
     console.log(json.companies)
   }, [worker])
+
+  const onCompanyChange = useCallback(
+    (value: string) => {
+      const newCompany = companies.find((c) => c.id.toString() === value)
+      setCompany(newCompany || null)
+    },
+    [companies, setCompany]
+  )
 
   useEffect(() => {
     if (!worker) return
@@ -23,7 +31,14 @@ export const App: React.FC = () => {
     <div id="app" data-testid={TestID.APP}>
       <h1>勤怠プラス+</h1>
       <div className="container">
-        <select name="" id="" className="form-select">
+        <select
+          name=""
+          id=""
+          className="form-select"
+          value={company?.id || ''}
+          onChange={(e) => onCompanyChange(e.target.value)}
+        >
+          <option value="">--</option>
           {companies.map((company) => (
             <option key={company.id} value={company.id}>
               {company.name}
