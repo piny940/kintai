@@ -32,3 +32,10 @@ func (c *sessionsController) Create(ctx echo.Context) error {
 		"worker":  worker,
 	})
 }
+
+func (c *sessionsController) Destroy(ctx echo.Context) error {
+	auth.Logout(ctx)
+	return ctx.JSON(200, echo.Map{
+		"message": "ログアウトしました",
+	})
+}
