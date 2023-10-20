@@ -26,6 +26,12 @@ export const fetchApi = async (params: {
   return response
 }
 
+export const getData = async (url: string): Promise<[Response, any]> => {
+  const response = await fetch(`/api${url}`)
+  const json = await response.json()
+  return [response, json]
+}
+
 export const postData = async (params: {
   url: string
   data: object
