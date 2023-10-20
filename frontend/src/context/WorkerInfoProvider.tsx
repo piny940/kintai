@@ -1,5 +1,12 @@
-import { createContext, ReactNode, useContext, useState } from 'react'
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import { Company, Worker } from '../resources/types'
+import { fetchApi } from '@/utils/api'
 
 interface WorkerInfoInterface {
   worker: Worker | null
@@ -35,6 +42,20 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
     setWorker,
     setCompany,
   }
+
+  const setCurrentUser = async () => {
+    const res = await fetchApi({
+      url: '/workers/me',
+      method: 'GET',
+    })
+    const json = await res.json()
+    console.log(json)
+    setWorker(json.worker || null)
+  }
+
+  useEffect(() => {
+    void setCurrentUser()
+  }, [])
 
   return (
     <WorkerInfoContext.Provider value={value}>

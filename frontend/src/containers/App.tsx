@@ -1,8 +1,11 @@
+import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { TestID } from '@/resources/TestID'
 import { fetchApi, postData } from '@/utils/api'
 import { useEffect } from 'react'
 
 export const App: React.FC = () => {
+  const { worker, company, setWorker } = useWorkerInfo()
+
   const login = async () => {
     const json = await postData({
       url: '/sessions',
@@ -13,18 +16,9 @@ export const App: React.FC = () => {
     })
     console.log(json)
   }
-  const currentUser = async () => {
-    const res = await fetchApi({
-      url: '/workers/me',
-      method: 'GET',
-    })
-    const json = await res.json()
-    console.log(json)
-  }
-
+  console.log(worker)
   useEffect(() => {
-    void login()
-    void currentUser()
+    // void login()
   })
   return (
     <div id="app" data-testid={TestID.APP}>

@@ -1,9 +1,5 @@
 export type Theme = 'dark' | 'light'
 
-export enum WorkerKind {
-  ADMIN = 0,
-  MEMBER = 1,
-}
 enum WorkerStatus {
   ACTIVE = 0,
   INACTIVE = 1,
@@ -11,13 +7,18 @@ enum WorkerStatus {
 
 export type Worker = {
   id: number
-  kind: WorkerKind
   status: WorkerStatus
   email: string
-  firstName: string
-  lastName: string
+  name: {
+    first_name: string
+    last_name: string
+  }
+  created_at: Date
+  updated_at: Date
 }
 export type Company = {
   id: number
   name: string
+  created_at: Date
+  updated_at: Date
 }
