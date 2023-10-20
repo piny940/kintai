@@ -22,6 +22,7 @@ type workReport struct {
 	Stamps []*domain.Stamp `json:"stamps"`
 	Since  time.Time       `json:"since"`
 	Until  time.Time       `json:"until"`
+	Total  time.Duration   `json:"total"`
 }
 
 func (wc *workReportsController) List(c echo.Context) error {
@@ -62,6 +63,7 @@ func (wc *workReportsController) List(c echo.Context) error {
 			Stamps: report.Stamps,
 			Since:  report.Since,
 			Until:  report.Until,
+			Total:  report.Total(),
 		})
 	}
 
