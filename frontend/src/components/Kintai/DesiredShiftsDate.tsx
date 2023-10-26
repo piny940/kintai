@@ -20,7 +20,16 @@ const DesiredShiftsDate = ({
     return ''
   }
 
-  return <div className={textColor()}>{date.date()}</div>
+  return (
+    <div className="">
+      <div className="d-flex align-items-center">
+        <span className={textColor()}>{date.date()}</span>
+        <button className="mt-2 btn btn-outline-primary ms-2 btn-sm">
+          追加
+        </button>
+      </div>
+    </div>
+  )
 }
 
 export default memo(DesiredShiftsDate)
