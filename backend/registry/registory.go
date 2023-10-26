@@ -6,31 +6,17 @@ import (
 	"kintai_backend/use_case"
 )
 
-type IRegistry interface {
-	TodoUseCase() use_case.ITodoUseCase
-	TodoRepo() domain.ITodoRepo
-	WorkerUseCase() use_case.IWorkerUseCase
-	WorkerRepo() domain.IWorkerRepo
-	StampUseCase() use_case.IStampUseCase
-	StampRepo() domain.IStampRepo
-	EmploymentRepo() domain.IEmploymentRepo
-	CompanyRepo() domain.ICompanyRepo
-	WorkReportRepo() domain.IWorkReportRepo
-	WorkReportUseCase() use_case.IWorkReportUseCase
-	WorkStatusUseCase() use_case.IWorkStatusUseCase
-}
-
 type registry struct {
 	db *db.DB
 }
 
-var reg IRegistry
+var reg *registry
 
 func Init(db *db.DB) {
 	reg = &registry{db: db}
 }
 
-func GetRegistry() IRegistry {
+func GetRegistry() *registry {
 	return reg
 }
 
@@ -76,4 +62,8 @@ func (r *registry) WorkReportUseCase() use_case.IWorkReportUseCase {
 
 func (r *registry) WorkStatusUseCase() use_case.IWorkStatusUseCase {
 	return use_case.NewWorkStatusUseCase(r.WorkReportRepo())
+}
+
+func (r *registry) DesiredShiftRepo() domain.IDesiredShiftRepo {
+	return db.NewDesiredShiftRepo(r.db)
 }
