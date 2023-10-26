@@ -9,7 +9,7 @@ export const useCalendar = (start: Date) => {
     const first = selectedMonth.startOf('month')
     const last = selectedMonth.endOf('month')
 
-    let currentDate = 1 - first.date()
+    let currentDate = 1 - first.day()
     const datesMatrix = []
     while (currentDate <= last.date()) {
       datesMatrix.push(
