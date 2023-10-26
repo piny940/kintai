@@ -54,7 +54,7 @@ func (sc *stampsController) CreateNow(c echo.Context) error {
 	if err != nil {
 		return render400(c, "会社の取得に失敗しました", err)
 	}
-	stamp, err := registry.StampUseCase().Stamp(company.ID, worker.ID)
+	stamp, err := registry.StampUseCase().PushStamp(company.ID, worker.ID)
 	if err != nil {
 		return render400(c, "打刻に失敗しました", err)
 	}
