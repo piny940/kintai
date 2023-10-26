@@ -22,6 +22,12 @@ type Worker struct {
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 }
+type IWorkerRepo interface {
+	FindByEmail(email WorkerEmail) (*Worker, error)
+	FindById(id WorkerID) (*Worker, error)
+	List() ([]*Worker, error)
+	Create(worker *Worker) (*Worker, error)
+}
 
 func NewWorker(email WorkerEmail, password *WorkerPassword, name *WorkerName) (*Worker, error) {
 	status := WorkerActive

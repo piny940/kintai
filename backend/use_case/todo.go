@@ -2,7 +2,6 @@ package use_case
 
 import (
 	"kintai_backend/domain"
-	"kintai_backend/domain/repository"
 )
 
 type ITodoUseCase interface {
@@ -12,10 +11,10 @@ type ITodoUseCase interface {
 }
 
 type todoUseCase struct {
-	todoRepo repository.ITodoRepo
+	todoRepo domain.ITodoRepo
 }
 
-func NewTodoUseCase(todoRepo repository.ITodoRepo) ITodoUseCase {
+func NewTodoUseCase(todoRepo domain.ITodoRepo) ITodoUseCase {
 	return &todoUseCase{todoRepo: todoRepo}
 }
 

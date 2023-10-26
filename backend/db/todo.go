@@ -2,14 +2,13 @@ package db
 
 import (
 	"kintai_backend/domain"
-	"kintai_backend/domain/repository"
 )
 
 type todoRepo struct {
 	db *DB
 }
 
-func NewTodoRepo(db *DB) repository.ITodoRepo {
+func NewTodoRepo(db *DB) domain.ITodoRepo {
 	return &todoRepo{
 		db: db,
 	}
