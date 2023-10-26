@@ -1,14 +1,17 @@
 import dayjs from 'dayjs'
 import WeekDays from './WeekDays'
 import { memo } from 'react'
+import Month from './Month'
 
 const Calendar = (): JSX.Element => {
   return (
     <table className="table table-striped">
       <thead className="flex flex-1">
         <WeekDays />
-        {/* <Month /> */}
       </thead>
+      <tbody>
+        <Month />
+      </tbody>
     </table>
   )
 }
