@@ -2,7 +2,6 @@ package use_case
 
 import (
 	"kintai_backend/domain"
-	"kintai_backend/domain/repository"
 	"time"
 )
 
@@ -11,11 +10,11 @@ type IWorkReportUseCase interface {
 }
 
 type workReportUseCase struct {
-	workReportRepo repository.IWorkReportRepo
-	employmentRepo repository.IEmploymentRepo
+	workReportRepo domain.IWorkReportRepo
+	employmentRepo domain.IEmploymentRepo
 }
 
-func NewWorkReportUseCase(workReportRepo repository.IWorkReportRepo, employmentRepo repository.IEmploymentRepo) *workReportUseCase {
+func NewWorkReportUseCase(workReportRepo domain.IWorkReportRepo, employmentRepo domain.IEmploymentRepo) *workReportUseCase {
 	return &workReportUseCase{workReportRepo: workReportRepo, employmentRepo: employmentRepo}
 }
 

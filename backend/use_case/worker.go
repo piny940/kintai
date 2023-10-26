@@ -2,7 +2,6 @@ package use_case
 
 import (
 	"kintai_backend/domain"
-	"kintai_backend/domain/repository"
 )
 
 type IWorkerUseCase interface {
@@ -10,10 +9,10 @@ type IWorkerUseCase interface {
 }
 
 type workerUseCase struct {
-	workerRepo repository.IWorkerRepo
+	workerRepo domain.IWorkerRepo
 }
 
-func NewWorkerUseCase(workerRepo repository.IWorkerRepo) IWorkerUseCase {
+func NewWorkerUseCase(workerRepo domain.IWorkerRepo) IWorkerUseCase {
 	return &workerUseCase{workerRepo: workerRepo}
 }
 

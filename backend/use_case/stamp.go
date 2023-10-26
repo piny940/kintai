@@ -2,7 +2,6 @@ package use_case
 
 import (
 	"kintai_backend/domain"
-	"kintai_backend/domain/repository"
 	"time"
 )
 
@@ -11,11 +10,11 @@ type IStampUseCase interface {
 }
 
 type stampUseCase struct {
-	stampRepo      repository.IStampRepo
-	employmentRepo repository.IEmploymentRepo
+	stampRepo      domain.IStampRepo
+	employmentRepo domain.IEmploymentRepo
 }
 
-func NewStampUseCase(stampRepo repository.IStampRepo, employmentRepo repository.IEmploymentRepo) IStampUseCase {
+func NewStampUseCase(stampRepo domain.IStampRepo, employmentRepo domain.IEmploymentRepo) IStampUseCase {
 	return &stampUseCase{stampRepo: stampRepo, employmentRepo: employmentRepo}
 }
 
