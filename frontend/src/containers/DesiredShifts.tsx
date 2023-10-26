@@ -4,6 +4,7 @@ import 'react-calendar/dist/Calendar.css'
 
 const DesiredShifts = (): JSX.Element => {
   const [alert, setAlert] = useState('')
+  const [desiredShifts, setDesiredShifts] = useState([])
 
   return (
     <div>
