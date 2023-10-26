@@ -6,7 +6,7 @@ import (
 )
 
 type IStampUseCase interface {
-	Stamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error)
+	PushStamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error)
 }
 
 type stampUseCase struct {
@@ -18,7 +18,7 @@ func NewStampUseCase(stampRepo domain.IStampRepo, employmentRepo domain.IEmploym
 	return &stampUseCase{stampRepo: stampRepo, employmentRepo: employmentRepo}
 }
 
-func (u *stampUseCase) Stamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error) {
+func (u *stampUseCase) PushStamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error) {
 	stampedAt := time.Now()
 
 	employment, err := u.employmentRepo.Find(companyId, workerId)
