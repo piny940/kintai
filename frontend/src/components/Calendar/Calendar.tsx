@@ -5,7 +5,7 @@ import { useCalendar } from '@/utils/hooks'
 import { Dayjs } from 'dayjs'
 
 export type CalendarProps = {
-  renderDate?: (date: Dayjs) => JSX.Element
+  renderDate?: (month: number, date: Dayjs) => JSX.Element
 }
 
 const Calendar = ({ renderDate }: CalendarProps): JSX.Element => {

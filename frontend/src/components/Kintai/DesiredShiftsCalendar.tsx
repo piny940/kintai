@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import AddDesiredShiftsModal from './AddDesiredShiftsModal'
-import styles from '@/styles/DesiredShifts.module.scss'
 import Calendar from '../Calendar/Calendar'
+import DesiredShiftsDate from './DesiredShiftsDate'
 
 export type DesiredShiftsCalendarProps = {
   alert: string
@@ -12,7 +12,11 @@ const DesiredShiftsCalendar = ({
 }: DesiredShiftsCalendarProps): JSX.Element => {
   return (
     <>
-      <Calendar />
+      <Calendar
+        renderDate={(month, date) => (
+          <DesiredShiftsDate month={month} date={date} />
+        )}
+      />
       <AddDesiredShiftsModal alert={alert} />
     </>
   )
