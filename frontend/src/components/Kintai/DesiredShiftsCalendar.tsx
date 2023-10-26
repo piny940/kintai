@@ -1,6 +1,7 @@
 import Calendar from 'react-calendar'
 import { memo } from 'react'
 import AddDesiredShiftsModal from './AddDesiredShiftsModal'
+import styles from '@/styles/DesiredShifts.module.scss'
 
 export type DesiredShiftsCalendarProps = {
   alert: string
@@ -13,8 +14,9 @@ const DesiredShiftsCalendar = ({
     <>
       <Calendar
         allowPartialRange
-        className={['w-100']}
-        tileClassName={['pb-5 px-3']}
+        className={['w-100 bg-body']}
+        tileClassName={['pb-5 px-3', styles.dateTile]}
+        tileDisabled={({ view }) => view === 'month'}
         tileContent={({ date, view }) => {
           if (view !== 'month') return <></>
           return (
