@@ -1,53 +1,37 @@
 import { memo } from 'react'
+import { Dayjs } from 'dayjs'
 
-const Month = (): JSX.Element => {
+export type MonthProps = {
+  year: number
+  month: number
+  datesMatrix: Dayjs[][]
+}
+
+const Month = ({ year, month, datesMatrix }: MonthProps): JSX.Element => {
+  const textColor = (date: Dayjs): string => {
+    if (date.month() !== month) {
+      return 'text-secondary'
+    }
+    if (date.day() === 0) {
+      return 'text-danger'
+    }
+    return ''
+  }
+
   return (
     <>
-      <tr className="row row-cols-7">
-        <td className="col pb-5 text-danger">1</td>
-        <td className="col pb-5">2</td>
-        <td className="col pb-5">3</td>
-        <td className="col pb-5">4</td>
-        <td className="col pb-5">5</td>
-        <td className="col pb-5">6</td>
-        <td className="col pb-5">7</td>
-      </tr>
-      <tr className="row row-cols-7">
-        <td className="col pb-5 text-danger">1</td>
-        <td className="col pb-5">2</td>
-        <td className="col pb-5">3</td>
-        <td className="col pb-5">4</td>
-        <td className="col pb-5">5</td>
-        <td className="col pb-5">6</td>
-        <td className="col pb-5">7</td>
-      </tr>
-      <tr className="row row-cols-7">
-        <td className="col pb-5 text-danger">1</td>
-        <td className="col pb-5">2</td>
-        <td className="col pb-5">3</td>
-        <td className="col pb-5">4</td>
-        <td className="col pb-5">5</td>
-        <td className="col pb-5">6</td>
-        <td className="col pb-5">7</td>
-      </tr>
-      <tr className="row row-cols-7">
-        <td className="col pb-5 text-danger">1</td>
-        <td className="col pb-5">2</td>
-        <td className="col pb-5">3</td>
-        <td className="col pb-5">4</td>
-        <td className="col pb-5">5</td>
-        <td className="col pb-5">6</td>
-        <td className="col pb-5">7</td>
-      </tr>
-      <tr className="row row-cols-7">
-        <td className="col pb-5 text-danger">1</td>
-        <td className="col pb-5">2</td>
-        <td className="col pb-5">3</td>
-        <td className="col pb-5">4</td>
-        <td className="col pb-5">5</td>
-        <td className="col pb-5">6</td>
-        <td className="col pb-5">7</td>
-      </tr>
+      {datesMatrix.map((dates, idx) => (
+        <tr className="row row-cols-7" key={`${year}-${month}-${idx}`}>
+          {dates.map((date) => (
+            <td
+              className={'col pb-5 ' + textColor(date)}
+              key={`${year}-${month}-${date.date()}`}
+            >
+              {date.date()}
+            </td>
+          ))}
+        </tr>
+      ))}
     </>
   )
 }
