@@ -15,6 +15,9 @@ type WorkReport struct {
 	Since        time.Time    `json:"since"`
 	Until        time.Time    `json:"until"`
 }
+type IWorkReportRepo interface {
+	Show(employmentId EmploymentID, since time.Time, until time.Time) (*WorkReport, error)
+}
 
 func (wr *WorkReport) Total() time.Duration {
 	total := time.Duration(0)

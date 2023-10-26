@@ -2,7 +2,6 @@ package db
 
 import (
 	"kintai_backend/domain"
-	"kintai_backend/domain/repository"
 	"time"
 )
 
@@ -10,7 +9,7 @@ type workReportRepo struct {
 	db *DB
 }
 
-func NewWorkReportRepo(db *DB) repository.IWorkReportRepo {
+func NewWorkReportRepo(db *DB) domain.IWorkReportRepo {
 	return &workReportRepo{db: db}
 }
 
