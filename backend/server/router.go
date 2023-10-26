@@ -60,6 +60,7 @@ func NewRouter() (*echo.Echo, error) {
 				desiredShifts := companies.Group("/:company_id/desired_shifts")
 				desiredShiftsController := controllers.NewDesiredShiftsController()
 				desiredShifts.GET("", desiredShiftsController.Index)
+				desiredShifts.POST("", desiredShiftsController.Create)
 			}
 		}
 	}

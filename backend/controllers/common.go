@@ -7,6 +7,7 @@ import (
 	"kintai_backend/registry"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -35,4 +36,7 @@ func getCompany(ctx echo.Context) (*domain.Company, error) {
 		return nil, err
 	}
 	return company, nil
+}
+func toTime(s string) (time.Time, error) {
+	return time.Parse("2006-01-02T15:04:05Z", s)
 }
