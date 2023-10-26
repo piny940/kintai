@@ -22,7 +22,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   if (loading) return <div>Loading...</div>
   return (
-    <div data-bs-theme={theme} className="vh-100 bg-body text-body">
+    <div data-bs-theme={theme} className="bg-body text-body">
       <Head>
         <title>勤怠プラス+</title>
       </Head>
