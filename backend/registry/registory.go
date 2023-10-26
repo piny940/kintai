@@ -67,3 +67,6 @@ func (r *registry) WorkStatusUseCase() use_case.IWorkStatusUseCase {
 func (r *registry) DesiredShiftRepo() domain.IDesiredShiftRepo {
 	return db.NewDesiredShiftRepo(r.db)
 }
+func (r *registry) DesiredShiftUseCase() use_case.IDesiredShiftUseCase {
+	return use_case.NewDesiredShiftUseCase(r.DesiredShiftRepo())
+}
