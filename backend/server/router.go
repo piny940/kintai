@@ -56,6 +56,11 @@ func NewRouter() (*echo.Echo, error) {
 				workStatusController := controllers.NewWorkStatusController()
 				workStatus.GET("", workStatusController.Show)
 			}
+			{
+				desiredShifts := companies.Group("/:company_id/desired_shifts")
+				desiredShiftsController := controllers.NewDesiredShiftsController()
+				desiredShifts.GET("", desiredShiftsController.Index)
+			}
 		}
 	}
 
