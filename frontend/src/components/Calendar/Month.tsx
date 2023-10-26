@@ -5,9 +5,15 @@ export type MonthProps = {
   year: number
   month: number
   datesMatrix: Dayjs[][]
+  renderDate?: (date: Dayjs) => JSX.Element
 }
 
-const Month = ({ year, month, datesMatrix }: MonthProps): JSX.Element => {
+const Month = ({
+  year,
+  month,
+  datesMatrix,
+  renderDate,
+}: MonthProps): JSX.Element => {
   const textColor = (date: Dayjs): string => {
     if (date.month() !== month) {
       return 'text-secondary'
@@ -23,11 +29,12 @@ const Month = ({ year, month, datesMatrix }: MonthProps): JSX.Element => {
       {datesMatrix.map((dates, idx) => (
         <tr className="row row-cols-7" key={`${year}-${month}-${idx}`}>
           {dates.map((date) => (
-            <td
-              className={'col pb-5 ' + textColor(date)}
-              key={`${year}-${month}-${date.date()}`}
-            >
-              {date.date()}
+            <td className="col" key={`${year}-${month}-${date.date()}`}>
+              {renderDate ? (
+                renderDate(date)
+              ) : (
+                <span className={textColor(date)}>{date.date()}</span>
+              )}
             </td>
           ))}
         </tr>

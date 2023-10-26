@@ -2,8 +2,13 @@ import WeekDays from './WeekDays'
 import { memo } from 'react'
 import Month from './Month'
 import { useCalendar } from '@/utils/hooks'
+import { Dayjs } from 'dayjs'
 
-const Calendar = (): JSX.Element => {
+export type CalendarProps = {
+  renderDate?: (date: Dayjs) => JSX.Element
+}
+
+const Calendar = ({ renderDate }: CalendarProps): JSX.Element => {
   const { year, month, datesMatrix } = useCalendar(new Date())
 
   return (
@@ -12,7 +17,12 @@ const Calendar = (): JSX.Element => {
         <WeekDays />
       </thead>
       <tbody>
-        <Month year={year} month={month} datesMatrix={datesMatrix} />
+        <Month
+          renderDate={renderDate}
+          year={year}
+          month={month}
+          datesMatrix={datesMatrix}
+        />
       </tbody>
     </table>
   )
