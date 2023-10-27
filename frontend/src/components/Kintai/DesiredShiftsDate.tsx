@@ -38,10 +38,10 @@ const DesiredShiftsDate = ({
           </button>
         )}
       </div>
-      <ul>
+      <ul className="list-unstyled">
         {desiredShifts.map((desiredShift) => (
-          <li key={desiredShift.id}>
-            {desiredShift.since.format('HH:mm')}-
+          <li key={desiredShift.id} className="small">
+            {desiredShift.since.format('HH:mm')}~
             {desiredShift.till.format('HH:mm')}
           </li>
         ))}
