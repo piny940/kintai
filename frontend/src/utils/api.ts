@@ -1,4 +1,11 @@
+import {
+  Company,
+  CompanyJSON,
+  Employment,
+  EmploymentJSON,
+} from '@/resources/types'
 import { serialize } from 'object-to-formdata'
+import { toDayjs } from './helpers'
 
 // const getToken = async (): Promise<string> => {
 //   const url = `/api/csrf`
@@ -57,4 +64,26 @@ export const updateData = async (params: {
     data: params.scope ? { [params.scope]: params.data } : params.data,
   })
   return [response, await response.json()]
+}
+
+export const fetchCompany = async (companyId: number) => {
+  const [res, json] = (await getData(`/member/companies/${companyId}`)) as [
+    Response,
+    {
+      company: CompanyJSON
+      employment: EmploymentJSON
+    }
+  ]
+  if (res.status !== 200) return { company: null, employment: null }
+  const company: Company = {
+    ...json.company,
+    created_at: toDayjs(json.company.created_at),
+    updated_at: toDayjs(json.company.updated_at),
+  }
+  const employment: Employment = {
+    ...json.employment,
+    created_at: toDayjs(json.employment.created_at),
+    updated_at: toDayjs(json.employment.updated_at),
+  }
+  return { company, employment }
 }

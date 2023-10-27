@@ -6,16 +6,16 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { Company, CompanyJSON, Worker } from '../resources/types'
-import { fetchApi, getData } from '@/utils/api'
+import { Company, Employment, Worker } from '../resources/types'
+import { fetchApi, fetchCompany } from '@/utils/api'
 import { useRouter } from 'next/router'
-import { toDayjs } from '@/utils/helpers'
 
 interface WorkerInfoInterface {
   worker: Worker | null
   company: Company | null
   setWorker: (worker: Worker | null) => void
   setCompany: (company: Company | null) => void
+  employment: Employment | null
   loading: boolean
 }
 
@@ -24,6 +24,7 @@ const defaultWorkerInfoState: WorkerInfoInterface = {
   company: null,
   setWorker: (worker: Worker | null) => undefined,
   setCompany: (company: Company | null) => undefined,
+  employment: null,
   loading: false,
 }
 
@@ -40,16 +41,9 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
 }) => {
   const [worker, setWorker] = useState<Worker | null>(null)
   const [company, setCompany] = useState<Company | null>(null)
+  const [employment, setEmployment] = useState<Employment | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const router = useRouter()
-
-  const value: WorkerInfoInterface = {
-    worker,
-    company,
-    setWorker,
-    setCompany,
-    loading,
-  }
 
   const setCurrentUser = useCallback(async () => {
     const res = await fetchApi({
@@ -60,21 +54,25 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
     setWorker(json.worker || null)
     setLoading(false)
   }, [])
+
   const setCurrentCompany = useCallback(async () => {
     if (!worker) return
     const companyId = router.query.company_id
     if (typeof companyId !== 'string') return
-    const json = (await getData(`/member/companies/${companyId}`))[1] as {
-      company: CompanyJSON
-    }
-    const company: Company = {
-      ...json.company,
-      created_at: toDayjs(json.company.created_at),
-      updated_at: toDayjs(json.company.updated_at),
-    }
-
+    const { company, employment } = await fetchCompany(Number(companyId))
     setCompany(company)
+    setEmployment(employment)
   }, [worker, router.query])
+
+  const _setCompany = useCallback(async (company: Company | null) => {
+    setCompany(company)
+    if (!company) {
+      setEmployment(null)
+      return
+    }
+    const { employment } = await fetchCompany(company.id)
+    setEmployment(employment)
+  }, [])
 
   useEffect(() => {
     void setCurrentUser()
@@ -83,6 +81,15 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
   useEffect(() => {
     void setCurrentCompany()
   }, [setCurrentCompany])
+
+  const value: WorkerInfoInterface = {
+    worker,
+    company,
+    setWorker,
+    setCompany: _setCompany,
+    employment,
+    loading,
+  }
 
   return (
     <WorkerInfoContext.Provider value={value}>
