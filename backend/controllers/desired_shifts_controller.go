@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"kintai_backend/auth"
 	"kintai_backend/registry"
 
@@ -32,6 +33,7 @@ func (c *desiredShiftsController) Index(ctx echo.Context) error {
 		return render400(ctx, "希望シフトの取得に失敗しました", err)
 	}
 
+	fmt.Println(desiredShifts[0])
 	return ctx.JSON(200, echo.Map{
 		"desired_shifts": desiredShifts,
 	})

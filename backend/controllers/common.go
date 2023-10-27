@@ -39,6 +39,7 @@ func getCompany(ctx echo.Context) (*domain.Company, error) {
 }
 func toTime(s string) (time.Time, error) {
 	t, err := time.Parse("2006-01-02T15:04:05Z", s)
+	fmt.Println(time.Local)
 	if err != nil {
 		return time.Time{}, err
 	}
