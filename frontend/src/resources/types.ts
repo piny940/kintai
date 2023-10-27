@@ -42,6 +42,33 @@ export type CompanyJSON = {
   updated_at: string
 }
 
+export enum EmploymentKind {
+  ADMIN = 0,
+  MEMBER = 1,
+}
+export enum EmploymentStatus {
+  ACTIVE = 0,
+  INACTIVE = 1,
+}
+export type Employment = {
+  id: number
+  kind: EmploymentKind
+  status: EmploymentStatus
+  company_id: number
+  worker_id: number
+  created_at: Dayjs
+  updated_at: Dayjs
+}
+export type EmploymentJSON = {
+  id: number
+  kind: EmploymentKind
+  status: EmploymentStatus
+  company_id: number
+  worker_id: number
+  created_at: string
+  updated_at: string
+}
+
 export enum WorkStatus {
   WORKING = 0,
   LEFT = 1,
