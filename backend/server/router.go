@@ -65,6 +65,12 @@ func NewRouter() (*echo.Echo, error) {
 			}
 		}
 	}
+	{
+		admin := version.Group("/admin/companies/:company_id")
+		{
+			desiredShifts := admin.Group("/desired_shifts")
+		}
+	}
 
 	return router, nil
 }
