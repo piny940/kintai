@@ -1,7 +1,6 @@
 package controllers_admin
 
 import (
-	"fmt"
 	"kintai_backend/auth"
 	"kintai_backend/controllers"
 	"kintai_backend/domain"
@@ -24,9 +23,6 @@ func authenticate(ctx echo.Context) (*domain.Worker, *domain.Company, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	fmt.Println(employment)
-	fmt.Println(employment.Kind)
-	fmt.Println(domain.EmploymentAdmin)
 	if employment.Kind != domain.EmploymentAdmin {
 		return nil, nil, echo.NewHTTPError(403, "権限がありません")
 	}
