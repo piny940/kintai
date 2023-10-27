@@ -1,7 +1,7 @@
 import DesiredShiftsCalendar from '@/components/Kintai/DesiredShiftsCalendar'
 import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { DesiredShift } from '@/resources/types'
-import { getData } from '@/utils/api'
+import { getData, postData } from '@/utils/api'
 import { Dayjs } from 'dayjs'
 import Error from 'next/error'
 import { memo, useCallback, useEffect, useState } from 'react'
@@ -27,9 +27,29 @@ const DesiredShifts = (): JSX.Element => {
     const bootstrap = await import('bootstrap')
     void new bootstrap.Modal('#' + ADD_DESIRED_SHIFTS_MODAL_ID).show()
   }
-  const postDesiredShift = useCallback(async (since: Dayjs, till: Dayjs) => {
-    console.log('hoge')
-  }, [])
+  const postDesiredShift = useCallback(
+    async (since: Dayjs, till: Dayjs) => {
+      if (!company) return
+      if (till.isBefore(since)) {
+        setAlert('開始時間は終了時間よりも前に設定してください')
+        return
+      }
+      const [res, json] = await postData({
+        url: `/member/companies/${company.id}/desired_shifts`,
+        data: {
+          since: since.format('HH:mm'),
+          till: till.format('HH:mm'),
+        },
+      })
+      if (!res.ok) {
+        setAlert(json.message)
+        return
+      }
+      setAlert('')
+      void pullDesiredShifts()
+    },
+    [company]
+  )
 
   useEffect(() => {
     void pullDesiredShifts()
