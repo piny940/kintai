@@ -55,7 +55,10 @@ export const App: React.FC = () => {
               </button>
             </div>
             <div className="list-group mt-5">
-              <Link className="list-group-item" href="/desired_shifts">
+              <Link
+                className="list-group-item"
+                href={`/companies/${company.id}/desired_shifts`}
+              >
                 希望シフト
               </Link>
             </div>
