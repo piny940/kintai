@@ -6,9 +6,10 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { Company, Worker } from '../resources/types'
-import { fetchApi } from '@/utils/api'
+import { Company, CompanyJSON, Worker } from '../resources/types'
+import { fetchApi, getData } from '@/utils/api'
 import { useRouter } from 'next/router'
+import { toDayjs } from '@/utils/helpers'
 
 interface WorkerInfoInterface {
   worker: Worker | null
@@ -63,13 +64,17 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
     if (!worker) return
     const companyId = router.query.company_id
     if (typeof companyId !== 'string') return
-    const res = await fetchApi({
-      url: `/member/companies/${companyId}`,
-      method: 'GET',
-    })
-    const json = await res.json()
-    setCompany(json.company || null)
-  }, [worker, router.asPath])
+    const json = (await getData(`/member/companies/${companyId}`))[1] as {
+      company: CompanyJSON
+    }
+    const company: Company = {
+      ...json.company,
+      created_at: toDayjs(json.company.created_at),
+      updated_at: toDayjs(json.company.updated_at),
+    }
+
+    setCompany(company)
+  }, [worker, router.query])
 
   useEffect(() => {
     void setCurrentUser()

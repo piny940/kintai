@@ -41,8 +41,8 @@ const DesiredShiftsDate = ({
       <ul>
         {desiredShifts.map((desiredShift) => (
           <li key={desiredShift.id}>
-            {desiredShift.since.getHours()}:{desiredShift.till.getMinutes()}-
-            {desiredShift.till.getHours()}:{desiredShift.till.getMinutes()}
+            {desiredShift.since.hour()}:{desiredShift.till.minute()}-
+            {desiredShift.till.hour()}:{desiredShift.till.minute()}
           </li>
         ))}
       </ul>

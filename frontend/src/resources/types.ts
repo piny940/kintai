@@ -1,3 +1,5 @@
+import { Dayjs } from 'dayjs'
+
 export type Theme = 'dark' | 'light'
 
 enum WorkerStatus {
@@ -13,14 +15,31 @@ export type Worker = {
     first_name: string
     last_name: string
   }
-  created_at: Date
-  updated_at: Date
+  created_at: Dayjs
+  updated_at: Dayjs
+}
+export type WorkerJSON = {
+  id: number
+  status: WorkerStatus
+  email: string
+  name: {
+    first_name: string
+    last_name: string
+  }
+  created_at: string
+  updated_at: string
 }
 export type Company = {
   id: number
   name: string
-  created_at: Date
-  updated_at: Date
+  created_at: Dayjs
+  updated_at: Dayjs
+}
+export type CompanyJSON = {
+  id: number
+  name: string
+  created_at: string
+  updated_at: string
 }
 
 export enum WorkStatus {
@@ -33,9 +52,17 @@ export const workStatusLabels: { [key in WorkStatus]: string } = {
 }
 export type DesiredShift = {
   id: number
-  since: Date
-  till: Date
+  since: Dayjs
+  till: Dayjs
   employment_id: number
-  created_at: Date
-  updated_at: Date
+  created_at: Dayjs
+  updated_at: Dayjs
+}
+export type DesiredShiftJSON = {
+  id: number
+  since: string
+  till: string
+  employment_id: number
+  created_at: string
+  updated_at: string
 }
