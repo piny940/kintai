@@ -7,6 +7,7 @@ export type AddDesiredShiftsModalProps = {
   alert: string
   targetID: string
   date: Dayjs | null
+  addDesiredShift: (since: Dayjs, till: Dayjs) => void
 }
 
 const SINCE_HOUR_OPTIONS = [9, 10, 11, 12, 13, 14, 15, 16, 17]
@@ -17,8 +18,10 @@ const AddDesiredShiftsModal = ({
   targetID,
   date,
 }: AddDesiredShiftsModalProps): JSX.Element => {
-  const [since, setSince] = useState<Dayjs | null>(null)
-  const [till, setTill] = useState<Dayjs | null>(null)
+  const [sinceHour, setSinceHour] = useState<number | null>(null)
+  const [sinceMinute, setSinceMinute] = useState<number | null>(null)
+  const [tillHour, setTillHour] = useState<number | null>(null)
+  const [tillMinute, setTillMinute] = useState<number | null>(null)
 
   return (
     <ModalFormBox
@@ -40,9 +43,13 @@ const AddDesiredShiftsModal = ({
                 name=""
                 id=""
                 className="form-control w-auto d-inline-block"
+                onChange={(e) => setSinceHour(Number(e.target.value))}
+                value={sinceHour ?? ''}
               >
                 {SINCE_HOUR_OPTIONS.map((hour) => (
-                  <option key={hour}>{toDigit(hour)}</option>
+                  <option value={hour} key={hour}>
+                    {toDigit(hour)}
+                  </option>
                 ))}
               </select>
               :
@@ -50,9 +57,13 @@ const AddDesiredShiftsModal = ({
                 name=""
                 id=""
                 className="form-control w-auto d-inline-block"
+                onChange={(e) => setSinceMinute(Number(e.target.value))}
+                value={sinceMinute ?? ''}
               >
                 {MINUTE_OPTIONS.map((minute) => (
-                  <option key={minute}>{toDigit(minute)}</option>
+                  <option value={minute} key={minute}>
+                    {toDigit(minute)}
+                  </option>
                 ))}
               </select>
             </div>
@@ -64,9 +75,13 @@ const AddDesiredShiftsModal = ({
                 name=""
                 id=""
                 className="form-control w-auto d-inline-block"
+                onChange={(e) => setTillHour(Number(e.target.value))}
+                value={tillHour ?? ''}
               >
                 {UNTIL_HOUR_OPTIONS.map((hour) => (
-                  <option key={hour}>{toDigit(hour)}</option>
+                  <option value={hour} key={hour}>
+                    {toDigit(hour)}
+                  </option>
                 ))}
               </select>
               :
@@ -74,9 +89,13 @@ const AddDesiredShiftsModal = ({
                 name=""
                 id=""
                 className="form-control w-auto d-inline-block"
+                onChange={(e) => setTillMinute(Number(e.target.value))}
+                value={tillMinute ?? ''}
               >
                 {MINUTE_OPTIONS.map((minute) => (
-                  <option key={minute}>{toDigit(minute)}</option>
+                  <option value={minute} key={minute}>
+                    {toDigit(minute)}
+                  </option>
                 ))}
               </select>
             </div>

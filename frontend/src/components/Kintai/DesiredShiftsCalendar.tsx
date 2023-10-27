@@ -11,6 +11,7 @@ export type DesiredShiftsCalendarProps = {
   onAddButtonClicked: (date: Dayjs) => void
   selectedDate: Dayjs | null
   desiredShifts: DesiredShift[]
+  addDesiredShift: (since: Dayjs, till: Dayjs) => void
 }
 
 const DesiredShiftsCalendar = ({
@@ -19,6 +20,7 @@ const DesiredShiftsCalendar = ({
   onAddButtonClicked,
   selectedDate,
   desiredShifts,
+  addDesiredShift,
 }: DesiredShiftsCalendarProps): JSX.Element => {
   const desiredShiftsMap = useMemo(() => {
     const map = new Map<number, DesiredShift[]>()
@@ -44,6 +46,7 @@ const DesiredShiftsCalendar = ({
         )}
       />
       <AddDesiredShiftsModal
+        addDesiredShift={addDesiredShift}
         date={selectedDate}
         targetID={addDesiredShiftsModalID}
         alert={alert}

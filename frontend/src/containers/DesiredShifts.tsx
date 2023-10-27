@@ -27,6 +27,9 @@ const DesiredShifts = (): JSX.Element => {
     const bootstrap = await import('bootstrap')
     void new bootstrap.Modal('#' + ADD_DESIRED_SHIFTS_MODAL_ID).show()
   }
+  const postDesiredShift = useCallback(async (since: Dayjs, till: Dayjs) => {
+    console.log('hoge')
+  }, [])
 
   useEffect(() => {
     void pullDesiredShifts()
@@ -38,6 +41,7 @@ const DesiredShifts = (): JSX.Element => {
       <h1>希望シフト作成</h1>
       <h2 className="ms-2">{company.name}</h2>
       <DesiredShiftsCalendar
+        addDesiredShift={postDesiredShift}
         desiredShifts={desiredShifts}
         selectedDate={selectedDate}
         addDesiredShiftsModalID={ADD_DESIRED_SHIFTS_MODAL_ID}
