@@ -11,14 +11,14 @@ type Worker {
   status: WorkerStatus
   email: String!
   name: WorkerName!
-  created_at: Date!
-  updated_at: Date!
+  created_at: String!
+  updated_at: String!
 }
 type Company {
   id: Int
   name: String!
-  created_at: Date!
-  updated_at: Date!
+  created_at: String!
+  updated_at: String!
 }
 enum EmploymentKind {
   ADMIN
@@ -34,8 +34,8 @@ type Employment {
   status: EmploymentStatus
   company_id: Int
   worker_id: Int
-  created_at: Date!
-  updated_at: Date!
+  created_at: String!
+  updated_at: String!
 }
 
 enum WorkStatus {
@@ -45,9 +45,13 @@ enum WorkStatus {
 
 type DesiredShift {
   id: Int
-  since: Date!
-  till: Date!
+  since: String!
+  till: String!
   employment_id: Int
-  created_at: Date!
-  updated_at: Date!
+  created_at: String!
+  updated_at: String!
+}
+
+type Query {
+  worker: Worker
 }

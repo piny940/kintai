@@ -8,20 +8,15 @@ const schema = loadSchemaSync('src/index.graphql', {
   loaders: [new GraphQLFileLoader()],
 })
 
-const books = [
-  {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
-  },
-  {
-    title: 'City of Glass',
-    author: 'Paul Auster',
-  },
-]
+const HOST = 'http://localhost:8080'
 
 const resolvers = {
   Query: {
-    books: () => books,
+    worker: async () => {
+      const response = await fetch(`${HOST}/workers/me`)
+      const json = (await response.json()) as any
+      return json.worker
+    },
   },
 }
 
