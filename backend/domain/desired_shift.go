@@ -14,6 +14,7 @@ type DesiredShift struct {
 }
 type IDesiredShiftRepo interface {
 	List(employmentId EmploymentID) ([]*DesiredShift, error)
+	ListAll(companyId CompanyID) ([]*DesiredShift, error)
 	Create(desiredShift *DesiredShift) (*DesiredShift, error)
 }
 
