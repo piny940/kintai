@@ -18,7 +18,7 @@ func NewWorkersController() *workersController {
 func (u *workersController) Show(c echo.Context) error {
 	worker, err := auth.CurrentWorker(c)
 	if err != nil {
-		return render400(c, "ログインしてください", err)
+		return Render400(c, "ログインしてください", err)
 	}
 	return c.JSON(http.StatusOK, echo.Map{
 		"worker": worker,
@@ -37,7 +37,7 @@ func (u *workersController) Create(c echo.Context) error {
 		domain.NewWorkerName(firstName, lastName),
 	)
 	if err != nil {
-		return render400(c, "登録に失敗しました", err)
+		return Render400(c, "登録に失敗しました", err)
 	}
 	auth.Login(c, worker)
 	return c.JSON(http.StatusOK, echo.Map{

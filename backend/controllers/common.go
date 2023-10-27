@@ -12,7 +12,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func render400(ctx echo.Context, message string, err error) error {
+func Render400(ctx echo.Context, message string, err error) error {
 	if err != nil {
 		fmt.Println(err)
 	}

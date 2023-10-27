@@ -23,7 +23,7 @@ func (u *companiesController) Index(c echo.Context) error {
 
 	companies, err := registry.CompanyRepo().List(worker.ID)
 	if err != nil {
-		return render400(c, "会社の取得に失敗しました", err)
+		return Render400(c, "会社の取得に失敗しました", err)
 	}
 	return c.JSON(http.StatusOK, echo.Map{
 		"companies": companies,
@@ -39,7 +39,7 @@ func (u *companiesController) Show(c echo.Context) error {
 
 	company, err := getCompany(c)
 	if err != nil {
-		return render400(c, "会社の取得に失敗しました", err)
+		return Render400(c, "会社の取得に失敗しました", err)
 	}
 	employment, err := registry.EmploymentRepo().Find(company.ID, worker.ID)
 	return c.JSON(http.StatusOK, echo.Map{
