@@ -8,21 +8,17 @@ import 'react-calendar/dist/Calendar.css'
 
 const ADD_DESIRED_SHIFTS_MODAL_ID = 'add-desired-shifts-modal'
 const DesiredShifts = (): JSX.Element => {
-  const { worker, loading, company } = useWorkerInfo()
+  const { company } = useWorkerInfo()
   const [alert, setAlert] = useState('')
   const [desiredShifts, setDesiredShifts] = useState<DesiredShift[]>([])
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
 
   const pullDesiredShifts = useCallback(async () => {
     if (!company) return
-    const [res, json] = await getData(`/companies/${company.id}/desired_shifts`)
-    if (!res.ok) {
-      setAlert(json.message)
-      console.log(json.message)
-      return
-    }
+    const json = (
+      await getData(`/member/companies/${company.id}/desired_shifts`)
+    )[1]
     setDesiredShifts(json.desired_shifts)
-    console.log(json.desired_shifts)
   }, [company])
 
   const onAddButtonClicked = async (date: Dayjs) => {

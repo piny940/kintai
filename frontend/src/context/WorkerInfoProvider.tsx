@@ -7,6 +7,7 @@ import {
 } from 'react'
 import { Company, Worker } from '../resources/types'
 import { fetchApi } from '@/utils/api'
+import { useRouter } from 'next/router'
 
 interface WorkerInfoInterface {
   worker: Worker | null
@@ -38,6 +39,7 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
   const [worker, setWorker] = useState<Worker | null>(null)
   const [company, setCompany] = useState<Company | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const router = useRouter()
 
   const value: WorkerInfoInterface = {
     worker,
