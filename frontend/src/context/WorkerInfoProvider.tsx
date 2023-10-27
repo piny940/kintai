@@ -69,7 +69,7 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
     })
     const json = await res.json()
     setCompany(json.company || null)
-  }, [worker, router.asPath])
+  }, [worker, router.query])
 
   useEffect(() => {
     void setCurrentUser()
