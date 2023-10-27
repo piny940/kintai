@@ -38,6 +38,7 @@ const DesiredShifts = (): JSX.Element => {
       <h1>希望シフト作成</h1>
       <h2 className="ms-2">{company.name}</h2>
       <DesiredShiftsCalendar
+        selectedDate={selectedDate}
         addDesiredShiftsModalID={ADD_DESIRED_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
         alert={alert}

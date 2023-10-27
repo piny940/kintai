@@ -1,14 +1,17 @@
 import { memo } from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
+import { Dayjs } from 'dayjs'
 
 export type AddDesiredShiftsModalProps = {
   alert: string
   targetID: string
+  date: Dayjs | null
 }
 
 const AddDesiredShiftsModal = ({
   alert,
   targetID,
+  date,
 }: AddDesiredShiftsModalProps): JSX.Element => {
   return (
     <ModalFormBox
@@ -18,18 +21,23 @@ const AddDesiredShiftsModal = ({
       submitButtonText="作成"
       onSubmit={() => console.log('submit')}
     >
-      <div className="row my-3">
-        <div className="col-md-3 fw-bold col-form-label">開始時間</div>
-        <div className="col-md-9">
-          <input type="time" className="form-control" />
-        </div>
-      </div>
-      <div className="row my-3">
-        <div className="col-md-3 fw-bold col-form-label">終了時間</div>
-        <div className="col-md-9">
-          <input type="time" className="form-control" />
-        </div>
-      </div>
+      {date && (
+        <>
+          <h3>{date.date()}日</h3>
+          <div className="row my-3">
+            <div className="col-md-3 fw-bold col-form-label">開始時間</div>
+            <div className="col-md-9">
+              <input type="time" className="form-control" />
+            </div>
+          </div>
+          <div className="row my-3">
+            <div className="col-md-3 fw-bold col-form-label">終了時間</div>
+            <div className="col-md-9">
+              <input type="time" className="form-control" />
+            </div>
+          </div>
+        </>
+      )}
     </ModalFormBox>
   )
 }
