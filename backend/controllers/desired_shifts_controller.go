@@ -51,11 +51,11 @@ func (c *desiredShiftsController) Create(ctx echo.Context) error {
 	if err != nil {
 		return Render400(ctx, "会社に属していません", err)
 	}
-	since, err := toTime(ctx.FormValue("since"))
+	since, err := ToTime(ctx.FormValue("since"))
 	if err != nil {
 		return Render400(ctx, "sinceが適切ではありません", err)
 	}
-	till, err := toTime(ctx.FormValue("till"))
+	till, err := ToTime(ctx.FormValue("till"))
 	if err != nil {
 		return Render400(ctx, "itillが適切ではありません", err)
 	}
