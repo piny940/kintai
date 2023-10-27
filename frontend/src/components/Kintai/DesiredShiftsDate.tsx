@@ -1,3 +1,4 @@
+import { DesiredShift } from '@/resources/types'
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
 
@@ -5,12 +6,14 @@ export type DesiredShiftsDateProps = {
   month: number
   date: Dayjs
   onAddButtonClicked: () => void
+  desiredShifts: DesiredShift[]
 }
 
 const DesiredShiftsDate = ({
   date,
   month,
   onAddButtonClicked,
+  desiredShifts,
 }: DesiredShiftsDateProps): JSX.Element => {
   const textColor = (): string => {
     if (date.month() !== month) {
@@ -35,6 +38,14 @@ const DesiredShiftsDate = ({
           </button>
         )}
       </div>
+      <ul>
+        {desiredShifts.map((desiredShift) => (
+          <li key={desiredShift.id}>
+            {desiredShift.since.getHours()}:{desiredShift.till.getMinutes()}-
+            {desiredShift.till.getHours()}:{desiredShift.till.getMinutes()}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
