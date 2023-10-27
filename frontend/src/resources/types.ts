@@ -31,3 +31,11 @@ export const workStatusLabels: { [key in WorkStatus]: string } = {
   0: '勤務中',
   1: '退勤済み',
 }
+export type DesiredShift = {
+  id: number
+  since: Date
+  till: Date
+  employment_id: number
+  created_at: Date
+  updated_at: Date
+}

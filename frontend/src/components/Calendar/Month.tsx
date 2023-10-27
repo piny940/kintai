@@ -5,7 +5,7 @@ export type MonthProps = {
   year: number
   month: number
   datesMatrix: Dayjs[][]
-  renderDate?: (date: Dayjs) => JSX.Element
+  renderDate?: (month: number, date: Dayjs) => JSX.Element
 }
 
 const Month = ({
@@ -31,7 +31,7 @@ const Month = ({
           {dates.map((date) => (
             <td className="col" key={`${year}-${month}-${date.date()}`}>
               {renderDate ? (
-                renderDate(date)
+                renderDate(month, date)
               ) : (
                 <span className={textColor(date)}>{date.date()}</span>
               )}
