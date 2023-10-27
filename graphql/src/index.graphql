@@ -1,8 +1,53 @@
-type Book {
-  title: String
-  author: String
+enum WorkerStatus {
+  ACTIVE
+  INACTIVE
+}
+type WorkerName {
+  first_name: String!
+  last_name: String!
+}
+type Worker {
+  id: Int
+  status: WorkerStatus
+  email: String!
+  name: WorkerName!
+  created_at: Date!
+  updated_at: Date!
+}
+type Company {
+  id: Int
+  name: String!
+  created_at: Date!
+  updated_at: Date!
+}
+enum EmploymentKind {
+  ADMIN
+  MEMBER
+}
+enum EmploymentStatus {
+  ACTIVE
+  INACTIVE
+}
+type Employment {
+  id: Int
+  kind: EmploymentKind
+  status: EmploymentStatus
+  company_id: Int
+  worker_id: Int
+  created_at: Date!
+  updated_at: Date!
 }
 
-type Query {
-  books: [Book]
+enum WorkStatus {
+  WORKING
+  LEFT
+}
+
+type DesiredShift {
+  id: Int
+  since: Date!
+  till: Date!
+  employment_id: Int
+  created_at: Date!
+  updated_at: Date!
 }
