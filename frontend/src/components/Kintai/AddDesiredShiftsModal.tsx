@@ -1,6 +1,7 @@
 import { memo, useState } from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
 import { Dayjs } from 'dayjs'
+import { toDigit } from '@/utils/helpers'
 
 export type AddDesiredShiftsModalProps = {
   alert: string
@@ -28,7 +29,7 @@ const AddDesiredShiftsModal = ({
       onSubmit={() => console.log('submit')}
     >
       {date && (
-        <>
+        <div className="mx-3">
           <h4>
             {date.month()}月{date.date()}日
           </h4>
@@ -41,7 +42,7 @@ const AddDesiredShiftsModal = ({
                 className="form-control w-auto d-inline-block"
               >
                 {SINCE_HOUR_OPTIONS.map((hour) => (
-                  <option key={hour}>{hour}</option>
+                  <option key={hour}>{toDigit(hour)}</option>
                 ))}
               </select>
               :
@@ -51,7 +52,7 @@ const AddDesiredShiftsModal = ({
                 className="form-control w-auto d-inline-block"
               >
                 {MINUTE_OPTIONS.map((minute) => (
-                  <option key={minute}>{minute}</option>
+                  <option key={minute}>{toDigit(minute)}</option>
                 ))}
               </select>
             </div>
@@ -65,7 +66,7 @@ const AddDesiredShiftsModal = ({
                 className="form-control w-auto d-inline-block"
               >
                 {UNTIL_HOUR_OPTIONS.map((hour) => (
-                  <option key={hour}>{hour}</option>
+                  <option key={hour}>{toDigit(hour)}</option>
                 ))}
               </select>
               :
@@ -75,12 +76,12 @@ const AddDesiredShiftsModal = ({
                 className="form-control w-auto d-inline-block"
               >
                 {MINUTE_OPTIONS.map((minute) => (
-                  <option key={minute}>{minute}</option>
+                  <option key={minute}>{toDigit(minute)}</option>
                 ))}
               </select>
             </div>
           </div>
-        </>
+        </div>
       )}
     </ModalFormBox>
   )
