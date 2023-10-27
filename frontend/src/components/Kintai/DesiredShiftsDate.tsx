@@ -4,11 +4,13 @@ import { memo } from 'react'
 export type DesiredShiftsDateProps = {
   month: number
   date: Dayjs
+  onAddButtonClicked: () => void
 }
 
 const DesiredShiftsDate = ({
   date,
   month,
+  onAddButtonClicked,
 }: DesiredShiftsDateProps): JSX.Element => {
   const textColor = (): string => {
     if (date.month() !== month) {
@@ -24,9 +26,14 @@ const DesiredShiftsDate = ({
     <div className="">
       <div className="d-flex align-items-center">
         <span className={textColor()}>{date.date()}</span>
-        <button className="mt-2 btn btn-outline-primary ms-2 btn-sm">
-          追加
-        </button>
+        {month === date.month() && (
+          <button
+            className="mt-2 btn btn-outline-primary ms-2 btn-sm"
+            onClick={onAddButtonClicked}
+          >
+            追加
+          </button>
+        )}
       </div>
     </div>
   )

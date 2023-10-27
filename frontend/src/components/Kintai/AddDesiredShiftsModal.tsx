@@ -3,16 +3,18 @@ import { ModalFormBox } from '../Common/ModalFormBox'
 
 export type AddDesiredShiftsModalProps = {
   alert: string
+  targetID: string
 }
 
 const AddDesiredShiftsModal = ({
   alert,
+  targetID,
 }: AddDesiredShiftsModalProps): JSX.Element => {
   return (
     <ModalFormBox
       title="希望シフト作成"
       alert={alert}
-      targetID="add-desired-shift-modal"
+      targetID={targetID}
       submitButtonText="作成"
       onSubmit={() => console.log('submit')}
     >
