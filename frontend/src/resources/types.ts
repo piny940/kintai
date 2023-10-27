@@ -16,11 +16,28 @@ export type Worker = {
   created_at: Date
   updated_at: Date
 }
+export type WorkerJSON = {
+  id: number
+  status: WorkerStatus
+  email: string
+  name: {
+    first_name: string
+    last_name: string
+  }
+  created_at: string
+  updated_at: string
+}
 export type Company = {
   id: number
   name: string
   created_at: Date
   updated_at: Date
+}
+export type CompanyJSON = {
+  id: number
+  name: string
+  created_at: string
+  updated_at: string
 }
 
 export enum WorkStatus {
@@ -38,4 +55,12 @@ export type DesiredShift = {
   employment_id: number
   created_at: Date
   updated_at: Date
+}
+export type DesiredShiftJSON = {
+  id: number
+  since: string
+  till: string
+  employment_id: number
+  created_at: string
+  updated_at: string
 }
