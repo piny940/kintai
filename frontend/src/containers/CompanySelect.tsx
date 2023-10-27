@@ -1,7 +1,7 @@
 import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { Company, CompanyJSON } from '@/resources/types'
 import { getData } from '@/utils/api'
-import dayjs from 'dayjs'
+import { toDayjs } from '@/utils/helpers'
 import { memo, useCallback, useEffect, useState } from 'react'
 
 const SelectCompany = (): JSX.Element => {
@@ -14,8 +14,8 @@ const SelectCompany = (): JSX.Element => {
     }
     const companies: Company[] = json.companies.map((c) => ({
       ...c,
-      created_at: dayjs(c.created_at),
-      updated_at: dayjs(c.updated_at),
+      created_at: toDayjs(c.created_at),
+      updated_at: toDayjs(c.updated_at),
     }))
     setCompanies(companies)
   }, [worker])
