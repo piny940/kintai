@@ -19,6 +19,12 @@ type Todo struct {
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 }
+type ITodoRepo interface {
+	List() ([]*Todo, error)
+	Create(title TodoTitle, status TodoStatus) (*Todo, error)
+	Update(id TodoID, title TodoTitle, status TodoStatus) (*Todo, error)
+	FindById(id TodoID) (*Todo, error)
+}
 
 func NewTodo(title TodoTitle) *Todo {
 	return &Todo{

@@ -14,7 +14,7 @@ func NewRouter() (*echo.Echo, error) {
 	version := router.Group("/" + c.GetString("server.version"))
 
 	homesController := controllers.NewHomesController()
-	version.GET("/", homesController.Index)
+	version.GET("", homesController.Index)
 	{
 		todos := version.Group("/todos")
 		todosController := controllers.NewTodosController()
@@ -28,9 +28,42 @@ func NewRouter() (*echo.Echo, error) {
 		workers.POST("/me", workersController.Create)
 	}
 	{
-		sessions := version.Group("/sessions")
+		session := version.Group("/session")
 		sessionsController := controllers.NewSessionsController()
-		sessions.POST("", sessionsController.Create)
+		session.POST("", sessionsController.Create)
+		session.DELETE("", sessionsController.Destroy)
+	}
+	{
+		member := version.Group("/member")
+		{
+			companies := member.Group("/companies")
+			companiesController := controllers.NewCompaniesController()
+			companies.GET("", companiesController.Index)
+			companies.GET("/:company_id", companiesController.Show)
+
+			{
+				stamps := companies.Group("/:company_id/stamps")
+				stampsController := controllers.NewStampsController()
+				stamps.GET("", stampsController.Index)
+				stamps.POST("/now", stampsController.CreateNow)
+			}
+			{
+				workReports := companies.Group("/:company_id/work_reports")
+				workReportsController := controllers.NewWorkReportsController()
+				workReports.GET("", workReportsController.List)
+			}
+			{
+				workStatus := companies.Group("/:company_id/work_status")
+				workStatusController := controllers.NewWorkStatusController()
+				workStatus.GET("", workStatusController.Show)
+			}
+			{
+				desiredShifts := companies.Group("/:company_id/desired_shifts")
+				desiredShiftsController := controllers.NewDesiredShiftsController()
+				desiredShifts.GET("", desiredShiftsController.Index)
+				desiredShifts.POST("", desiredShiftsController.Create)
+			}
+		}
 	}
 
 	return router, nil

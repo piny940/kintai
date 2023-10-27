@@ -24,11 +24,18 @@ func (c *sessionsController) Create(ctx echo.Context) error {
 		return render400(ctx, "メールアドレスまたはパスワードが間違っています", err)
 	}
 	if !worker.Password.Check(domain.WorkerRawPassword(password)) {
-		return render400(ctx, "メールアドレスまたはパスワードが間違っています", nil)
+		return render400(ctx, "メールアドレスまたはパスワードが間違っています", err)
 	}
 	auth.Login(ctx, worker)
 	return ctx.JSON(200, echo.Map{
 		"message": "ログインしました",
 		"worker":  worker,
+	})
+}
+
+func (c *sessionsController) Destroy(ctx echo.Context) error {
+	auth.Logout(ctx)
+	return ctx.JSON(200, echo.Map{
+		"message": "ログアウトしました",
 	})
 }

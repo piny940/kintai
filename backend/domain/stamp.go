@@ -1,0 +1,24 @@
+package domain
+
+import "time"
+
+type StampId uint
+
+type Stamp struct {
+	ID           StampId      `json:"id"`
+	StampedAt    time.Time    `json:"stamped_at"`
+	EmploymentID EmploymentID `json:"employment_id"`
+	CreatedAt    time.Time    `json:"created_at"`
+	UpdatedAt    time.Time    `json:"updated_at"`
+}
+type IStampRepo interface {
+	List(workerId WorkerID, companyId CompanyID) ([]*Stamp, error)
+	Create(stamp *Stamp) (*Stamp, error)
+}
+
+func NewStamp(stampedAt time.Time, employmentID EmploymentID) (*Stamp, error) {
+	return &Stamp{
+		StampedAt:    stampedAt,
+		EmploymentID: employmentID,
+	}, nil
+}

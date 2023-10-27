@@ -1,35 +1,70 @@
 import { TestID } from '@/resources/TestID'
-import { fetchApi, postData } from '@/utils/api'
-import { useEffect } from 'react'
+import CompanySelect from './CompanySelect'
+import { getData, postData } from '@/utils/api'
+import { useWorkerInfo } from '@/context/WorkerInfoProvider'
+import { useCallback, useEffect, useState } from 'react'
+import { WorkStatus, workStatusLabels } from '@/resources/types'
+import Link from 'next/link'
 
 export const App: React.FC = () => {
-  const login = async () => {
-    const json = await postData({
-      url: '/sessions',
-      data: {
-        email: 'foo1@example.com',
-        password: 'password',
-      },
+  const { company } = useWorkerInfo()
+  const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null)
+
+  const fetchWorkStatus = useCallback(async () => {
+    if (!company) return
+
+    const json = (
+      await getData(`/member/companies/${company.id}/work_status`)
+    )[1]
+
+    setWorkStatus(json.work_status)
+  }, [company])
+
+  const createStamp = useCallback(async () => {
+    if (!company) return
+
+    await postData({
+      url: `/member/companies/${company.id}/stamps/now`,
+      data: {},
     })
-    console.log(json)
-  }
-  const currentUser = async () => {
-    const res = await fetchApi({
-      url: '/workers/me',
-      method: 'GET',
-    })
-    const json = await res.json()
-    console.log(json)
-  }
+    void fetchWorkStatus()
+  }, [company, fetchWorkStatus])
 
   useEffect(() => {
-    void login()
-    void currentUser()
-  })
+    void fetchWorkStatus()
+  }, [fetchWorkStatus])
+
   return (
     <div id="app" data-testid={TestID.APP}>
-      <h1>Next template</h1>
-      <p>This is a template repository of next project.</p>
+      <h1>勤怠プラス+</h1>
+      <div className="container">
+        <CompanySelect />
+        {company && (
+          <div className="mt-5">
+            {workStatus != null && (
+              <div className="">
+                <p className="work-status h2">{workStatusLabels[workStatus]}</p>
+              </div>
+            )}
+            <div className="stamp">
+              <button
+                className="btn btn-primary btn-lg w-100 py-5 fs-2"
+                onClick={createStamp}
+              >
+                打刻する
+              </button>
+            </div>
+            <div className="list-group mt-5">
+              <Link
+                className="list-group-item"
+                href={`/companies/${company.id}/desired_shifts`}
+              >
+                希望シフト
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

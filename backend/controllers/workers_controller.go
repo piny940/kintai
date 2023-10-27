@@ -37,7 +37,7 @@ func (u *workersController) Create(c echo.Context) error {
 		domain.NewWorkerName(firstName, lastName),
 	)
 	if err != nil {
-		return err
+		return render400(c, "登録に失敗しました", err)
 	}
 	auth.Login(c, worker)
 	return c.JSON(http.StatusOK, echo.Map{
