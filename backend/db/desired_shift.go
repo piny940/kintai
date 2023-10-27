@@ -56,3 +56,34 @@ func (r *desiredShiftRepo) Create(desiredShift *domain.DesiredShift) (*domain.De
 	}
 	return &desiredShiftResult, nil
 }
+
+func (r *desiredShiftRepo) ListAll(companyId domain.CompanyID) ([]*domain.DesiredShift, error) {
+	desiredShifts := make([]*domain.DesiredShift, 0)
+	rows, err := r.db.Client.Query(
+		`select desired_shifts.* from desired_shifts
+			inner join employments
+				on desired_shifts.employment_id = employments.id
+			where employments.company_id = $1`,
+		companyId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var desiredShift domain.DesiredShift
+		if err := rows.Scan(
+			&desiredShift.ID,
+			&desiredShift.Since,
+			&desiredShift.Till,
+			&desiredShift.EmploymentID,
+			&desiredShift.CreatedAt,
+			&desiredShift.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		desiredShifts = append(desiredShifts, &desiredShift)
+	}
+
+	return desiredShifts, nil
+}

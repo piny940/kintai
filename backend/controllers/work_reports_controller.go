@@ -33,27 +33,27 @@ func (wc *workReportsController) List(c echo.Context) error {
 	}
 	company_id, err := strconv.Atoi(c.Param("company_id"))
 	if err != nil {
-		return render400(c, "company_idが適切ではありません", err)
+		return Render400(c, "company_idが適切ではありません", err)
 	}
 	company, err := registry.CompanyRepo().FindById(worker.ID, domain.CompanyID(company_id))
 	if err != nil {
-		return render400(c, "会社の取得に失敗しました", err)
+		return Render400(c, "会社の取得に失敗しました", err)
 	}
 	employment, err := registry.EmploymentRepo().Find(company.ID, worker.ID)
 	if err != nil {
-		return render400(c, "会社に属していません", err)
+		return Render400(c, "会社に属していません", err)
 	}
 	since, err := time.Parse("2006-01", c.QueryParam("since"))
 	if err != nil {
-		return render400(c, "sinceが適切ではありません", err)
+		return Render400(c, "sinceが適切ではありません", err)
 	}
 	until, err := time.Parse("2006-01", c.QueryParam("until"))
 	if err != nil {
-		return render400(c, "untilが適切ではありません", err)
+		return Render400(c, "untilが適切ではありません", err)
 	}
 	workReports, err := registry.WorkReportUseCase().List(since, until, employment.ID)
 	if err != nil {
-		return render400(c, "勤怠の取得に失敗しました", err)
+		return Render400(c, "勤怠の取得に失敗しました", err)
 	}
 
 	// データの整形

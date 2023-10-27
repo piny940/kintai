@@ -7,8 +7,8 @@ type EmploymentKind int
 type EmploymentStatus int
 
 const (
-	EmploymentAdmin EmploymentKind = iota
-	EmploymentMember
+	EmploymentMember EmploymentKind = iota
+	EmploymentAdmin
 )
 const (
 	EmploymentActive EmploymentStatus = iota

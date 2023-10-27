@@ -17,19 +17,19 @@ func (c *desiredShiftsController) Index(ctx echo.Context) error {
 	registry := registry.GetRegistry()
 	worker, err := auth.CurrentWorker(ctx)
 	if err != nil {
-		return render400(ctx, "ログインしてください", err)
+		return Render400(ctx, "ログインしてください", err)
 	}
-	company, err := getCompany(ctx)
+	company, err := GetCompany(ctx)
 	if err != nil {
-		return render400(ctx, "company_idが適切ではありません", err)
+		return Render400(ctx, "company_idが適切ではありません", err)
 	}
 	employment, err := registry.EmploymentRepo().Find(company.ID, worker.ID)
 	if err != nil {
-		return render400(ctx, "会社に属していません", err)
+		return Render400(ctx, "会社に属していません", err)
 	}
 	desiredShifts, err := registry.DesiredShiftRepo().List(employment.ID)
 	if err != nil {
-		return render400(ctx, "希望シフトの取得に失敗しました", err)
+		return Render400(ctx, "希望シフトの取得に失敗しました", err)
 	}
 
 	return ctx.JSON(200, echo.Map{
@@ -41,27 +41,27 @@ func (c *desiredShiftsController) Create(ctx echo.Context) error {
 	registry := registry.GetRegistry()
 	worker, err := auth.CurrentWorker(ctx)
 	if err != nil {
-		return render400(ctx, "ログインしてください", err)
+		return Render400(ctx, "ログインしてください", err)
 	}
-	company, err := getCompany(ctx)
+	company, err := GetCompany(ctx)
 	if err != nil {
-		return render400(ctx, "company_idが適切ではありません", err)
+		return Render400(ctx, "company_idが適切ではありません", err)
 	}
 	employment, err := registry.EmploymentRepo().Find(company.ID, worker.ID)
 	if err != nil {
-		return render400(ctx, "会社に属していません", err)
+		return Render400(ctx, "会社に属していません", err)
 	}
-	since, err := toTime(ctx.FormValue("since"))
+	since, err := ToTime(ctx.FormValue("since"))
 	if err != nil {
-		return render400(ctx, "sinceが適切ではありません", err)
+		return Render400(ctx, "sinceが適切ではありません", err)
 	}
-	till, err := toTime(ctx.FormValue("till"))
+	till, err := ToTime(ctx.FormValue("till"))
 	if err != nil {
-		return render400(ctx, "itillが適切ではありません", err)
+		return Render400(ctx, "itillが適切ではありません", err)
 	}
 	desiredShift, err := registry.DesiredShiftUseCase().Create(employment.ID, since, till)
 	if err != nil {
-		return render400(ctx, "希望シフトの作成に失敗しました", err)
+		return Render400(ctx, "希望シフトの作成に失敗しました", err)
 	}
 
 	return ctx.JSON(200, echo.Map{
