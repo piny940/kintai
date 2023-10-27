@@ -4,6 +4,7 @@ import { getData, postData } from '@/utils/api'
 import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { useCallback, useEffect, useState } from 'react'
 import { WorkStatus, workStatusLabels } from '@/resources/types'
+import Link from 'next/link'
 
 export const App: React.FC = () => {
   const { company } = useWorkerInfo()
@@ -52,6 +53,14 @@ export const App: React.FC = () => {
               >
                 打刻する
               </button>
+            </div>
+            <div className="list-group mt-5">
+              <Link
+                className="list-group-item"
+                href={`/companies/${company.id}/desired_shifts`}
+              >
+                希望シフト
+              </Link>
             </div>
           </div>
         )}

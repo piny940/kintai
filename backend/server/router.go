@@ -3,6 +3,7 @@ package server
 import (
 	"kintai_backend/config"
 	"kintai_backend/controllers"
+	controllers_admin "kintai_backend/controllers/admin"
 
 	"github.com/labstack/echo/v4"
 )
@@ -39,6 +40,7 @@ func NewRouter() (*echo.Echo, error) {
 			companies := member.Group("/companies")
 			companiesController := controllers.NewCompaniesController()
 			companies.GET("", companiesController.Index)
+			companies.GET("/:company_id", companiesController.Show)
 
 			{
 				stamps := companies.Group("/:company_id/stamps")
@@ -56,6 +58,20 @@ func NewRouter() (*echo.Echo, error) {
 				workStatusController := controllers.NewWorkStatusController()
 				workStatus.GET("", workStatusController.Show)
 			}
+			{
+				desiredShifts := companies.Group("/:company_id/desired_shifts")
+				desiredShiftsController := controllers.NewDesiredShiftsController()
+				desiredShifts.GET("", desiredShiftsController.Index)
+				desiredShifts.POST("", desiredShiftsController.Create)
+			}
+		}
+	}
+	{
+		admin := version.Group("/admin/companies/:company_id")
+		{
+			desiredShifts := admin.Group("/desired_shifts")
+			desiredShiftsController := controllers_admin.NewDesiredShiftsController()
+			desiredShifts.GET("", desiredShiftsController.Index)
 		}
 	}
 

@@ -11,6 +11,10 @@ type Company struct {
 	CreatedAt time.Time   `json:"created_at"`
 	UpdatedAt time.Time   `json:"updated_at"`
 }
+type ICompanyRepo interface {
+	FindById(WorkerID, CompanyID) (*Company, error)
+	List(WorkerID) ([]*Company, error)
+}
 
 func NewCompany(name CompanyName) (*Company, error) {
 	return &Company{

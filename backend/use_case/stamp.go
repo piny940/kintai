@@ -2,24 +2,23 @@ package use_case
 
 import (
 	"kintai_backend/domain"
-	"kintai_backend/domain/repository"
 	"time"
 )
 
 type IStampUseCase interface {
-	Stamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error)
+	PushStamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error)
 }
 
 type stampUseCase struct {
-	stampRepo      repository.IStampRepo
-	employmentRepo repository.IEmploymentRepo
+	stampRepo      domain.IStampRepo
+	employmentRepo domain.IEmploymentRepo
 }
 
-func NewStampUseCase(stampRepo repository.IStampRepo, employmentRepo repository.IEmploymentRepo) IStampUseCase {
+func NewStampUseCase(stampRepo domain.IStampRepo, employmentRepo domain.IEmploymentRepo) IStampUseCase {
 	return &stampUseCase{stampRepo: stampRepo, employmentRepo: employmentRepo}
 }
 
-func (u *stampUseCase) Stamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error) {
+func (u *stampUseCase) PushStamp(companyId domain.CompanyID, workerId domain.WorkerID) (*domain.Stamp, error) {
 	stampedAt := time.Now()
 
 	employment, err := u.employmentRepo.Find(companyId, workerId)

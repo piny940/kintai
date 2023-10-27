@@ -7,8 +7,8 @@ type EmploymentKind int
 type EmploymentStatus int
 
 const (
-	EmploymentAdmin EmploymentKind = iota
-	EmploymentMember
+	EmploymentMember EmploymentKind = iota
+	EmploymentAdmin
 )
 const (
 	EmploymentActive EmploymentStatus = iota
@@ -23,4 +23,7 @@ type Employment struct {
 	WorkerID  WorkerID         `json:"worker_id"`
 	CreatedAt time.Time        `json:"created_at"`
 	UpdatedAt time.Time        `json:"updated_at"`
+}
+type IEmploymentRepo interface {
+	Find(companyId CompanyID, workerId WorkerID) (*Employment, error)
 }
