@@ -1,8 +1,8 @@
 import DesiredShiftsCalendar from '@/components/Kintai/DesiredShiftsCalendar'
 import { useWorkerInfo } from '@/context/WorkerInfoProvider'
-import { DesiredShift } from '@/resources/types'
+import { DesiredShift, DesiredShiftJSON } from '@/resources/types'
 import { getData, postData } from '@/utils/api'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
 import { memo, useCallback, useEffect, useState } from 'react'
 import 'react-calendar/dist/Calendar.css'
@@ -18,8 +18,15 @@ const DesiredShifts = (): JSX.Element => {
     if (!company) return
     const json = (
       await getData(`/member/companies/${company.id}/desired_shifts`)
-    )[1]
-    setDesiredShifts(json.desired_shifts)
+    )[1] as { desired_shifts: DesiredShiftJSON[] }
+    const desiredShifts: DesiredShift[] = json.desired_shifts.map((d) => ({
+      ...d,
+      since: dayjs(d.since),
+      till: dayjs(d.till),
+      created_at: dayjs(d.created_at),
+      updated_at: dayjs(d.updated_at),
+    }))
+    setDesiredShifts(desiredShifts)
   }, [company])
 
   const onAddButtonClicked = async (date: Dayjs) => {

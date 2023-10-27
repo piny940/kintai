@@ -28,7 +28,7 @@ const DesiredShiftsCalendar = ({
       map.set(i, [])
     }
     desiredShifts.forEach((desiredShift) => {
-      map.get(desiredShift.since.getDate())?.push(desiredShift)
+      map.get(desiredShift.since.date())?.push(desiredShift)
     })
     return map
   }, [desiredShifts])

@@ -1,6 +1,7 @@
 import { useWorkerInfo } from '@/context/WorkerInfoProvider'
-import { Company } from '@/resources/types'
+import { Company, CompanyJSON } from '@/resources/types'
 import { getData } from '@/utils/api'
+import dayjs from 'dayjs'
 import { memo, useCallback, useEffect, useState } from 'react'
 
 const SelectCompany = (): JSX.Element => {
@@ -8,8 +9,15 @@ const SelectCompany = (): JSX.Element => {
   const [companies, setCompanies] = useState<Company[]>([])
 
   const fetchCompanies = useCallback(async () => {
-    const json = (await getData('/member/companies'))[1]
-    setCompanies(json.companies)
+    const json = (await getData('/member/companies'))[1] as {
+      companies: CompanyJSON[]
+    }
+    const companies: Company[] = json.companies.map((c) => ({
+      ...c,
+      created_at: dayjs(c.created_at),
+      updated_at: dayjs(c.updated_at),
+    }))
+    setCompanies(companies)
   }, [worker])
 
   const onCompanyChange = useCallback(
