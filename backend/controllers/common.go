@@ -38,5 +38,9 @@ func getCompany(ctx echo.Context) (*domain.Company, error) {
 	return company, nil
 }
 func toTime(s string) (time.Time, error) {
-	return time.Parse("2006-01-02T15:04:05Z", s)
+	t, err := time.Parse("2006-01-02T15:04:05Z", s)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return t.In(time.Local), nil
 }
