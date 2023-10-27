@@ -37,8 +37,8 @@ const DesiredShifts = (): JSX.Element => {
       const [res, json] = await postData({
         url: `/member/companies/${company.id}/desired_shifts`,
         data: {
-          since: since.format('HH:mm'),
-          till: till.format('HH:mm'),
+          since: since.toDate(),
+          till: till.toDate(),
         },
       })
       if (!res.ok) {
