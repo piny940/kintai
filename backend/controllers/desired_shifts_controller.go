@@ -59,7 +59,7 @@ func (c *desiredShiftsController) Create(ctx echo.Context) error {
 	}
 	till, err := toTime(ctx.FormValue("till"))
 	if err != nil {
-		return render400(ctx, "itillが適切ではありません", err)
+		return render400(ctx, "tillが適切ではありません", err)
 	}
 	desiredShift, err := registry.DesiredShiftUseCase().Create(employment.ID, since, till)
 	if err != nil {

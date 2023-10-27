@@ -6,17 +6,23 @@ services:
     image: kintai_backend
     build:
       context: ./backend
-      target: final
+    env_file: ./backend/.env.development
     ports:
       - 8080:8080
     depends_on:
       - db
+    volumes:
+      - ./backend:/app
+      - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
 
   frontend:
     container_name: kintai_frontend
     image: kintai_frontend
     build:
       context: ./frontend
+    volumes:
+      - ./frontend:/app
+      - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
     environment:
       NODE_ENV: development
     ports:
@@ -32,10 +38,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: kintai_development
-    ports:
-      - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+      - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
 
 volumes:
   db-data:

@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
+require('dotenv').config()
 
-const BACKEND =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:8080'
-    : 'https://example.com'
+const BACKEND = process.env.BACKEND_HOST
 
 const nextConfig = {
   reactStrictMode: true,
