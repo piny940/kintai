@@ -3,6 +3,7 @@ import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { DesiredShift } from '@/resources/types'
 import { getData } from '@/utils/api'
 import { Dayjs } from 'dayjs'
+import Error from 'next/error'
 import { memo, useCallback, useEffect, useState } from 'react'
 import 'react-calendar/dist/Calendar.css'
 
@@ -31,8 +32,11 @@ const DesiredShifts = (): JSX.Element => {
     void pullDesiredShifts()
   }, [])
 
+  if (!company) return <Error statusCode={404} />
   return (
     <div>
+      <h1>希望シフト作成</h1>
+      <h2 className="ms-2">{company.name}</h2>
       <DesiredShiftsCalendar
         addDesiredShiftsModalID={ADD_DESIRED_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
