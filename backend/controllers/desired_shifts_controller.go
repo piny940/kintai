@@ -19,7 +19,7 @@ func (c *desiredShiftsController) Index(ctx echo.Context) error {
 	if err != nil {
 		return Render400(ctx, "ログインしてください", err)
 	}
-	company, err := getCompany(ctx)
+	company, err := GetCompany(ctx)
 	if err != nil {
 		return Render400(ctx, "company_idが適切ではありません", err)
 	}
@@ -43,7 +43,7 @@ func (c *desiredShiftsController) Create(ctx echo.Context) error {
 	if err != nil {
 		return Render400(ctx, "ログインしてください", err)
 	}
-	company, err := getCompany(ctx)
+	company, err := GetCompany(ctx)
 	if err != nil {
 		return Render400(ctx, "company_idが適切ではありません", err)
 	}

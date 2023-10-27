@@ -37,7 +37,7 @@ func (u *companiesController) Show(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, "ログインしてください")
 	}
 
-	company, err := getCompany(c)
+	company, err := GetCompany(c)
 	if err != nil {
 		return Render400(c, "会社の取得に失敗しました", err)
 	}

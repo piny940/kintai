@@ -19,7 +19,7 @@ func (wc *workStatusController) Show(c echo.Context) error {
 	if err != nil {
 		return Render400(c, "ログインしてください", err)
 	}
-	company, err := getCompany(c)
+	company, err := GetCompany(c)
 	if err != nil {
 		return Render400(c, "会社IDが正しくありません", err)
 	}

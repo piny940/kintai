@@ -21,7 +21,7 @@ func Render400(ctx echo.Context, message string, err error) error {
 	})
 }
 
-func getCompany(ctx echo.Context) (*domain.Company, error) {
+func GetCompany(ctx echo.Context) (*domain.Company, error) {
 	registry := registry.GetRegistry()
 	worker, err := auth.CurrentWorker(ctx)
 	if err != nil {
