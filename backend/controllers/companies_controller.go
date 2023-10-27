@@ -31,7 +31,8 @@ func (u *companiesController) Index(c echo.Context) error {
 }
 
 func (u *companiesController) Show(c echo.Context) error {
-	_, err := auth.CurrentWorker(c)
+	registry := registry.GetRegistry()
+	worker, err := auth.CurrentWorker(c)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, "ログインしてください")
 	}
@@ -40,7 +41,9 @@ func (u *companiesController) Show(c echo.Context) error {
 	if err != nil {
 		return render400(c, "会社の取得に失敗しました", err)
 	}
+	employment, err := registry.EmploymentRepo().Find(company.ID, worker.ID)
 	return c.JSON(http.StatusOK, echo.Map{
-		"company": company,
+		"company":    company,
+		"employment": employment,
 	})
 }
