@@ -8,12 +8,14 @@ export type DesiredShiftsCalendarProps = {
   alert: string
   addDesiredShiftsModalID: string
   onAddButtonClicked: (date: Dayjs) => void
+  selectedDate: Dayjs | null
 }
 
 const DesiredShiftsCalendar = ({
   alert,
   addDesiredShiftsModalID,
   onAddButtonClicked,
+  selectedDate,
 }: DesiredShiftsCalendarProps): JSX.Element => {
   return (
     <>
@@ -26,7 +28,11 @@ const DesiredShiftsCalendar = ({
           />
         )}
       />
-      <AddDesiredShiftsModal targetID={addDesiredShiftsModalID} alert={alert} />
+      <AddDesiredShiftsModal
+        date={selectedDate}
+        targetID={addDesiredShiftsModalID}
+        alert={alert}
+      />
     </>
   )
 }

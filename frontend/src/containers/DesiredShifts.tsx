@@ -23,9 +23,9 @@ const DesiredShifts = (): JSX.Element => {
   }, [company])
 
   const onAddButtonClicked = async (date: Dayjs) => {
+    setSelectedDate(date)
     const bootstrap = await import('bootstrap')
     void new bootstrap.Modal('#' + ADD_DESIRED_SHIFTS_MODAL_ID).show()
-    setSelectedDate(date)
   }
 
   useEffect(() => {
