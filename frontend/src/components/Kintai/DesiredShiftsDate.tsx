@@ -1,6 +1,7 @@
 import { DesiredShift } from '@/resources/types'
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
+import ShiftItem from './ShiftItem'
 
 export type DesiredShiftsDateProps = {
   month: number
@@ -38,12 +39,9 @@ const DesiredShiftsDate = ({
           </button>
         )}
       </div>
-      <ul>
+      <ul className="list-unstyled">
         {desiredShifts.map((desiredShift) => (
-          <li key={desiredShift.id}>
-            {desiredShift.since.hour()}:{desiredShift.till.minute()}-
-            {desiredShift.till.hour()}:{desiredShift.till.minute()}
-          </li>
+          <ShiftItem key={desiredShift.id} shift={desiredShift} />
         ))}
       </ul>
     </div>
