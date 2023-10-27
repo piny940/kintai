@@ -39,6 +39,7 @@ func NewRouter() (*echo.Echo, error) {
 			companies := member.Group("/companies")
 			companiesController := controllers.NewCompaniesController()
 			companies.GET("", companiesController.Index)
+			companies.GET("/:company_id", companiesController.Show)
 
 			{
 				stamps := companies.Group("/:company_id/stamps")

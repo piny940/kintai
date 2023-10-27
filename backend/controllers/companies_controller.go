@@ -29,3 +29,18 @@ func (u *companiesController) Index(c echo.Context) error {
 		"companies": companies,
 	})
 }
+
+func (u *companiesController) Show(c echo.Context) error {
+	_, err := auth.CurrentWorker(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, "ログインしてください")
+	}
+
+	company, err := getCompany(c)
+	if err != nil {
+		return render400(c, "会社の取得に失敗しました", err)
+	}
+	return c.JSON(http.StatusOK, echo.Map{
+		"company": company,
+	})
+}

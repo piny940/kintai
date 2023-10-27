@@ -1,6 +1,7 @@
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -49,7 +50,7 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
     loading,
   }
 
-  const setCurrentUser = async () => {
+  const setCurrentUser = useCallback(async () => {
     const res = await fetchApi({
       url: '/workers/me',
       method: 'GET',
@@ -57,11 +58,26 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
     const json = await res.json()
     setWorker(json.worker || null)
     setLoading(false)
-  }
+  }, [])
+  const setCurrentCompany = useCallback(async () => {
+    if (!worker) return
+    const companyId = router.query.company_id
+    if (typeof companyId !== 'string') return
+    const res = await fetchApi({
+      url: `/member/companies/${companyId}`,
+      method: 'GET',
+    })
+    const json = await res.json()
+    setCompany(json.company || null)
+  }, [worker, router.asPath])
 
   useEffect(() => {
     void setCurrentUser()
-  }, [])
+  }, [setCurrentUser])
+
+  useEffect(() => {
+    void setCurrentCompany()
+  }, [setCurrentCompany])
 
   return (
     <WorkerInfoContext.Provider value={value}>
