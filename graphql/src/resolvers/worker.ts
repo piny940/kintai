@@ -5,5 +5,17 @@ export const getMe = async () => {
     credentials: 'include',
   })
   const json = (await response.json()) as any
-  return json.worker
+  return jsonToWorker(json.worker)
+}
+
+export const jsonToWorker = (json: any) => {
+  return {
+    ...json,
+    status: statusMap[json.status],
+  }
+}
+
+const statusMap = {
+  0: 'ACTIVE',
+  1: 'INACTIVE',
 }
