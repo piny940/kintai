@@ -12,8 +12,10 @@ func NewDesiredShiftRepo(db *DB) domain.IDesiredShiftRepo {
 	return &desiredShiftRepo{db: db}
 }
 
-func (r *desiredShiftRepo) List(query domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
-	desiredShifts := make([]*domain.DesiredShift, 0)
+type desiredShiftQuery struct {
+	queryObj
+}
+func newDesiredShiftQuery(query domain.DesiredShiftQuery) *desiredShiftQuery {
 	queryObj := queryObj{}
 	if (query.ID != nil) {
 		queryObj.add("id = ", *query.ID)
@@ -27,11 +29,18 @@ func (r *desiredShiftRepo) List(query domain.DesiredShiftQuery) ([]*domain.Desir
 	if (query.ToTime != nil) {
 		queryObj.add("till <= ", *query.ToTime)
 	}
+	return &desiredShiftQuery{queryObj: queryObj}
+}
+
+func (r *desiredShiftRepo) List(query domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
+	desiredShifts := make([]*domain.DesiredShift, 0)
+	queryObj := newDesiredShiftQuery(query)
 	queryStr := "select * from desired_shifts"
+	filter, params := queryObj.toFilter()
 	if queryObj.exists() {
-		queryStr += " where " + queryObj.toFilter()
+		queryStr += " where " + filter
 	}
-	rows, err := r.db.Client.Query(queryStr, queryObj.toParams()...)
+	rows, err := r.db.Client.Query(queryStr, params...)
 	if err != nil {
 		return nil, err
 	}

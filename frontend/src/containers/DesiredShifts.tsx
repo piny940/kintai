@@ -19,7 +19,15 @@ const DesiredShifts = (): JSX.Element => {
   const pullDesiredShifts = useCallback(async () => {
     if (!company) return
     const json = (
-      await getData(`/member/companies/${company.id}/desired_shifts`)
+      await getData(
+        `/member/companies/${
+          company.id
+        }/desired_shifts?from_time=${selectedMonth
+          .startOf('month')
+          .toJSON()}&to_time=${selectedMonth
+          .endOf('month')
+          .toJSON()}&to_time=${selectedMonth.endOf('month').toJSON()}`
+      )
     )[1] as { desired_shifts: DesiredShiftJSON[] }
 
     const desiredShifts: DesiredShift[] = json.desired_shifts.map((d) => ({

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"kintai_backend/auth"
 	"kintai_backend/domain"
 	"kintai_backend/registry"
@@ -31,6 +32,15 @@ func (c *desiredShiftsController) Index(ctx echo.Context) error {
 	query := domain.DesiredShiftQuery{
 		EmploymentID: &employment.ID,
 	}
+	fromTime, err := ToTime(ctx.QueryParam("from_time"))
+	if err == nil {
+		query.FromTime = &fromTime
+	}
+	toTime, err := ToTime(ctx.QueryParam("to_time"))
+	if err == nil {
+		query.ToTime = &toTime
+	}
+	fmt.Println(fromTime, toTime)
 	desiredShifts, err := registry.DesiredShiftRepo().List(query)
 	if err != nil {
 		return Render400(ctx, "希望シフトの取得に失敗しました", err)

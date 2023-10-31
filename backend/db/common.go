@@ -7,19 +7,16 @@ type queryObj map[string] interface{}
 func (q queryObj) add(key string, value interface{}) {
 	q[key] = value
 }
-func (q queryObj) toFilter() string {
+func (q queryObj) toFilter() (string, []interface{}) {
 	filter := ""
-	for key := range q {
-		filter += fmt.Sprintf("%s$%d and ", key, len(filter)+1)
-	}
-	return filter[:len(filter)-5]
-}
-func (q queryObj) toParams() []interface{} {
+	count := 1
 	params := make([]interface{}, 0)
-	for _, value := range q {
+	for key, value := range q {
+		filter += fmt.Sprintf("%s$%d and ", key, count)
 		params = append(params, value)
+		count++
 	}
-	return params
+	return filter[:len(filter)-5], params
 }
 func (q queryObj) exists() bool {
 	return len(q) > 0
