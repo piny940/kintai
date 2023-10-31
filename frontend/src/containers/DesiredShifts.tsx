@@ -78,7 +78,7 @@ const DesiredShifts = (): JSX.Element => {
   return (
     <div>
       <h1>希望シフト作成</h1>
-      <h2 className="ms-2">{company.name}</h2>
+      <h2 className="ms-2 mb-4">{company.name}</h2>
       <DesiredShiftsCalendar
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
