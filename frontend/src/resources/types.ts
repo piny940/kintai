@@ -43,8 +43,8 @@ export type CompanyJSON = {
 }
 
 export enum EmploymentKind {
-  ADMIN = 0,
-  MEMBER = 1,
+  MEMBER = 0,
+  ADMIN = 1,
 }
 export enum EmploymentStatus {
   ACTIVE = 0,
