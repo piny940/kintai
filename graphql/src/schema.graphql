@@ -53,7 +53,7 @@ type DesiredShift {
 }
 
 type Query {
-  worker: Worker
+  me: Worker
 }
 type Mutation {
   login(email: String!, password: String!): Worker
