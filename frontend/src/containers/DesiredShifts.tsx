@@ -3,7 +3,7 @@ import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { DesiredShift, DesiredShiftJSON } from '@/resources/types'
 import { getData, postData } from '@/utils/api'
 import { toDayjs } from '@/utils/helpers'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
 import { memo, useCallback, useEffect, useState } from 'react'
 import 'react-calendar/dist/Calendar.css'
@@ -14,12 +14,14 @@ const DesiredShifts = (): JSX.Element => {
   const [alert, setAlert] = useState('')
   const [desiredShifts, setDesiredShifts] = useState<DesiredShift[]>([])
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
+  const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
 
   const pullDesiredShifts = useCallback(async () => {
     if (!company) return
     const json = (
       await getData(`/member/companies/${company.id}/desired_shifts`)
     )[1] as { desired_shifts: DesiredShiftJSON[] }
+
     const desiredShifts: DesiredShift[] = json.desired_shifts.map((d) => ({
       ...d,
       since: toDayjs(d.since),
@@ -69,6 +71,8 @@ const DesiredShifts = (): JSX.Element => {
       <h1>希望シフト作成</h1>
       <h2 className="ms-2">{company.name}</h2>
       <DesiredShiftsCalendar
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
         addDesiredShift={postDesiredShift}
         desiredShifts={desiredShifts}
         selectedDate={selectedDate}
