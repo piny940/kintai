@@ -17,6 +17,7 @@ const DesiredShifts = (): JSX.Element => {
   const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
 
   const pullDesiredShifts = useCallback(async () => {
+    setDesiredShifts([]) // レスポンスが返ってくるまで空にする
     if (!company) return
     const json = (
       await getData(
@@ -38,7 +39,7 @@ const DesiredShifts = (): JSX.Element => {
       updated_at: toDayjs(d.updated_at),
     }))
     setDesiredShifts(desiredShifts)
-  }, [company])
+  }, [company, selectedMonth])
 
   const onAddButtonClicked = async (date: Dayjs) => {
     setSelectedDate(date)
