@@ -1,13 +1,18 @@
-import { useMemo, useState } from 'react'
-import dayjs from 'dayjs'
+import { useMemo } from 'react'
+import dayjs, { Dayjs } from 'dayjs'
 
-export const useCalendar = (start: Date) => {
-  const [selectedMonth, setSelectedMonth] = useState(dayjs(start))
+export const useCalendar = ({
+  yearMonth,
+  setYearMonth,
+}: {
+  yearMonth: Dayjs
+  setYearMonth: (yearMonth: Dayjs) => void
+}) => {
   const { year, month, datesMatrix } = useMemo(() => {
-    const year = selectedMonth.year()
-    const month = selectedMonth.month()
-    const first = selectedMonth.startOf('month')
-    const last = selectedMonth.endOf('month')
+    const year = yearMonth.year()
+    const month = yearMonth.month()
+    const first = yearMonth.startOf('month')
+    const last = yearMonth.endOf('month')
 
     let currentDate = 1 - first.day()
     const datesMatrix = []
@@ -24,10 +29,10 @@ export const useCalendar = (start: Date) => {
     }
 
     return { year, month, first, last, datesMatrix }
-  }, [selectedMonth])
+  }, [yearMonth])
 
-  const goNextMonth = () => setSelectedMonth(selectedMonth.add(1, 'month'))
-  const goPrevMonth = () => setSelectedMonth(selectedMonth.subtract(1, 'month'))
+  const goNextMonth = () => setYearMonth(yearMonth.add(1, 'month'))
+  const goPrevMonth = () => setYearMonth(yearMonth.subtract(1, 'month'))
 
   return { year, month, datesMatrix, goNextMonth, goPrevMonth }
 }

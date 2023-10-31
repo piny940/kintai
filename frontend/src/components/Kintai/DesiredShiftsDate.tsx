@@ -25,12 +25,13 @@ const DesiredShiftsDate = ({
     }
     return ''
   }
+  const isCurrentMonth = month === date.month()
 
   return (
     <div className="">
       <div className="d-flex align-items-center">
         <span className={textColor()}>{date.date()}</span>
-        {month === date.month() && (
+        {isCurrentMonth && (
           <button
             className="mt-2 btn btn-outline-primary ms-2 btn-sm"
             onClick={onAddButtonClicked}
@@ -39,11 +40,13 @@ const DesiredShiftsDate = ({
           </button>
         )}
       </div>
-      <ul className="list-unstyled">
-        {desiredShifts.map((desiredShift) => (
-          <ShiftItem key={desiredShift.id} shift={desiredShift} />
-        ))}
-      </ul>
+      {isCurrentMonth && (
+        <ul className="list-unstyled">
+          {desiredShifts.map((desiredShift) => (
+            <ShiftItem key={desiredShift.id} shift={desiredShift} />
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

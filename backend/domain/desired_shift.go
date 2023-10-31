@@ -12,8 +12,14 @@ type DesiredShift struct {
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at"`
 }
+type DesiredShiftQuery struct {
+	ID           *DesiredShiftID `json:"id"`
+	EmploymentID *EmploymentID   `json:"employment_id"`
+	FromTime     *time.Time      `json:"from_time"`
+	ToTime       *time.Time      `json:"to_time"`
+}
 type IDesiredShiftRepo interface {
-	List(employmentId EmploymentID) ([]*DesiredShift, error)
+	List(query DesiredShiftQuery) ([]*DesiredShift, error)
 	ListAll(companyId CompanyID) ([]*DesiredShift, error)
 	Create(desiredShift *DesiredShift) (*DesiredShift, error)
 }
