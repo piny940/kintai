@@ -12,6 +12,8 @@ export type DesiredShiftsCalendarProps = {
   selectedDate: Dayjs | null
   desiredShifts: DesiredShift[]
   addDesiredShift: (since: Dayjs, till: Dayjs) => void
+  selectedMonth: Dayjs
+  setSelectedMonth: (selectedMonth: Dayjs) => void
 }
 
 const DesiredShiftsCalendar = ({
@@ -21,6 +23,8 @@ const DesiredShiftsCalendar = ({
   selectedDate,
   desiredShifts,
   addDesiredShift,
+  selectedMonth,
+  setSelectedMonth,
 }: DesiredShiftsCalendarProps): JSX.Element => {
   const desiredShiftsMap = useMemo(() => {
     const map = new Map<number, DesiredShift[]>()
@@ -36,6 +40,8 @@ const DesiredShiftsCalendar = ({
   return (
     <>
       <Calendar
+        yearMonth={selectedMonth}
+        setYearMonth={setSelectedMonth}
         renderDate={(month, date) => (
           <DesiredShiftsDate
             month={month}

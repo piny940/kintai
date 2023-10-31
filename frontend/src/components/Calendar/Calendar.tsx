@@ -5,11 +5,17 @@ import { useCalendar } from '@/utils/hooks'
 import { Dayjs } from 'dayjs'
 
 export type CalendarProps = {
+  yearMonth: Dayjs
+  setYearMonth: (yearMonth: Dayjs) => void
   renderDate?: (month: number, date: Dayjs) => JSX.Element
 }
 
-const Calendar = ({ renderDate }: CalendarProps): JSX.Element => {
-  const { year, month, datesMatrix } = useCalendar(new Date())
+const Calendar = ({
+  renderDate,
+  yearMonth,
+  setYearMonth,
+}: CalendarProps): JSX.Element => {
+  const { year, month, datesMatrix } = useCalendar({ yearMonth, setYearMonth })
 
   return (
     <table className="table table-striped">
