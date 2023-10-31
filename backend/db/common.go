@@ -9,7 +9,7 @@ func (q queryObj) add(key string, value interface{}) {
 }
 func (q queryObj) toFilter() string {
 	filter := ""
-	for key, _ := range q {
+	for key := range q {
 		filter += fmt.Sprintf("%s$%d and ", key, len(filter)+1)
 	}
 	return filter[:len(filter)-5]
