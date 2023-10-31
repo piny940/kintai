@@ -1,4 +1,4 @@
-import { serialize } from 'v8'
+import { serialize } from 'object-to-formdata'
 import { HOST } from '../resources/constants'
 
 export const login = async (_, args: { email: string; password: string }) => {
