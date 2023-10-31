@@ -6,7 +6,7 @@ import { addResolversToSchema } from '@graphql-tools/schema'
 import { login } from './resolvers/session'
 import { getMe } from './resolvers/worker'
 
-const schema = loadSchemaSync('src/index.graphql', {
+const schema = loadSchemaSync('src/schema.graphql', {
   loaders: [new GraphQLFileLoader()],
 })
 
