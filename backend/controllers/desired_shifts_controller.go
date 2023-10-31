@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"kintai_backend/auth"
+	"kintai_backend/domain"
 	"kintai_backend/registry"
 
 	"github.com/labstack/echo/v4"
@@ -27,7 +28,10 @@ func (c *desiredShiftsController) Index(ctx echo.Context) error {
 	if err != nil {
 		return Render400(ctx, "会社に属していません", err)
 	}
-	desiredShifts, err := registry.DesiredShiftRepo().List(employment.ID)
+	query := domain.DesiredShiftQuery{
+		EmploymentID: &employment.ID,
+	}
+	desiredShifts, err := registry.DesiredShiftRepo().List(query)
 	if err != nil {
 		return Render400(ctx, "希望シフトの取得に失敗しました", err)
 	}

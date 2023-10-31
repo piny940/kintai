@@ -1,6 +1,8 @@
 package db
 
-import "kintai_backend/domain"
+import (
+	"kintai_backend/domain"
+)
 
 type desiredShiftRepo struct {
 	db *DB
@@ -10,9 +12,26 @@ func NewDesiredShiftRepo(db *DB) domain.IDesiredShiftRepo {
 	return &desiredShiftRepo{db: db}
 }
 
-func (r *desiredShiftRepo) List(employmentId domain.EmploymentID) ([]*domain.DesiredShift, error) {
+func (r *desiredShiftRepo) List(query domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
 	desiredShifts := make([]*domain.DesiredShift, 0)
-	rows, err := r.db.Client.Query("select * from desired_shifts where employment_id = $1", employmentId)
+	queryObj := queryObj{}
+	if (query.ID != nil) {
+		queryObj.add("id = ", *query.ID)
+	}
+	if (query.EmploymentID != nil) {
+		queryObj.add("employment_id = ", *query.EmploymentID)
+	}
+	if (query.FromTime != nil) {
+		queryObj.add("since >= ", *query.FromTime)
+	}
+	if (query.ToTime != nil) {
+		queryObj.add("till <= ", *query.ToTime)
+	}
+	queryStr := "select * from desired_shifts"
+	if queryObj.exists() {
+		queryStr += " where " + queryObj.toFilter()
+	}
+	rows, err := r.db.Client.Query(queryStr, queryObj.toParams()...)
 	if err != nil {
 		return nil, err
 	}
