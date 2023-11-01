@@ -1,6 +1,8 @@
 package server
 
 import (
+	"context"
+	"fmt"
 	"kintai_backend/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -23,4 +25,25 @@ func playgroundHandler() echo.HandlerFunc {
 		handler.ServeHTTP(c.Response(), c.Request())
 		return nil
 	}
+}
+func EchoContextToContextMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ctx := context.WithValue(c.Request().Context(), "echoContext", c)
+		c.SetRequest(c.Request().WithContext(ctx))
+		return next(c)
+	}
+}
+func EchoContextFromContext(ctx context.Context) (*echo.Context, error) {
+	echoContext := ctx.Value("echoContext")
+	if echoContext == nil {
+		err := fmt.Errorf("could not retrieve echo.Context")
+		return nil, err
+	}
+
+	ec, ok := echoContext.(*echo.Context)
+	if !ok {
+		err := fmt.Errorf("echo.Context has wrong type")
+		return nil, err
+	}
+	return ec, nil
 }

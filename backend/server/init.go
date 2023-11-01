@@ -15,6 +15,7 @@ func Init() error {
 	// 	return err
 	// }
 	
+	echo.Use(EchoContextToContextMiddleware)
 	echo.POST("/query", graphqlHandler())
 	echo.GET("/", playgroundHandler())
 	echo.Use(middleware.Logger())
