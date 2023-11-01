@@ -1,8 +1,8 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
-  schema: '../backend/graph/schema/*.graphql',
-  documents: 'src/graphql/**/*.graphql',
+  schema: '../backend/graph/schema/*.gql',
+  documents: 'src/graphql/**/*.gql',
   generates: {
     'src/graphql/types/index.ts': {
       plugins: [
