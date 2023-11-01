@@ -51,12 +51,15 @@ func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
 		return nil, err
 	}
 	return &model.Worker{
-		ID:    int(worker.ID),
-		Email: string(worker.Email),
+		ID:     int(worker.ID),
+		Status: workerStatusMap[worker.Status],
+		Email:  string(worker.Email),
 		Name: &model.WorkerName{
 			FirstName: string(worker.Name.FirstName),
 			LastName:  string(worker.Name.LastName),
 		},
+		CreatedAt: worker.CreatedAt,
+		UpdatedAt: worker.UpdatedAt,
 	}, nil
 }
 
