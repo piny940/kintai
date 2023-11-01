@@ -1,4 +1,8 @@
+type LoginResponse {
+  worker: Worker
+}
+
 extend type Mutation {
-  login(email: String!, password: String!): Worker
+  login(email: String!, password: String!): LoginResponse
   logout: Boolean!
 }

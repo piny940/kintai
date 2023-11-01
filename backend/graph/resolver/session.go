@@ -13,21 +13,23 @@ import (
 	"kintai_backend/registry"
 )
 
-func (r *mutationResolver) Login(ctx context.Context, email string, password string) (*model.Worker, error) {
+func (r *mutationResolver) Login(ctx context.Context, email string, password string) (*model.LoginResponse, error) {
 	registry := registry.GetRegistry()
 	worker, err := registry.WorkerRepo().FindByEmail(domain.WorkerEmail(email))
 	if err != nil {
 		return nil, newError(err, "メールアドレスまたはパスワードが間違っています")
 	}
 	if !worker.Password.Check(domain.WorkerRawPassword(password)) {
-		return nil, newError(err,"メールアドレスまたはパスワードが間違っています" )
+		return nil, newError(err, "メールアドレスまたはパスワードが間違っています")
 	}
 	echoCtx, err := echoContextFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 	auth.Login(echoCtx, worker)
-	return model.NewWorker(worker), nil
+	return &model.LoginResponse{
+		Worker: model.NewWorker(worker),
+	}, nil
 }
 
 func (r *mutationResolver) Logout(ctx context.Context) (bool, error) {

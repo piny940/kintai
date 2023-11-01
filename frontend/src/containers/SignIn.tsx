@@ -17,11 +17,9 @@ const SignIn = (): JSX.Element => {
       await login({
         variables: { email, password },
       })
-      setWorker(data?.login || null)
+      setWorker(data?.login?.worker || null)
       void router.push('/')
-    } catch (err) {
-      console.log(err)
-    }
+    } catch {}
   }
 
   return (

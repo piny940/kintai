@@ -35,6 +35,10 @@ type Employment struct {
 	UpdatedAt time.Time        `json:"updatedAt"`
 }
 
+type LoginResponse struct {
+	Worker *Worker `json:"worker,omitempty"`
+}
+
 type Worker struct {
 	ID        int          `json:"id"`
 	Status    WorkerStatus `json:"status"`

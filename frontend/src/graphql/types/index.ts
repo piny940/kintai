@@ -57,9 +57,14 @@ export enum EmploymentStatus {
   Inactive = 'INACTIVE'
 }
 
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  worker?: Maybe<Worker>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  login?: Maybe<Worker>;
+  login?: Maybe<LoginResponse>;
   logout: Scalars['Boolean']['output'];
 };
 
@@ -106,21 +111,23 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'Worker', id: number, status: WorkerStatus, email: string, createdAt: any, updatedAt: any, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null };
+export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'LoginResponse', worker?: { __typename?: 'Worker', id: number, status: WorkerStatus, email: string, createdAt: any, updatedAt: any, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null } | null };
 
 
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
-    id
-    status
-    email
-    name {
-      firstName
-      lastName
+    worker {
+      id
+      status
+      email
+      name {
+        firstName
+        lastName
+      }
+      createdAt
+      updatedAt
     }
-    createdAt
-    updatedAt
   }
 }
     `;
