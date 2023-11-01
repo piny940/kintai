@@ -126,7 +126,7 @@ export type GetCompanyQuery = { __typename?: 'Query', company?: { __typename?: '
 export type GetCompaniesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCompaniesQuery = { __typename?: 'Query', companies?: Array<{ __typename?: 'Company', id: any, name: string, createdAt: any, updatedAt: any, employment?: { __typename?: 'Employment', id: any, kind: EmploymentKind, status: EmploymentStatus, createdAt: any, updatedAt: any } | null }> | null };
+export type GetCompaniesQuery = { __typename?: 'Query', companies?: Array<{ __typename?: 'Company', id: any, name: string, createdAt: any, updatedAt: any }> | null };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -197,13 +197,6 @@ export const GetCompaniesDocument = gql`
   companies {
     id
     name
-    employment {
-      id
-      kind
-      status
-      createdAt
-      updatedAt
-    }
     createdAt
     updatedAt
   }

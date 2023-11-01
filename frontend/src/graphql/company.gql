@@ -18,13 +18,6 @@ query getCompanies {
   companies {
     id
     name
-    employment {
-      id
-      kind
-      status
-      createdAt
-      updatedAt
-    }
     createdAt
     updatedAt
   }

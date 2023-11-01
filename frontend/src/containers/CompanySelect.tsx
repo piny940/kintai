@@ -1,37 +1,24 @@
 import { useWorkerInfo } from '@/context/WorkerInfoProvider'
-import { Company, CompanyJSON } from '@/resources/types'
-import { getData } from '@/utils/api'
-import { toDayjs } from '@/utils/helpers'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { useGetCompaniesLazyQuery } from '@/graphql/types'
+import { memo, useCallback, useEffect } from 'react'
 
 const SelectCompany = (): JSX.Element => {
   const { worker, company, setCompany } = useWorkerInfo()
-  const [companies, setCompanies] = useState<Company[]>([])
-
-  const fetchCompanies = useCallback(async () => {
-    const json = (await getData('/member/companies'))[1] as {
-      companies: CompanyJSON[]
-    }
-    const companies: Company[] = json.companies.map((c) => ({
-      ...c,
-      created_at: toDayjs(c.created_at),
-      updated_at: toDayjs(c.updated_at),
-    }))
-    setCompanies(companies)
-  }, [worker])
+  const [loadCompanies, { data }] = useGetCompaniesLazyQuery()
 
   const onCompanyChange = useCallback(
     (value: string) => {
-      const newCompany = companies.find((c) => c.id.toString() === value)
+      if (!data?.companies) return
+      const newCompany = data.companies.find((c) => c.id.toString() === value)
       setCompany(newCompany || null)
     },
-    [companies, setCompany]
+    [data?.companies, setCompany]
   )
 
   useEffect(() => {
     if (!worker) return
-    void fetchCompanies()
-  }, [worker, fetchCompanies])
+    void loadCompanies()
+  }, [worker, loadCompanies])
 
   return (
     <select
@@ -42,7 +29,7 @@ const SelectCompany = (): JSX.Element => {
       onChange={(e) => onCompanyChange(e.target.value)}
     >
       <option value="">--</option>
-      {companies.map((company) => (
+      {data?.companies?.map((company) => (
         <option key={company.id} value={company.id}>
           {company.name}
         </option>
