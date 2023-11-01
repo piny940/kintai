@@ -15,8 +15,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  Time: { input: any; output: any; }
-  Uint: { input: any; output: any; }
+  Time: { input: Dayjs.Dayjs; output: Dayjs.Dayjs; }
+  Uint: { input: number; output: number; }
 };
 
 export type Company = {
@@ -121,12 +121,12 @@ export type GetCompanyQueryVariables = Exact<{
 }>;
 
 
-export type GetCompanyQuery = { __typename?: 'Query', company?: { __typename?: 'Company', id: any, name: string, createdAt: any, updatedAt: any, employment?: { __typename?: 'Employment', id: any, kind: EmploymentKind, status: EmploymentStatus, createdAt: any, updatedAt: any } | null } | null };
+export type GetCompanyQuery = { __typename?: 'Query', company?: { __typename?: 'Company', id: number, name: string, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs, employment?: { __typename?: 'Employment', id: number, kind: EmploymentKind, status: EmploymentStatus, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs } | null } | null };
 
 export type GetCompaniesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCompaniesQuery = { __typename?: 'Query', companies?: Array<{ __typename?: 'Company', id: any, name: string, createdAt: any, updatedAt: any }> | null };
+export type GetCompaniesQuery = { __typename?: 'Query', companies?: Array<{ __typename?: 'Company', id: number, name: string, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs }> | null };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -134,12 +134,12 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'LoginResponse', worker?: { __typename?: 'Worker', id: any, status: WorkerStatus, email: string, createdAt: any, updatedAt: any, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null } | null };
+export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'LoginResponse', worker?: { __typename?: 'Worker', id: number, status: WorkerStatus, email: string, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null } | null };
 
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'Worker', id: any, status: WorkerStatus, email: string, createdAt: any, updatedAt: any, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null };
+export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'Worker', id: number, status: WorkerStatus, email: string, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null };
 
 
 export const GetCompanyDocument = gql`

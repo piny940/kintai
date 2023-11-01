@@ -11,6 +11,10 @@ const config: CodegenConfig = {
         'typescript-react-apollo',
       ],
       config: {
+        scalars: {
+          Time: 'Dayjs.Dayjs',
+          Uint: 'number',
+        },
         withHooks: true,
       },
     },
