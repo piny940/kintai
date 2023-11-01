@@ -1,5 +1,3 @@
-import { serialize } from 'object-to-formdata'
-import { HOST } from '../resources/constants'
 import { jsonToWorker } from './worker'
 import { deleteData, postData } from '../utils/api'
 
