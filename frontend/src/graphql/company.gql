@@ -1,0 +1,19 @@
+query getCompany($id: ID!) {
+  company(id: $id) {
+    id
+    name
+    employment
+    createdAt
+    updatedAt
+  }
+}
+
+query getCompanies {
+  companies {
+    id
+    name
+    employment
+    createdAt
+    updatedAt
+  }
+}

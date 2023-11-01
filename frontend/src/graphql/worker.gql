@@ -1,0 +1,13 @@
+query getMe {
+  me {
+    id
+    status
+    email
+    name {
+      firstName
+      lastName
+    }
+    createdAt
+    updatedAt
+  }
+}
