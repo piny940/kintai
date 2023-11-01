@@ -21,3 +21,13 @@ func echoContextFromContext(ctx context.Context) (echo.Context, error) {
 	}
 	return ec, nil
 }
+
+type errorMessage struct {
+	message string
+}
+func (e *errorMessage) Error() string {
+	return e.message
+}
+func newError(message string) error {
+	return &errorMessage{ message: message }
+}

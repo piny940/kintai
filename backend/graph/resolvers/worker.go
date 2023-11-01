@@ -12,13 +12,10 @@ import (
 )
 
 func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
-	echoCtx, err := echoContextFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
+	echoCtx, _ := echoContextFromContext(ctx)
 	worker, err := auth.CurrentWorker(echoCtx)
 	if err != nil {
-		return nil, err
+		return nil, newError("ログインしてください")
 	}
 	return model.NewWorker(worker), nil
 }
