@@ -6,9 +6,10 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { Company, Employment, Worker } from '../graphql/types'
+import { Worker } from '../graphql/types'
 import { fetchApi, fetchCompany } from '@/utils/api'
 import { useRouter } from 'next/router'
+import { Company, Employment } from '@/resources/types'
 
 interface WorkerInfoInterface {
   worker: Worker | null
