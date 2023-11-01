@@ -6,26 +6,25 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { Worker } from '../graphql/types'
-import { fetchApi, fetchCompany } from '@/utils/api'
+import {
+  Company,
+  useGetCompanyQuery,
+  useGetMeQuery,
+  Worker,
+} from '@/graphql/types'
 import { useRouter } from 'next/router'
-import { Company, Employment } from '@/resources/types'
 
 interface WorkerInfoInterface {
   worker: Worker | null
   company: Company | null
-  setWorker: (worker: Worker | null) => void
   setCompany: (company: Company | null) => void
-  employment: Employment | null
   loading: boolean
 }
 
 const defaultWorkerInfoState: WorkerInfoInterface = {
   worker: null,
   company: null,
-  setWorker: (worker: Worker | null) => undefined,
   setCompany: (company: Company | null) => undefined,
-  employment: null,
   loading: false,
 }
 
@@ -40,56 +39,33 @@ interface WorkerInfoProviderProps {
 const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
   children,
 }) => {
-  const [worker, setWorker] = useState<Worker | null>(null)
-  const [company, setCompany] = useState<Company | null>(null)
-  const [employment, setEmployment] = useState<Employment | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
+  const [companyId, setCompanyId] = useState<number | null>(null)
   const router = useRouter()
-
-  const setCurrentUser = useCallback(async () => {
-    const res = await fetchApi({
-      url: '/workers/me',
-      method: 'GET',
-    })
-    const json = await res.json()
-    setWorker(json.worker || null)
-    setLoading(false)
-  }, [])
+  const { data: meData, loading: meLoading } = useGetMeQuery()
+  const { data: companyData, loading: companyLoading } = useGetCompanyQuery({
+    variables: { id: companyId },
+  })
 
   const setCurrentCompany = useCallback(async () => {
-    if (!worker) return
+    if (!meData?.me) return
     const companyId = router.query.company_id
     if (typeof companyId !== 'string') return
-    const { company, employment } = await fetchCompany(Number(companyId))
-    setCompany(company)
-    setEmployment(employment)
-  }, [worker, router.query])
+    setCompanyId(Number(companyId))
+  }, [meData?.me, router.query])
 
   const _setCompany = useCallback(async (company: Company | null) => {
-    setCompany(company)
-    if (!company) {
-      setEmployment(null)
-      return
-    }
-    const { employment } = await fetchCompany(company.id)
-    setEmployment(employment)
+    setCompanyId(company?.id || null)
   }, [])
-
-  useEffect(() => {
-    void setCurrentUser()
-  }, [setCurrentUser])
 
   useEffect(() => {
     void setCurrentCompany()
   }, [setCurrentCompany])
 
   const value: WorkerInfoInterface = {
-    worker,
-    company,
-    setWorker,
+    worker: meData?.me || null,
+    company: (companyData?.company as Company) || null,
     setCompany: _setCompany,
-    employment,
-    loading,
+    loading: meLoading || companyLoading,
   }
 
   return (
