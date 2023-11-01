@@ -18,16 +18,7 @@ func Init() error {
 	e.Use(EchoContextToContextMiddleware)
 	e.POST("/query", graphqlHandler())
 	e.GET("/", playgroundHandler())
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{
-			"http://localhost:3001",
-		},
-		AllowHeaders: []string{
-			echo.HeaderOrigin,
-			echo.HeaderContentType,
-			echo.HeaderAccept,
-		},
-	}))
+	e.Use(corsHandler())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
