@@ -9,6 +9,9 @@ export const getMe = async () => {
 }
 
 export const jsonToWorker = (json: any) => {
+  if (json == null) {
+    return null
+  }
   return {
     ...json,
     status: statusMap[json.status],
