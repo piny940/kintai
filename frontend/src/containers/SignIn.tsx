@@ -1,14 +1,14 @@
-import { useWorkerInfo } from '@/context/WorkerInfoProvider'
-import { useLoginMutation } from '@/graphql/types'
+import { GetMeDocument, useLoginMutation } from '@/graphql/types'
+import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { FormEventHandler, memo, useState } from 'react'
 
 const SignIn = (): JSX.Element => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { setWorker } = useWorkerInfo()
+  const client = useApolloClient()
   const router = useRouter()
-  const [login, { data, error }] = useLoginMutation()
+  const [login, { error }] = useLoginMutation()
 
   const submit: FormEventHandler = async (e) => {
     e.preventDefault()
@@ -17,7 +17,7 @@ const SignIn = (): JSX.Element => {
       await login({
         variables: { email, password },
       })
-      setWorker(data?.login?.worker || null)
+      await client.refetchQueries({ include: [GetMeDocument] })
       void router.push('/')
     } catch {}
   }
