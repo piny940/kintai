@@ -1,21 +1,5 @@
 scalar Time
 
-enum WorkerStatus {
-  ACTIVE
-  INACTIVE
-}
-type WorkerName {
-  firstName: String!
-  lastName: String!
-}
-type Worker {
-  id: Int!
-  status: WorkerStatus!
-  email: String!
-  name: WorkerName!
-  createdAt: Time!
-  updatedAt: Time!
-}
 type Company {
   id: Int!
   name: String!
@@ -52,10 +36,4 @@ type DesiredShift {
   employmentId: Int!
   createdAt: Time!
   updatedAt: Time!
-}
-type Query {
-  me: Worker
-}
-type Mutation {
-  login(email: String!, password: String!): Worker
 }

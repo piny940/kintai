@@ -1,0 +1,22 @@
+enum WorkerStatus {
+  ACTIVE
+  INACTIVE
+}
+type WorkerName {
+  firstName: String!
+  lastName: String!
+}
+type Worker {
+  id: Int!
+  status: WorkerStatus!
+  email: String!
+  name: WorkerName!
+  createdAt: Time!
+  updatedAt: Time!
+}
+extend type Query {
+  me: Worker
+}
+extend type Mutation {
+  login(email: String!, password: String!): Worker
+}
