@@ -33,14 +33,14 @@ func EchoContextToContextMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
-func EchoContextFromContext(ctx context.Context) (*echo.Context, error) {
+func EchoContextFromContext(ctx context.Context) (echo.Context, error) {
 	echoContext := ctx.Value("echoContext")
 	if echoContext == nil {
 		err := fmt.Errorf("could not retrieve echo.Context")
 		return nil, err
 	}
 
-	ec, ok := echoContext.(*echo.Context)
+	ec, ok := echoContext.(echo.Context)
 	if !ok {
 		err := fmt.Errorf("echo.Context has wrong type")
 		return nil, err
