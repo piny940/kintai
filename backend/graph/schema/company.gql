@@ -1,0 +1,10 @@
+type Company {
+  id: Int!
+  name: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+extend type Query {
+  company(id: Int!): Company
+  companies: [Company!]
+}

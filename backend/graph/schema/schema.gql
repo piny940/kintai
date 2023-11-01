@@ -1,11 +1,5 @@
 scalar Time
 
-type Company {
-  id: Int!
-  name: String!
-  createdAt: Time!
-  updatedAt: Time!
-}
 enum EmploymentKind {
   ADMIN
   MEMBER

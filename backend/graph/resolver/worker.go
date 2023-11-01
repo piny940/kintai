@@ -7,7 +7,6 @@ package resolver
 import (
 	"context"
 	"kintai_backend/auth"
-	"kintai_backend/graph"
 	"kintai_backend/graph/model"
 )
 
@@ -19,7 +18,3 @@ func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
 	}
 	return model.NewWorker(worker), nil
 }
-
-func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
-
-type queryResolver struct{ *Resolver }
