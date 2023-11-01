@@ -11,3 +11,15 @@ export const login = async (_, args: { email: string; password: string }) => {
   const json = (await response.json()) as any
   return jsonToWorker(json.worker)
 }
+
+export const logout = async () => {
+  const response = await fetch(`${HOST}/session`, {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+  if (response.ok) {
+    return true
+  } else {
+    return false
+  }
+}

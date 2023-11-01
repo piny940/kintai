@@ -3,7 +3,7 @@ import { startStandaloneServer } from '@apollo/server/standalone'
 import { loadSchemaSync } from '@graphql-tools/load'
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
 import { addResolversToSchema } from '@graphql-tools/schema'
-import { login } from './resolvers/session'
+import { login, logout } from './resolvers/session'
 import { getMe } from './resolvers/worker'
 
 const schema = loadSchemaSync('src/schema.graphql', {
@@ -16,6 +16,7 @@ const resolvers = {
   },
   Mutation: {
     login,
+    logout,
   },
 }
 
