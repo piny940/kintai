@@ -49,10 +49,11 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Company struct {
-		CreatedAt func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Name      func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		EmploymentID func(childComplexity int) int
+		ID           func(childComplexity int) int
+		Name         func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
 	}
 
 	DesiredShift struct {
@@ -85,17 +86,18 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Companies func(childComplexity int) int
-		Company   func(childComplexity int, id int) int
+		Company   func(childComplexity int, id uint) int
 		Me        func(childComplexity int) int
 	}
 
 	Worker struct {
-		CreatedAt func(childComplexity int) int
-		Email     func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Name      func(childComplexity int) int
-		Status    func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
+		CreatedAt  func(childComplexity int) int
+		Email      func(childComplexity int) int
+		ID         func(childComplexity int) int
+		Name       func(childComplexity int) int
+		Status     func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
+		WorkStatus func(childComplexity int) int
 	}
 
 	WorkerName struct {
@@ -109,7 +111,7 @@ type MutationResolver interface {
 	Logout(ctx context.Context) (bool, error)
 }
 type QueryResolver interface {
-	Company(ctx context.Context, id int) (*model.Company, error)
+	Company(ctx context.Context, id uint) (*model.Company, error)
 	Companies(ctx context.Context) ([]*model.Company, error)
 	Me(ctx context.Context) (*model.Worker, error)
 }
@@ -139,6 +141,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Company.CreatedAt(childComplexity), true
+
+	case "Company.employmentId":
+		if e.complexity.Company.EmploymentID == nil {
+			break
+		}
+
+		return e.complexity.Company.EmploymentID(childComplexity), true
 
 	case "Company.id":
 		if e.complexity.Company.ID == nil {
@@ -295,7 +304,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Company(childComplexity, args["id"].(int)), true
+		return e.complexity.Query.Company(childComplexity, args["id"].(uint)), true
 
 	case "Query.me":
 		if e.complexity.Query.Me == nil {
@@ -345,6 +354,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Worker.UpdatedAt(childComplexity), true
+
+	case "Worker.workStatus":
+		if e.complexity.Worker.WorkStatus == nil {
+			break
+		}
+
+		return e.complexity.Worker.WorkStatus(childComplexity), true
 
 	case "WorkerName.firstName":
 		if e.complexity.WorkerName.FirstName == nil {
@@ -528,10 +544,10 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Query_company_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uint
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		arg0, err = ec.unmarshalNUint2uint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -604,9 +620,9 @@ func (ec *executionContext) _Company_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uint)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNUint2uint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Company_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -616,7 +632,7 @@ func (ec *executionContext) fieldContext_Company_id(ctx context.Context, field g
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Uint does not have child fields")
 		},
 	}
 	return fc, nil
@@ -661,6 +677,47 @@ func (ec *executionContext) fieldContext_Company_name(ctx context.Context, field
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Company_employmentId(ctx context.Context, field graphql.CollectedField, obj *model.Company) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Company_employmentId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EmploymentID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Company_employmentId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Company",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -780,9 +837,9 @@ func (ec *executionContext) _DesiredShift_id(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uint)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNUint2uint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DesiredShift_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -792,7 +849,7 @@ func (ec *executionContext) fieldContext_DesiredShift_id(ctx context.Context, fi
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Uint does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1044,9 +1101,9 @@ func (ec *executionContext) _Employment_id(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uint)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNUint2uint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Employment_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1056,7 +1113,7 @@ func (ec *executionContext) fieldContext_Employment_id(ctx context.Context, fiel
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Uint does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1370,6 +1427,8 @@ func (ec *executionContext) fieldContext_LoginResponse_worker(ctx context.Contex
 				return ec.fieldContext_Worker_email(ctx, field)
 			case "name":
 				return ec.fieldContext_Worker_name(ctx, field)
+			case "workStatus":
+				return ec.fieldContext_Worker_workStatus(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Worker_createdAt(ctx, field)
 			case "updatedAt":
@@ -1495,7 +1554,7 @@ func (ec *executionContext) _Query_company(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Company(rctx, fc.Args["id"].(int))
+		return ec.resolvers.Query().Company(rctx, fc.Args["id"].(uint))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1521,6 +1580,8 @@ func (ec *executionContext) fieldContext_Query_company(ctx context.Context, fiel
 				return ec.fieldContext_Company_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Company_name(ctx, field)
+			case "employmentId":
+				return ec.fieldContext_Company_employmentId(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Company_createdAt(ctx, field)
 			case "updatedAt":
@@ -1583,6 +1644,8 @@ func (ec *executionContext) fieldContext_Query_companies(ctx context.Context, fi
 				return ec.fieldContext_Company_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Company_name(ctx, field)
+			case "employmentId":
+				return ec.fieldContext_Company_employmentId(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Company_createdAt(ctx, field)
 			case "updatedAt":
@@ -1638,6 +1701,8 @@ func (ec *executionContext) fieldContext_Query_me(ctx context.Context, field gra
 				return ec.fieldContext_Worker_email(ctx, field)
 			case "name":
 				return ec.fieldContext_Worker_name(ctx, field)
+			case "workStatus":
+				return ec.fieldContext_Worker_workStatus(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Worker_createdAt(ctx, field)
 			case "updatedAt":
@@ -1804,9 +1869,9 @@ func (ec *executionContext) _Worker_id(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uint)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNUint2uint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Worker_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1816,7 +1881,7 @@ func (ec *executionContext) fieldContext_Worker_id(ctx context.Context, field gr
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Uint does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1955,6 +2020,47 @@ func (ec *executionContext) fieldContext_Worker_name(ctx context.Context, field 
 				return ec.fieldContext_WorkerName_lastName(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type WorkerName", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Worker_workStatus(ctx context.Context, field graphql.CollectedField, obj *model.Worker) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Worker_workStatus(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.WorkStatus, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.WorkStatus)
+	fc.Result = res
+	return ec.marshalOWorkStatus2ᚖkintai_backendᚋgraphᚋmodelᚐWorkStatus(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Worker_workStatus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Worker",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type WorkStatus does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3938,6 +4044,8 @@ func (ec *executionContext) _Company(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "employmentId":
+			out.Values[i] = ec._Company_employmentId(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._Company_createdAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -4331,6 +4439,8 @@ func (ec *executionContext) _Worker(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "workStatus":
+			out.Values[i] = ec._Worker_workStatus(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._Worker_createdAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -4824,6 +4934,21 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
+func (ec *executionContext) unmarshalNUint2uint(ctx context.Context, v interface{}) (uint, error) {
+	res, err := graphql.UnmarshalUint(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNUint2uint(ctx context.Context, sel ast.SelectionSet, v uint) graphql.Marshaler {
+	res := graphql.MarshalUint(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) marshalNWorkerName2ᚖkintai_backendᚋgraphᚋmodelᚐWorkerName(ctx context.Context, sel ast.SelectionSet, v *model.WorkerName) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -5177,6 +5302,22 @@ func (ec *executionContext) marshalOCompany2ᚖkintai_backendᚋgraphᚋmodelᚐ
 	return ec._Company(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalInt(*v)
+	return res
+}
+
 func (ec *executionContext) marshalOLoginResponse2ᚖkintai_backendᚋgraphᚋmodelᚐLoginResponse(ctx context.Context, sel ast.SelectionSet, v *model.LoginResponse) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -5198,6 +5339,22 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	}
 	res := graphql.MarshalString(*v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOWorkStatus2ᚖkintai_backendᚋgraphᚋmodelᚐWorkStatus(ctx context.Context, v interface{}) (*model.WorkStatus, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.WorkStatus)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOWorkStatus2ᚖkintai_backendᚋgraphᚋmodelᚐWorkStatus(ctx context.Context, sel ast.SelectionSet, v *model.WorkStatus) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) marshalOWorker2ᚖkintai_backendᚋgraphᚋmodelᚐWorker(ctx context.Context, sel ast.SelectionSet, v *model.Worker) graphql.Marshaler {

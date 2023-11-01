@@ -4,7 +4,7 @@ import "kintai_backend/domain"
 
 func NewWorker(worker *domain.Worker) *Worker {
 	return &Worker{
-		ID:     int(worker.ID),
+		ID:     uint(worker.ID),
 		Status: workerStatusMap[worker.Status],
 		Email:  string(worker.Email),
 		Name: &WorkerName{

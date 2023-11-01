@@ -10,14 +10,15 @@ import (
 )
 
 type Company struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID           uint      `json:"id"`
+	Name         string    `json:"name"`
+	EmploymentID *int      `json:"employmentId,omitempty"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
 }
 
 type DesiredShift struct {
-	ID           int       `json:"id"`
+	ID           uint      `json:"id"`
 	Since        string    `json:"since"`
 	Till         string    `json:"till"`
 	EmploymentID int       `json:"employmentId"`
@@ -26,7 +27,7 @@ type DesiredShift struct {
 }
 
 type Employment struct {
-	ID        int              `json:"id"`
+	ID        uint             `json:"id"`
 	Kind      EmploymentKind   `json:"kind"`
 	Status    EmploymentStatus `json:"status"`
 	CompanyID int              `json:"companyId"`
@@ -40,12 +41,13 @@ type LoginResponse struct {
 }
 
 type Worker struct {
-	ID        int          `json:"id"`
-	Status    WorkerStatus `json:"status"`
-	Email     string       `json:"email"`
-	Name      *WorkerName  `json:"name"`
-	CreatedAt time.Time    `json:"createdAt"`
-	UpdatedAt time.Time    `json:"updatedAt"`
+	ID         uint         `json:"id"`
+	Status     WorkerStatus `json:"status"`
+	Email      string       `json:"email"`
+	Name       *WorkerName  `json:"name"`
+	WorkStatus *WorkStatus  `json:"workStatus,omitempty"`
+	CreatedAt  time.Time    `json:"createdAt"`
+	UpdatedAt  time.Time    `json:"updatedAt"`
 }
 
 type WorkerName struct {

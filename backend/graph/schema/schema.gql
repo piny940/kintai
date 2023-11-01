@@ -1,30 +1,7 @@
 scalar Time
 
-enum EmploymentKind {
-  ADMIN
-  MEMBER
-}
-enum EmploymentStatus {
-  ACTIVE
-  INACTIVE
-}
-type Employment {
-  id: Int!
-  kind: EmploymentKind!
-  status: EmploymentStatus!
-  companyId: Int!
-  workerId: Int!
-  createdAt: Time!
-  updatedAt: Time!
-}
-
-enum WorkStatus {
-  WORKING
-  LEFT
-}
-
 type DesiredShift {
-  id: Int!
+  id: Uint!
   since: String!
   till: String!
   employmentId: Int!

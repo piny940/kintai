@@ -6,13 +6,11 @@ package resolver
 
 import (
 	"context"
-	"kintai_backend/auth"
 	"kintai_backend/graph/model"
 )
 
 func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
-	echoCtx, _ := echoContextFromContext(ctx)
-	worker, err := auth.CurrentWorker(echoCtx)
+	worker, err := currentWorker(ctx)
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}

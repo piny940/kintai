@@ -18,7 +18,7 @@ func graphqlHandler() echo.HandlerFunc {
 			},
 		),
 	)
-	
+
 	return func(c echo.Context) error {
 		graphql.ServeHTTP(c.Response(), c.Request())
 		return nil

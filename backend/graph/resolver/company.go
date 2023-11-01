@@ -6,17 +6,36 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
+	"kintai_backend/registry"
 )
 
-func (r *queryResolver) Company(ctx context.Context, id int) (*model.Company, error) {
-	panic(fmt.Errorf("not implemented: Company - company"))
+func (r *queryResolver) Company(ctx context.Context, id uint) (*model.Company, error) {
+	// registry := registry.GetRegistry()
+	// worker, err := currentWorker(ctx)
+	// if err != nil {
+	// 	return nil, newError(err, "ログインしてください")
+	// }
+	company, err := GetCompany(ctx, id)
+	if err != nil {
+		return nil, newError(err, "会社情報の取得に失敗しました")
+	}
+	return model.NewCompany(company), nil
 }
 
 func (r *queryResolver) Companies(ctx context.Context) ([]*model.Company, error) {
-	panic(fmt.Errorf("not implemented: Companies - companies"))
+	registry := registry.GetRegistry()
+	worker, err := currentWorker(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+
+	companies, err := registry.CompanyRepo().List(worker.ID)
+	if err != nil {
+		return nil, newError(err, "会社情報の取得に失敗しました")
+	}
+	return model.NewCompanies(companies), nil
 }
 
 func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }

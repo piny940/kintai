@@ -2,15 +2,20 @@ enum WorkerStatus {
   ACTIVE
   INACTIVE
 }
+enum WorkStatus {
+  WORKING
+  LEFT
+}
 type WorkerName {
   firstName: String!
   lastName: String!
 }
 type Worker {
-  id: Int!
+  id: Uint!
   status: WorkerStatus!
   email: String!
   name: WorkerName!
+  workStatus: WorkStatus
   createdAt: Time!
   updatedAt: Time!
 }
