@@ -9,18 +9,28 @@ import (
 
 func Init() error {
 	c := config.GetConfig()
-	echo := echo.New()
+	e := echo.New()
 	// echo, err := NewRouter()
 	// if err != nil {
 	// 	return err
 	// }
 	
-	echo.Use(EchoContextToContextMiddleware)
-	echo.POST("/query", graphqlHandler())
-	echo.GET("/", playgroundHandler())
-	echo.Use(middleware.Logger())
-	echo.Use(middleware.Recover())
+	e.Use(EchoContextToContextMiddleware)
+	e.POST("/query", graphqlHandler())
+	e.GET("/", playgroundHandler())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{
+			"http://localhost:3001",
+		},
+		AllowHeaders: []string{
+			echo.HeaderOrigin,
+			echo.HeaderContentType,
+			echo.HeaderAccept,
+		},
+	}))
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	echo.Logger.Fatal(echo.Start(":" + c.GetString("server.port")))
+	e.Logger.Fatal(e.Start(":" + c.GetString("server.port")))
 	return nil
 }
