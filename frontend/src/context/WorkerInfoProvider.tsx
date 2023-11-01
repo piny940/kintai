@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { Company, Employment, Worker } from '../resources/types'
+import { Company, Employment, Worker } from '../graphql/types'
 import { fetchApi, fetchCompany } from '@/utils/api'
 import { useRouter } from 'next/router'
 

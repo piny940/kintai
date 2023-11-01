@@ -106,17 +106,21 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'Worker', id: number, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null };
+export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'Worker', id: number, status: WorkerStatus, email: string, createdAt: any, updatedAt: any, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null };
 
 
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
     id
+    status
+    email
     name {
       firstName
       lastName
     }
+    createdAt
+    updatedAt
   }
 }
     `;
