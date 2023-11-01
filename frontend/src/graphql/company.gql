@@ -1,8 +1,14 @@
-query getCompany($id: ID!) {
+query getCompany($id: Uint!) {
   company(id: $id) {
     id
     name
-    employment
+    employment {
+      id
+      kind
+      status
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
@@ -12,7 +18,13 @@ query getCompanies {
   companies {
     id
     name
-    employment
+    employment {
+      id
+      kind
+      status
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
