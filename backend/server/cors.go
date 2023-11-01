@@ -15,5 +15,6 @@ func corsHandler() echo.MiddlewareFunc {
 			echo.HeaderContentType,
 			echo.HeaderAccept,
 		},
+		AllowCredentials: true,
 	})
 }
