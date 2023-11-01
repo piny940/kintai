@@ -9,38 +9,38 @@ import (
 )
 
 type Company struct {
-	ID        *int   `json:"id,omitempty"`
+	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	CreatedAt string `json:"createdAt"`
 	UpdatedAt string `json:"updatedAt"`
 }
 
 type DesiredShift struct {
-	ID           *int   `json:"id,omitempty"`
+	ID           int    `json:"id"`
 	Since        string `json:"since"`
 	Till         string `json:"till"`
-	EmploymentID *int   `json:"employmentId,omitempty"`
+	EmploymentID int    `json:"employmentId"`
 	CreatedAt    string `json:"createdAt"`
 	UpdatedAt    string `json:"updatedAt"`
 }
 
 type Employment struct {
-	ID        *int              `json:"id,omitempty"`
-	Kind      *EmploymentKind   `json:"kind,omitempty"`
-	Status    *EmploymentStatus `json:"status,omitempty"`
-	CompanyID *int              `json:"companyId,omitempty"`
-	WorkerID  *int              `json:"workerId,omitempty"`
-	CreatedAt string            `json:"createdAt"`
-	UpdatedAt string            `json:"updatedAt"`
+	ID        int              `json:"id"`
+	Kind      EmploymentKind   `json:"kind"`
+	Status    EmploymentStatus `json:"status"`
+	CompanyID int              `json:"companyId"`
+	WorkerID  int              `json:"workerId"`
+	CreatedAt string           `json:"createdAt"`
+	UpdatedAt string           `json:"updatedAt"`
 }
 
 type Worker struct {
-	ID        *int          `json:"id,omitempty"`
-	Status    *WorkerStatus `json:"status,omitempty"`
-	Email     string        `json:"email"`
-	Name      *WorkerName   `json:"name"`
-	CreatedAt string        `json:"createdAt"`
-	UpdatedAt string        `json:"updatedAt"`
+	ID        int          `json:"id"`
+	Status    WorkerStatus `json:"status"`
+	Email     string       `json:"email"`
+	Name      *WorkerName  `json:"name"`
+	CreatedAt string       `json:"createdAt"`
+	UpdatedAt string       `json:"updatedAt"`
 }
 
 type WorkerName struct {

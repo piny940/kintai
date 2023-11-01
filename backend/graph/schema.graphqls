@@ -7,15 +7,15 @@ type WorkerName {
   lastName: String!
 }
 type Worker {
-  id: Int
-  status: WorkerStatus
+  id: Int!
+  status: WorkerStatus!
   email: String!
   name: WorkerName!
   createdAt: String!
   updatedAt: String!
 }
 type Company {
-  id: Int
+  id: Int!
   name: String!
   createdAt: String!
   updatedAt: String!
@@ -29,11 +29,11 @@ enum EmploymentStatus {
   INACTIVE
 }
 type Employment {
-  id: Int
-  kind: EmploymentKind
-  status: EmploymentStatus
-  companyId: Int
-  workerId: Int
+  id: Int!
+  kind: EmploymentKind!
+  status: EmploymentStatus!
+  companyId: Int!
+  workerId: Int!
   createdAt: String!
   updatedAt: String!
 }
@@ -44,10 +44,16 @@ enum WorkStatus {
 }
 
 type DesiredShift {
-  id: Int
+  id: Int!
   since: String!
   till: String!
-  employmentId: Int
+  employmentId: Int!
   createdAt: String!
   updatedAt: String!
+}
+type Query {
+  me: Worker
+}
+type Mutation {
+  login(email: String!, password: String!): Worker
 }
