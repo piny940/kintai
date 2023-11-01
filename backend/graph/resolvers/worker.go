@@ -10,40 +10,7 @@ import (
 	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
-	"kintai_backend/registry"
 )
-
-var workerStatusMap = map[domain.WorkerStatus]model.WorkerStatus{
-	domain.WorkerActive:   model.WorkerStatusActive,
-	domain.WorkerInactive: model.WorkerStatusInactive,
-}
-
-func (r *mutationResolver) Login(ctx context.Context, email string, password string) (*model.Worker, error) {
-	registry := registry.GetRegistry()
-	worker, err := registry.WorkerRepo().FindByEmail(domain.WorkerEmail(email))
-	if err != nil {
-		return nil, err
-	}
-	if !worker.Password.Check(domain.WorkerRawPassword(password)) {
-		return nil, err
-	}
-	echoCtx, err := echoContextFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	auth.Login(echoCtx, worker)
-	return &model.Worker{
-		ID:     int(worker.ID),
-		Status: workerStatusMap[worker.Status],
-		Email:  string(worker.Email),
-		Name: &model.WorkerName{
-			FirstName: string(worker.Name.FirstName),
-			LastName:  string(worker.Name.LastName),
-		},
-		CreatedAt: worker.CreatedAt,
-		UpdatedAt: worker.UpdatedAt,
-	}, nil
-}
 
 func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
 	echoCtx, err := echoContextFromContext(ctx)
@@ -67,9 +34,17 @@ func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
 	}, nil
 }
 
-func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
-
 func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
-type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+var workerStatusMap = map[domain.WorkerStatus]model.WorkerStatus{
+	domain.WorkerActive:   model.WorkerStatusActive,
+	domain.WorkerInactive: model.WorkerStatusInactive,
+}
