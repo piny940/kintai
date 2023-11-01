@@ -11,7 +11,6 @@ import (
 	"kintai_backend/domain"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
-	"kintai_backend/server"
 )
 
 // Login is the resolver for the login field.
@@ -24,7 +23,7 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 	if !worker.Password.Check(domain.WorkerRawPassword(password)) {
 		return nil, err
 	}
-	echoCtx, err := server.EchoContextFromContext()
+	echoCtx, err := echoContextFromContext(ctx)
 	auth.Login(echoCtx, worker)
 	return &model.Worker{
 		ID:    int(worker.ID),
