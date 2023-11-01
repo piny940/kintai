@@ -90,3 +90,7 @@ models:
       - github.com/99designs/gqlgen/graphql.Uint
       - github.com/99designs/gqlgen/graphql.Uint64
       - github.com/99designs/gqlgen/graphql.Uint32
+  Company:
+    model: kintai_backend/graph/model.Company
+  Employment:
+    model: kintai_backend/graph/model.Employment

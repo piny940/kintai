@@ -1,6 +1,17 @@
 package model
 
-import "kintai_backend/domain"
+import (
+	"kintai_backend/domain"
+	"time"
+)
+
+type Company struct {
+	ID           uint      `json:"id"`
+	Name         string    `json:"name"`
+	EmploymentID *uint     `json:"employmentId,omitempty"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+}
 
 func NewCompany(company *domain.Company) *Company {
 	return &Company{

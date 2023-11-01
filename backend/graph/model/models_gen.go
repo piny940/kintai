@@ -9,14 +9,6 @@ import (
 	"time"
 )
 
-type Company struct {
-	ID           uint      `json:"id"`
-	Name         string    `json:"name"`
-	EmploymentID *int      `json:"employmentId,omitempty"`
-	CreatedAt    time.Time `json:"createdAt"`
-	UpdatedAt    time.Time `json:"updatedAt"`
-}
-
 type DesiredShift struct {
 	ID           uint      `json:"id"`
 	Since        string    `json:"since"`
@@ -24,16 +16,6 @@ type DesiredShift struct {
 	EmploymentID int       `json:"employmentId"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
-}
-
-type Employment struct {
-	ID        uint             `json:"id"`
-	Kind      EmploymentKind   `json:"kind"`
-	Status    EmploymentStatus `json:"status"`
-	CompanyID int              `json:"companyId"`
-	WorkerID  int              `json:"workerId"`
-	CreatedAt time.Time        `json:"createdAt"`
-	UpdatedAt time.Time        `json:"updatedAt"`
 }
 
 type LoginResponse struct {

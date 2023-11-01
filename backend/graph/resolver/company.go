@@ -6,17 +6,26 @@ package resolver
 
 import (
 	"context"
+	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
 )
 
+func (r *companyResolver) Employment(ctx context.Context, obj *model.Company) (*model.Employment, error) {
+	registry := registry.GetRegistry()
+	worker, err := currentWorker(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	employment, err := registry.EmploymentRepo().Find(domain.CompanyID(obj.ID), worker.ID)
+	if err != nil {
+		return nil, newError(err, "所属情報の取得に失敗しました")
+	}
+	return model.NewEmployment(employment), nil
+}
+
 func (r *queryResolver) Company(ctx context.Context, id uint) (*model.Company, error) {
-	// registry := registry.GetRegistry()
-	// worker, err := currentWorker(ctx)
-	// if err != nil {
-	// 	return nil, newError(err, "ログインしてください")
-	// }
 	company, err := GetCompany(ctx, id)
 	if err != nil {
 		return nil, newError(err, "会社情報の取得に失敗しました")
@@ -38,6 +47,9 @@ func (r *queryResolver) Companies(ctx context.Context) ([]*model.Company, error)
 	return model.NewCompanies(companies), nil
 }
 
+func (r *Resolver) Company() graph.CompanyResolver { return &companyResolver{r} }
+
 func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
+type companyResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

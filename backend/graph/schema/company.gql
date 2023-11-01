@@ -3,7 +3,8 @@ scalar Uint
 type Company {
   id: Uint!
   name: String!
-  employmentId: Int
+  employmentId: Uint
+  employment: Employment
   createdAt: Time!
   updatedAt: Time!
 }
