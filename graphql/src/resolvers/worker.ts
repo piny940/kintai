@@ -1,10 +1,7 @@
-import { HOST } from '../resources/constants'
+import { getData } from '../utils/api'
 
 export const getMe = async () => {
-  const response = await fetch(`${HOST}/workers/me`, {
-    credentials: 'include',
-  })
-  const json = (await response.json()) as any
+  const json = (await getData('/workers/me'))[1]
   return jsonToWorker(json.worker)
 }
 

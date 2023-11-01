@@ -1,0 +1,70 @@
+import { serialize } from 'object-to-formdata'
+import { HOST } from '../resources/constants'
+
+// const getToken = async (): Promise<string> => {
+//   const url = `/api/csrf`
+//   const response = await fetch(url, {
+//     credentials: 'include',
+//   })
+//   const json = await response.json()
+
+//   return json.data.token
+// }
+
+export const fetchApi = async (params: {
+  url: string
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  data?: any
+}) => {
+  const response = await fetch(`${HOST}${params.url}`, {
+    method: params.method,
+    headers: {
+      // 'X-CSRF-Token': await getToken(),
+    },
+    body: params.method === 'GET' ? null : serialize(params.data),
+    credentials: 'include',
+  })
+  return response
+}
+
+export const getData = async (url: string): Promise<[Response, any]> => {
+  const response = await fetch(`${HOST}${url}`)
+  const json = await response.json()
+  return [response, json]
+}
+
+export const postData = async (params: {
+  url: string
+  data: object
+  scope?: string
+}): Promise<[Response, any]> => {
+  const response = await fetchApi({
+    url: params.url,
+    method: 'POST',
+    data: params.scope ? { [params.scope]: params.data } : params.data,
+  })
+
+  return [response, await response.json()]
+}
+
+export const updateData = async (params: {
+  url: string
+  data: object
+  scope?: string
+}) => {
+  const response = await fetchApi({
+    url: params.url,
+    method: 'PATCH',
+    data: params.scope ? { [params.scope]: params.data } : params.data,
+  })
+  return [response, await response.json()]
+}
+
+export const deleteData = async (url: string): Promise<[Response, any]> => {
+  const response = await fetchApi({
+    url,
+    method: 'DELETE',
+  })
+  const json = await response.json()
+  return [response, json]
+}
