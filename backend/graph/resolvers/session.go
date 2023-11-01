@@ -27,17 +27,7 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 		return nil, err
 	}
 	auth.Login(echoCtx, worker)
-	return &model.Worker{
-		ID:     int(worker.ID),
-		Status: workerStatusMap[worker.Status],
-		Email:  string(worker.Email),
-		Name: &model.WorkerName{
-			FirstName: string(worker.Name.FirstName),
-			LastName:  string(worker.Name.LastName),
-		},
-		CreatedAt: worker.CreatedAt,
-		UpdatedAt: worker.UpdatedAt,
-	}, nil
+	return model.NewWorker(worker), nil
 }
 
 func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
