@@ -1,5 +1,6 @@
 import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { postData } from '@/utils/api'
+import { gql, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { FormEventHandler, memo, useState } from 'react'
 
@@ -9,6 +10,15 @@ const SignIn = (): JSX.Element => {
   const [message, setMessage] = useState('')
   const { setWorker } = useWorkerInfo()
   const router = useRouter()
+  const { data } = useQuery(gql`
+    query {
+      me {
+        id
+        name
+      }
+    }
+  `)
+  console.log(data, 'hoge')
 
   const login = async () => {
     const [response, json] = await postData({

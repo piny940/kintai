@@ -5,6 +5,12 @@ import { useEffect } from 'react'
 import { ThemeProvider } from '@/context/ThemeProvider'
 import Head from 'next/head'
 import { WorkerInfoProvider } from '@/context/WorkerInfoProvider'
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
+
+const client = new ApolloClient({
+  uri: 'http://localhost:8080/query',
+  cache: new InMemoryCache(),
+})
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -12,16 +18,21 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [])
 
   return (
-    <WorkerInfoProvider>
-      <ThemeProvider>
-        <Head>
-          <meta content="width=device-width,initial-scale=1" name="viewport" />
-        </Head>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </ThemeProvider>
-    </WorkerInfoProvider>
+    <ApolloProvider client={client}>
+      <WorkerInfoProvider>
+        <ThemeProvider>
+          <Head>
+            <meta
+              content="width=device-width,initial-scale=1"
+              name="viewport"
+            />
+          </Head>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ThemeProvider>
+      </WorkerInfoProvider>
+    </ApolloProvider>
   )
 }
 
