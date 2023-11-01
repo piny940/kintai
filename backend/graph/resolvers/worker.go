@@ -26,4 +26,3 @@ func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
 func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
-

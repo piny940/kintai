@@ -30,6 +30,15 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 	return model.NewWorker(worker), nil
 }
 
+func (r *mutationResolver) Logout(ctx context.Context) (bool, error) {
+	echoCtx, err := echoContextFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	auth.Logout(echoCtx)
+	return true, nil
+}
+
 func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }

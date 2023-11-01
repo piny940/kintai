@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/registry"
 	"os"
@@ -20,6 +21,11 @@ var sessionsOptions = &sessions.Options{
 	HttpOnly: true,
 	Secure:   true,
 	MaxAge:   86400 * 7,
+}
+
+type authorizationError struct {}
+func (e authorizationError) Error() string {
+	return "ログインしてください"
 }
 
 func setSession(c echo.Context, key string, value interface{}) error {
@@ -46,11 +52,15 @@ func CurrentWorker(c echo.Context) (*domain.Worker, error) {
 	registry := registry.GetRegistry()
 	workerId, err := getSession(c, "worker_id")
 	if err != nil || workerId == nil {
-		return nil, err
+		return nil, authorizationError{}
 	}
 	worker, err := registry.WorkerRepo().FindById(domain.WorkerID(workerId.(uint)))
 	if err != nil {
-		return nil, err
+		return nil, authorizationError{}
+	}
+	fmt.Println(worker, err, worker == nil)
+	if worker == nil {
+		return nil, authorizationError{}
 	}
 	return worker, nil
 }
