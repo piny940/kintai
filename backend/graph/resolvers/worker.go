@@ -15,7 +15,7 @@ func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
 	echoCtx, _ := echoContextFromContext(ctx)
 	worker, err := auth.CurrentWorker(echoCtx)
 	if err != nil {
-		return nil, newError("ログインしてください")
+		return nil, newError(err, "ログインしてください")
 	}
 	return model.NewWorker(worker), nil
 }

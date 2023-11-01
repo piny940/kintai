@@ -22,12 +22,7 @@ func echoContextFromContext(ctx context.Context) (echo.Context, error) {
 	return ec, nil
 }
 
-type errorMessage struct {
-	message string
-}
-func (e *errorMessage) Error() string {
-	return e.message
-}
-func newError(message string) error {
-	return &errorMessage{ message: message }
+func newError(err error, message string) error {
+	fmt.Println(err)
+	return fmt.Errorf(message)
 }

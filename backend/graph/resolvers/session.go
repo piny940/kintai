@@ -17,10 +17,10 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 	registry := registry.GetRegistry()
 	worker, err := registry.WorkerRepo().FindByEmail(domain.WorkerEmail(email))
 	if err != nil {
-		return nil, err
+		return nil, newError(err, "メールアドレスまたはパスワードが間違っています")
 	}
 	if !worker.Password.Check(domain.WorkerRawPassword(password)) {
-		return nil, err
+		return nil, newError(err,"メールアドレスまたはパスワードが間違っています" )
 	}
 	echoCtx, err := echoContextFromContext(ctx)
 	if err != nil {
