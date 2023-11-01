@@ -11,9 +11,6 @@
     },
     {
       "path": "frontend"
-    },
-    {
-      "path": "graphql"
     }
   ],
   "settings": {}
