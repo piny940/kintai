@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/registry"
 	"os"
@@ -23,7 +22,8 @@ var sessionsOptions = &sessions.Options{
 	MaxAge:   86400 * 7,
 }
 
-type authorizationError struct {}
+type authorizationError struct{}
+
 func (e authorizationError) Error() string {
 	return "ログインしてください"
 }
@@ -58,7 +58,6 @@ func CurrentWorker(c echo.Context) (*domain.Worker, error) {
 	if err != nil {
 		return nil, authorizationError{}
 	}
-	fmt.Println(worker, err, worker == nil)
 	if worker == nil {
 		return nil, authorizationError{}
 	}
