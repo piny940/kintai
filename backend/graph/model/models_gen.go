@@ -6,22 +6,23 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 )
 
 type Company struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type DesiredShift struct {
-	ID           int    `json:"id"`
-	Since        string `json:"since"`
-	Till         string `json:"till"`
-	EmploymentID int    `json:"employmentId"`
-	CreatedAt    string `json:"createdAt"`
-	UpdatedAt    string `json:"updatedAt"`
+	ID           int       `json:"id"`
+	Since        string    `json:"since"`
+	Till         string    `json:"till"`
+	EmploymentID int       `json:"employmentId"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
 }
 
 type Employment struct {
@@ -30,8 +31,8 @@ type Employment struct {
 	Status    EmploymentStatus `json:"status"`
 	CompanyID int              `json:"companyId"`
 	WorkerID  int              `json:"workerId"`
-	CreatedAt string           `json:"createdAt"`
-	UpdatedAt string           `json:"updatedAt"`
+	CreatedAt time.Time        `json:"createdAt"`
+	UpdatedAt time.Time        `json:"updatedAt"`
 }
 
 type Worker struct {
@@ -39,8 +40,8 @@ type Worker struct {
 	Status    WorkerStatus `json:"status"`
 	Email     string       `json:"email"`
 	Name      *WorkerName  `json:"name"`
-	CreatedAt string       `json:"createdAt"`
-	UpdatedAt string       `json:"updatedAt"`
+	CreatedAt time.Time    `json:"createdAt"`
+	UpdatedAt time.Time    `json:"updatedAt"`
 }
 
 type WorkerName struct {

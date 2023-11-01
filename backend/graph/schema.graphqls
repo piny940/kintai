@@ -1,3 +1,5 @@
+scalar Time
+
 enum WorkerStatus {
   ACTIVE
   INACTIVE
@@ -11,14 +13,14 @@ type Worker {
   status: WorkerStatus!
   email: String!
   name: WorkerName!
-  createdAt: String!
-  updatedAt: String!
+  createdAt: Time!
+  updatedAt: Time!
 }
 type Company {
   id: Int!
   name: String!
-  createdAt: String!
-  updatedAt: String!
+  createdAt: Time!
+  updatedAt: Time!
 }
 enum EmploymentKind {
   ADMIN
@@ -34,8 +36,8 @@ type Employment {
   status: EmploymentStatus!
   companyId: Int!
   workerId: Int!
-  createdAt: String!
-  updatedAt: String!
+  createdAt: Time!
+  updatedAt: Time!
 }
 
 enum WorkStatus {
@@ -48,8 +50,8 @@ type DesiredShift {
   since: String!
   till: String!
   employmentId: Int!
-  createdAt: String!
-  updatedAt: String!
+  createdAt: Time!
+  updatedAt: Time!
 }
 type Query {
   me: Worker

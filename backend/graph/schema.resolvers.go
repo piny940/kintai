@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"encoding/json"
 	"kintai_backend/auth"
 	"kintai_backend/domain"
 	"kintai_backend/graph/model"
@@ -28,8 +27,6 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 		return nil, err
 	}
 	auth.Login(echoCtx, worker)
-	createdAt, _ := json.Marshal(worker.CreatedAt)
-	updatedAt, _ := json.Marshal(worker.UpdatedAt)
 	return &model.Worker{
 		ID:     int(worker.ID),
 		Status: workerStatusMap[worker.Status],
@@ -38,8 +35,8 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 			FirstName: string(worker.Name.FirstName),
 			LastName:  string(worker.Name.LastName),
 		},
-		CreatedAt: string(createdAt),
-		UpdatedAt: string(updatedAt),
+		CreatedAt: worker.CreatedAt,
+		UpdatedAt: worker.UpdatedAt,
 	}, nil
 }
 
