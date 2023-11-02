@@ -4,7 +4,6 @@ import { Layout } from '../layouts/Layout'
 import { useEffect } from 'react'
 import { ThemeProvider } from '@/context/ThemeProvider'
 import Head from 'next/head'
-import { WorkerInfoProvider } from '@/context/WorkerInfoProvider'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 
 const client = new ApolloClient({
