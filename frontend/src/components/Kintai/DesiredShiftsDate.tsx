@@ -1,4 +1,3 @@
-import { DesiredShift } from '@/graphql/types'
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
 import ShiftItem from './ShiftItem'
@@ -7,7 +6,7 @@ export type DesiredShiftsDateProps = {
   month: number
   date: Dayjs
   onAddButtonClicked: () => void
-  desiredShifts: DesiredShift[]
+  desiredShifts: Array<{ id: number; since: string; till: string }>
 }
 
 const DesiredShiftsDate = ({

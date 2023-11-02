@@ -1,9 +1,9 @@
-import { DesiredShift, Worker } from '@/graphql/types'
+import { Worker } from '@/graphql/types'
 import dayjs from 'dayjs'
 import { memo } from 'react'
 
 export type ShiftItemProps = {
-  shift: DesiredShift
+  shift: { since: string; till: string }
   worker?: Worker
   className?: string
 }
@@ -18,6 +18,7 @@ const ShiftItem = ({
       {dayjs(shift.since).format('HH:mm')} ~ {dayjs(shift.till).format('HH:mm')}
     </>
   )
+
   return (
     <li className={'small rounded p-1 m-1 ' + className}>
       {worker ? (

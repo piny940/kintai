@@ -45,6 +45,7 @@ export type Company = {
 export type DesiredShift = {
   __typename?: 'DesiredShift'
   createdAt: Scalars['Time']['output']
+  employment: Employment
   employmentId: Scalars['Uint']['output']
   id: Scalars['Uint']['output']
   since: Scalars['Time']['output']
@@ -60,6 +61,7 @@ export type Employment = {
   kind: EmploymentKind
   status: EmploymentStatus
   updatedAt: Scalars['Time']['output']
+  worker: Worker
   workerId: Scalars['Int']['output']
 }
 
@@ -238,6 +240,23 @@ export type GetCompanyDesiredShiftsQuery = {
     employmentId: number
     createdAt: string
     updatedAt: string
+    employment: {
+      __typename?: 'Employment'
+      id: number
+      kind: EmploymentKind
+      status: EmploymentStatus
+      createdAt: string
+      updatedAt: string
+      worker: {
+        __typename?: 'Worker'
+        id: number
+        status: WorkerStatus
+        email: string
+        createdAt: string
+        updatedAt: string
+        name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
+      }
+    }
   }>
 }
 
@@ -557,6 +576,24 @@ export const GetCompanyDesiredShiftsDocument = gql`
       since
       till
       employmentId
+      employment {
+        id
+        kind
+        status
+        worker {
+          id
+          status
+          email
+          name {
+            firstName
+            lastName
+          }
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }

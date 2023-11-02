@@ -13,6 +13,15 @@ import (
 	"time"
 )
 
+func (r *desiredShiftResolver) Employment(ctx context.Context, obj *model.DesiredShift) (*model.Employment, error) {
+	registry := registry.GetRegistry()
+	employment, err := registry.EmploymentRepo().FindById(domain.EmploymentID(obj.EmploymentID))
+	if err != nil {
+		return nil, newError(err, "所属情報の取得に失敗しました")
+	}
+	return model.NewEmployment(employment), nil
+}
+
 func (r *mutationResolver) CreateDesiredShift(ctx context.Context, companyID uint, since time.Time, till time.Time) (*model.DesiredShift, error) {
 	registry := registry.GetRegistry()
 	worker, err := currentWorker(ctx)
@@ -73,6 +82,9 @@ func (r *queryResolver) CompanyDesiredShifts(ctx context.Context, companyID uint
 	return model.NewDesiredShifts(desiredShifts), nil
 }
 
+func (r *Resolver) DesiredShift() graph.DesiredShiftResolver { return &desiredShiftResolver{r} }
+
 func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
+type desiredShiftResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }

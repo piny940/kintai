@@ -1,8 +1,7 @@
-import { Company } from '@/graphql/types'
 import { memo, useCallback } from 'react'
 
 type SelectCompanyProps = {
-  companies: Array<Pick<Company, 'name' | 'id'>>
+  companies: Array<{ name: string; id: number }>
   setSelectedCompanyId: (companyId: number | null) => void
   selectedCompanyId: number | null
 }

@@ -1,0 +1,18 @@
+enum EmploymentKind {
+  ADMIN
+  MEMBER
+}
+enum EmploymentStatus {
+  ACTIVE
+  INACTIVE
+}
+type Employment {
+  id: Uint!
+  kind: EmploymentKind!
+  status: EmploymentStatus!
+  companyId: Uint!
+  workerId: Uint!
+  worker: Worker!
+  createdAt: Time!
+  updatedAt: Time!
+}

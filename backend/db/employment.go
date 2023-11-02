@@ -20,8 +20,27 @@ func (r *employmentRepo) Find(companyId domain.CompanyID, workerId domain.Worker
 		&employment.ID,
 		&employment.Kind,
 		&employment.Status,
-		&employment.CompanyID,
 		&employment.WorkerID,
+		&employment.CompanyID,
+		&employment.CreatedAt,
+		&employment.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &employment, nil
+}
+
+func (r *employmentRepo) FindById(employmentId domain.EmploymentID) (*domain.Employment, error) {
+	var employment domain.Employment
+	if err := r.db.Client.QueryRow(
+		"select * from employments where id = $1",
+		employmentId,
+	).Scan(
+		&employment.ID,
+		&employment.Kind,
+		&employment.Status,
+		&employment.WorkerID,
+		&employment.CompanyID,
 		&employment.CreatedAt,
 		&employment.UpdatedAt,
 	); err != nil {

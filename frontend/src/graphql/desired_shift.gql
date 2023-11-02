@@ -22,6 +22,24 @@ query getCompanyDesiredShifts(
     since
     till
     employmentId
+    employment {
+      id
+      kind
+      status
+      worker {
+        id
+        status
+        email
+        name {
+          firstName
+          lastName
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
