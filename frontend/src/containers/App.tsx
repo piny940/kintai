@@ -12,46 +12,46 @@ import {
 } from '@/graphql/types'
 
 export const App: React.FC = () => {
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
+    null
+  )
   const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null)
   const { data: companiesData } = useGetCompaniesQuery()
   const [loadCompany, { data: companyData }] = useGetCompanyLazyQuery()
 
-  const _setSelectedCompany = useCallback(
-    (company: Company | null) => {
-      setSelectedCompany(company)
-      if (!company) return
-      void loadCompany({ variables: { id: company.id } })
-    },
-    [setSelectedCompany]
+  const company = useMemo(
+    () => (selectedCompanyId && (companyData?.company as Company)) || null,
+    [selectedCompanyId, companyData?.company]
   )
-  const company = useMemo(() => {
-    return ((selectedCompany && companyData?.company) as Company) || null
-  }, [companyData?.company, selectedCompany])
 
   const fetchWorkStatus = useCallback(async () => {
-    if (!selectedCompany) return
+    if (!company) return
 
     const json = (
-      await getData(`/member/companies/${selectedCompany.id}/work_status`)
+      await getData(`/member/companies/${company.id}/work_status`)
     )[1]
 
     setWorkStatus(json.work_status)
-  }, [selectedCompany])
+  }, [company])
 
   const createStamp = useCallback(async () => {
-    if (!selectedCompany) return
+    if (!company) return
 
     await postData({
-      url: `/member/companies/${selectedCompany.id}/stamps/now`,
+      url: `/member/companies/${company.id}/stamps/now`,
       data: {},
     })
     void fetchWorkStatus()
-  }, [selectedCompany, fetchWorkStatus])
+  }, [company, fetchWorkStatus])
 
   useEffect(() => {
     void fetchWorkStatus()
   }, [fetchWorkStatus])
+
+  useEffect(() => {
+    if (!selectedCompanyId) return
+    void loadCompany({ variables: { id: selectedCompanyId } })
+  }, [selectedCompanyId])
 
   return (
     <div id="app" data-testid={TestID.APP}>
@@ -59,8 +59,8 @@ export const App: React.FC = () => {
       <div className="container">
         {companiesData?.companies && (
           <CompanySelect
-            setSelectedCompany={_setSelectedCompany}
-            selectedCompany={selectedCompany}
+            setSelectedCompanyId={setSelectedCompanyId}
+            selectedCompanyId={selectedCompanyId}
             companies={companiesData.companies}
           />
         )}

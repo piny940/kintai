@@ -11,10 +11,9 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-export type MakeEmpty<
-  T extends Record<string, unknown>,
-  K extends keyof T
-> = { [_ in K]?: never }
+export type MakeEmpty<T extends Record<string, unknown>, K extends keyof T> = {
+  [_ in K]?: never
+}
 export type Incremental<T> =
   | T
   | {
@@ -35,8 +34,8 @@ export type Scalars = {
 export type Company = {
   __typename?: 'Company'
   createdAt: Scalars['Time']['output']
-  employment?: Maybe<Employment>
-  employmentId?: Maybe<Scalars['Uint']['output']>
+  employment: Employment
+  employmentId: Scalars['Uint']['output']
   id: Scalars['Uint']['output']
   name: Scalars['String']['output']
   updatedAt: Scalars['Time']['output']
@@ -82,6 +81,7 @@ export type Mutation = {
   __typename?: 'Mutation'
   login?: Maybe<LoginResponse>
   logout: Scalars['Boolean']['output']
+  pushStamp: Stamp
 }
 
 export type MutationLoginArgs = {
@@ -89,15 +89,28 @@ export type MutationLoginArgs = {
   password: Scalars['String']['input']
 }
 
+export type MutationPushStampArgs = {
+  companyId: Scalars['Uint']['input']
+}
+
 export type Query = {
   __typename?: 'Query'
-  companies?: Maybe<Company[]>
-  company?: Maybe<Company>
+  companies: Company[]
+  company: Company
   me?: Maybe<Worker>
 }
 
 export type QueryCompanyArgs = {
   id: Scalars['Uint']['input']
+}
+
+export type Stamp = {
+  __typename?: 'Stamp'
+  createdAt: Scalars['Time']['output']
+  employmentID: Scalars['Uint']['output']
+  id: Scalars['Uint']['output']
+  stampedAt: Scalars['Time']['output']
+  updatedAt: Scalars['Time']['output']
 }
 
 export enum WorkStatus {
@@ -133,34 +146,34 @@ export type GetCompanyQueryVariables = Exact<{
 
 export type GetCompanyQuery = {
   __typename?: 'Query'
-  company?: {
+  company: {
     __typename?: 'Company'
     id: number
     name: string
     createdAt: string
     updatedAt: string
-    employment?: {
+    employment: {
       __typename?: 'Employment'
       id: number
       kind: EmploymentKind
       status: EmploymentStatus
       createdAt: string
       updatedAt: string
-    } | null
-  } | null
+    }
+  }
 }
 
 export type GetCompaniesQueryVariables = Exact<Record<string, never>>
 
 export type GetCompaniesQuery = {
   __typename?: 'Query'
-  companies?: Array<{
+  companies: Array<{
     __typename?: 'Company'
     id: number
     name: string
     createdAt: string
     updatedAt: string
-  }> | null
+  }>
 }
 
 export type LoginMutationVariables = Exact<{

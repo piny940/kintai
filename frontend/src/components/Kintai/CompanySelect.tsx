@@ -2,23 +2,23 @@ import { Company } from '@/graphql/types'
 import { memo, useCallback } from 'react'
 
 type SelectCompanyProps = {
-  companies: Company[]
-  setSelectedCompany: (company: Company | null) => void
-  selectedCompany: Company | null
+  companies: Array<Pick<Company, 'name' | 'id'>>
+  setSelectedCompanyId: (companyId: number | null) => void
+  selectedCompanyId: number | null
 }
 
 const SelectCompany = ({
   companies,
-  setSelectedCompany,
-  selectedCompany,
+  setSelectedCompanyId,
+  selectedCompanyId,
 }: SelectCompanyProps): JSX.Element => {
   const onCompanyChange = useCallback(
     (value: string) => {
       if (!companies) return
       const newCompany = companies.find((c) => c.id.toString() === value)
-      setSelectedCompany(newCompany || null)
+      setSelectedCompanyId(newCompany?.id || null)
     },
-    [companies, setSelectedCompany]
+    [companies, selectedCompanyId]
   )
 
   return (
@@ -26,7 +26,7 @@ const SelectCompany = ({
       name=""
       id=""
       className="form-select"
-      value={selectedCompany?.id || ''}
+      value={selectedCompanyId || ''}
       onChange={(e) => onCompanyChange(e.target.value)}
     >
       <option value="">--</option>
