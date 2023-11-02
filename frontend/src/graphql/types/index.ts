@@ -28,7 +28,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
-  Time: { input: Date; output: Date }
+  Time: { input: string; output: string }
   Uint: { input: number; output: number }
 }
 
@@ -137,15 +137,15 @@ export type GetCompanyQuery = {
     __typename?: 'Company'
     id: number
     name: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
     employment?: {
       __typename?: 'Employment'
       id: number
       kind: EmploymentKind
       status: EmploymentStatus
-      createdAt: Date
-      updatedAt: Date
+      createdAt: string
+      updatedAt: string
     } | null
   } | null
 }
@@ -158,8 +158,8 @@ export type GetCompaniesQuery = {
     __typename?: 'Company'
     id: number
     name: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
   }> | null
 }
 
@@ -177,8 +177,8 @@ export type LoginMutation = {
       id: number
       status: WorkerStatus
       email: string
-      createdAt: Date
-      updatedAt: Date
+      createdAt: string
+      updatedAt: string
       name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
     } | null
   } | null
@@ -193,8 +193,8 @@ export type GetMeQuery = {
     id: number
     status: WorkerStatus
     email: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
     name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
   } | null
 }

@@ -45,7 +45,7 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
   const { data: companyData, loading: companyLoading } = useGetCompanyQuery({
     variables: { id: companyId },
   })
-
+  console.log(typeof meData?.me?.createdAt)
   const setCurrentCompany = useCallback(async () => {
     if (!meData?.me) return
     const companyId = router.query.company_id

@@ -11,8 +11,9 @@ const config: CodegenConfig = {
         'typescript-react-apollo',
       ],
       config: {
+        strictScalars: true,
         scalars: {
-          Time: 'Date',
+          Time: 'string',
           Uint: 'number',
         },
         withHooks: true,
