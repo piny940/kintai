@@ -6,10 +6,24 @@ package resolver
 
 import (
 	"context"
-	"fmt"
+	"kintai_backend/domain"
 	"kintai_backend/graph/model"
+	"kintai_backend/registry"
 )
 
-func (r *mutationResolver) PushStamp(ctx context.Context, employmentID uint) (*model.Stamp, error) {
-	panic(fmt.Errorf("not implemented: PushStamp - pushStamp"))
+func (r *mutationResolver) PushStamp(ctx context.Context, companyID uint) (*model.Stamp, error) {
+	registry := registry.GetRegistry()
+	worker, err := currentWorker(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	company, err := registry.CompanyRepo().FindById(worker.ID, domain.CompanyID(companyID))
+	if err != nil {
+		return nil, newError(err, "会社IDが適切ではありません")
+	}
+	stamp, err := registry.StampUseCase().PushStamp(company.ID, worker.ID)
+	if err != nil {
+		return nil, newError(err, "打刻に失敗しました")
+	}
+	return model.NewStamp(stamp), nil
 }

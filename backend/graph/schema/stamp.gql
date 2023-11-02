@@ -6,5 +6,5 @@ type Stamp {
   updatedAt: Time!
 }
 extend type Mutation {
-  pushStamp(employmentID: Uint!): Stamp!
+  pushStamp(companyId: Uint!): Stamp!
 }

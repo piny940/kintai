@@ -84,7 +84,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		Login     func(childComplexity int, email string, password string) int
 		Logout    func(childComplexity int) int
-		PushStamp func(childComplexity int, employmentID uint) int
+		PushStamp func(childComplexity int, companyID uint) int
 	}
 
 	Query struct {
@@ -123,7 +123,7 @@ type CompanyResolver interface {
 type MutationResolver interface {
 	Login(ctx context.Context, email string, password string) (*model.LoginResponse, error)
 	Logout(ctx context.Context) (bool, error)
-	PushStamp(ctx context.Context, employmentID uint) (*model.Stamp, error)
+	PushStamp(ctx context.Context, companyID uint) (*model.Stamp, error)
 }
 type QueryResolver interface {
 	Company(ctx context.Context, id uint) (*model.Company, error)
@@ -319,7 +319,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.PushStamp(childComplexity, args["employmentID"].(uint)), true
+		return e.complexity.Mutation.PushStamp(childComplexity, args["companyId"].(uint)), true
 
 	case "Query.companies":
 		if e.complexity.Query.Companies == nil {
@@ -600,14 +600,14 @@ func (ec *executionContext) field_Mutation_pushStamp_args(ctx context.Context, r
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uint
-	if tmp, ok := rawArgs["employmentID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentID"))
+	if tmp, ok := rawArgs["companyId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
 		arg0, err = ec.unmarshalNUint2uint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["employmentID"] = arg0
+	args["companyId"] = arg0
 	return args, nil
 }
 
@@ -1696,7 +1696,7 @@ func (ec *executionContext) _Mutation_pushStamp(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().PushStamp(rctx, fc.Args["employmentID"].(uint))
+		return ec.resolvers.Mutation().PushStamp(rctx, fc.Args["companyId"].(uint))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
