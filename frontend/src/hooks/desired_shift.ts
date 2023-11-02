@@ -1,6 +1,27 @@
-import { DesiredShift, useGetDesiredShiftsLazyQuery } from '@/graphql/types'
+import { useGetDesiredShiftsLazyQuery } from '@/graphql/types'
 import dayjs, { Dayjs } from 'dayjs'
 import { useEffect, useMemo } from 'react'
+
+const mapShifts = <T extends { since: string }>(
+  shifts: T[],
+  selectedMonth: Dayjs
+) => {
+  const map = new Map<number, T[]>()
+  for (let i = 1; i <= 31; i++) {
+    map.set(i, [])
+  }
+  shifts.forEach((shift) => {
+    const date = dayjs(shift.since)
+    if (
+      date.year() !== selectedMonth.year() ||
+      date.month() !== selectedMonth.month()
+    )
+      return
+
+    map.get(dayjs(shift.since).date())?.push(shift)
+  })
+  return map
+}
 
 export const useMappedDesiredShifts = (
   companyId: number,
@@ -10,20 +31,7 @@ export const useMappedDesiredShifts = (
     useGetDesiredShiftsLazyQuery()
 
   const desiredShiftsMap = useMemo(() => {
-    const map = new Map<number, DesiredShift[]>()
-    for (let i = 1; i <= 31; i++) {
-      map.set(i, [])
-    }
-    desiredShiftsData?.desiredShifts.forEach((desiredShift) => {
-      const date = dayjs(desiredShift.since)
-      if (
-        date.year() !== selectedMonth.year() ||
-        date.month() !== selectedMonth.month()
-      )
-        return
-      map.get(dayjs(desiredShift.since).date())?.push(desiredShift)
-    })
-    return map
+    return mapShifts(desiredShiftsData?.desiredShifts || [], selectedMonth)
   }, [desiredShiftsData?.desiredShifts, selectedMonth])
 
   useEffect(() => {
