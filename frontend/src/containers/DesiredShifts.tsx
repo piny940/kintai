@@ -1,5 +1,6 @@
 import DesiredShiftsCalendar from '@/components/Kintai/DesiredShiftsCalendar'
 import {
+  GetDesiredShiftsDocument,
   useCreateDesiredShiftMutation,
   useGetCompanyLazyQuery,
   useGetDesiredShiftsLazyQuery,
@@ -9,6 +10,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
 import { memo, useCallback, useEffect, useState } from 'react'
 import 'react-calendar/dist/Calendar.css'
+import { useApolloClient } from '@apollo/client'
 
 const ADD_DESIRED_SHIFTS_MODAL_ID = 'add-desired-shifts-modal'
 const DesiredShifts = (): JSX.Element => {
@@ -22,6 +24,7 @@ const DesiredShifts = (): JSX.Element => {
     useGetDesiredShiftsLazyQuery()
   const [createDesiredShift, { error: desiredShiftError }] =
     useCreateDesiredShiftMutation()
+  const client = useApolloClient()
 
   const onAddButtonClicked = async (date: Dayjs) => {
     setSelectedDate(date)
@@ -39,9 +42,10 @@ const DesiredShifts = (): JSX.Element => {
             till: till.toISOString(),
           },
         })
+        await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
       } catch {}
     },
-    [companyId, createDesiredShift]
+    [companyId, createDesiredShift, client]
   )
 
   useEffect(() => {
