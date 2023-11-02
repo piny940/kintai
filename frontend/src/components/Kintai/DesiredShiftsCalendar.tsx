@@ -32,10 +32,16 @@ const DesiredShiftsCalendar = ({
       map.set(i, [])
     }
     desiredShifts.forEach((desiredShift) => {
+      const date = dayjs(desiredShift.since)
+      if (
+        date.year() !== selectedMonth.year() ||
+        date.month() !== selectedMonth.month()
+      )
+        return
       map.get(dayjs(desiredShift.since).date())?.push(desiredShift)
     })
     return map
-  }, [desiredShifts])
+  }, [desiredShifts, selectedMonth])
 
   return (
     <>
