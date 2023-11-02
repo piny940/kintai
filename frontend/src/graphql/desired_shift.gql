@@ -8,3 +8,8 @@ query getDesiredShifts($companyId: Uint!) {
     updatedAt
   }
 }
+mutation createDesiredShift($companyId: Uint!, $since: Time!, $till: Time!) {
+  createDesiredShift(companyId: $companyId, since: $since, till: $till) {
+    id
+  }
+}

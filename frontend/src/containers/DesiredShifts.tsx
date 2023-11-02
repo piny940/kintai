@@ -1,10 +1,9 @@
 import DesiredShiftsCalendar from '@/components/Kintai/DesiredShiftsCalendar'
 import {
+  useCreateDesiredShiftMutation,
   useGetCompanyLazyQuery,
   useGetDesiredShiftsLazyQuery,
 } from '@/graphql/types'
-import { DesiredShift, DesiredShiftJSON } from '@/resources/types'
-import { postData } from '@/utils/api'
 import { useCompanyId } from '@/utils/hooks'
 import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
@@ -14,9 +13,14 @@ import 'react-calendar/dist/Calendar.css'
 const ADD_DESIRED_SHIFTS_MODAL_ID = 'add-desired-shifts-modal'
 const DesiredShifts = (): JSX.Element => {
   const companyId = useCompanyId()
+
+  // GraphQL
   const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
   const [loadDesiredShifts, { data: desiredShiftsData }] =
     useGetDesiredShiftsLazyQuery()
+  const [createDesiredShift, { error: desiredShiftError }] =
+    useCreateDesiredShiftMutation()
+
   const [alert, setAlert] = useState('')
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
   const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
@@ -33,26 +37,23 @@ const DesiredShifts = (): JSX.Element => {
         setAlert('開始時間は終了時間よりも前に設定してください')
         return
       }
-      const [res, json] = await postData({
-        url: `/member/companies/${companyId}/desired_shifts`,
-        data: {
-          since: since.toJSON(),
-          till: till.toJSON(),
-        },
-      })
-      if (!res.ok) {
-        setAlert(json.message)
-        return
-      }
-      setAlert('')
-      void pullDesiredShifts()
+      try {
+        await createDesiredShift({
+          variables: {
+            companyId,
+            since: since.toISOString(),
+            till: till.toISOString(),
+          },
+        })
+      } catch {}
     },
     [companyId]
   )
 
   useEffect(() => {
-    void loadCompany()
-    void loadDesiredShifts()
+    if (!companyId) return
+    void loadCompany({ variables: { id: companyId } })
+    void loadDesiredShifts({ variables: { companyId } })
   }, [companyId])
 
   if (error) return <Error statusCode={404} />
@@ -66,11 +67,11 @@ const DesiredShifts = (): JSX.Element => {
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
         addDesiredShift={postDesiredShift}
-        desiredShifts={desiredShiftsData.desiredShifts}
+        desiredShifts={desiredShiftsData?.desiredShifts || []}
         selectedDate={selectedDate}
         addDesiredShiftsModalID={ADD_DESIRED_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
-        alert={alert}
+        alert={desiredShiftError?.message || alert}
       />
     </div>
   )

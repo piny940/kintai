@@ -80,9 +80,16 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  createDesiredShift: DesiredShift
   login?: Maybe<LoginResponse>
   logout: Scalars['Boolean']['output']
   pushStamp: Stamp
+}
+
+export type MutationCreateDesiredShiftArgs = {
+  companyId: Scalars['Uint']['input']
+  since: Scalars['Time']['input']
+  till: Scalars['Time']['input']
 }
 
 export type MutationLoginArgs = {
@@ -204,6 +211,17 @@ export type GetDesiredShiftsQuery = {
     createdAt: string
     updatedAt: string
   }>
+}
+
+export type CreateDesiredShiftMutationVariables = Exact<{
+  companyId: Scalars['Uint']['input']
+  since: Scalars['Time']['input']
+  till: Scalars['Time']['input']
+}>
+
+export type CreateDesiredShiftMutation = {
+  __typename?: 'Mutation'
+  createDesiredShift: { __typename?: 'DesiredShift'; id: number }
 }
 
 export type LoginMutationVariables = Exact<{
@@ -493,6 +511,58 @@ export type GetDesiredShiftsSuspenseQueryHookResult = ReturnType<
 export type GetDesiredShiftsQueryResult = Apollo.QueryResult<
   GetDesiredShiftsQuery,
   GetDesiredShiftsQueryVariables
+>
+export const CreateDesiredShiftDocument = gql`
+  mutation createDesiredShift($companyId: Uint!, $since: Time!, $till: Time!) {
+    createDesiredShift(companyId: $companyId, since: $since, till: $till) {
+      id
+    }
+  }
+`
+export type CreateDesiredShiftMutationFn = Apollo.MutationFunction<
+  CreateDesiredShiftMutation,
+  CreateDesiredShiftMutationVariables
+>
+
+/**
+ * __useCreateDesiredShiftMutation__
+ *
+ * To run a mutation, you first call `useCreateDesiredShiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDesiredShiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDesiredShiftMutation, { data, loading, error }] = useCreateDesiredShiftMutation({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *      since: // value for 'since'
+ *      till: // value for 'till'
+ *   },
+ * });
+ */
+export function useCreateDesiredShiftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateDesiredShiftMutation,
+    CreateDesiredShiftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<
+    CreateDesiredShiftMutation,
+    CreateDesiredShiftMutationVariables
+  >(CreateDesiredShiftDocument, options)
+}
+export type CreateDesiredShiftMutationHookResult = ReturnType<
+  typeof useCreateDesiredShiftMutation
+>
+export type CreateDesiredShiftMutationResult =
+  Apollo.MutationResult<CreateDesiredShiftMutation>
+export type CreateDesiredShiftMutationOptions = Apollo.BaseMutationOptions<
+  CreateDesiredShiftMutation,
+  CreateDesiredShiftMutationVariables
 >
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
