@@ -20,8 +20,8 @@ func (r *employmentRepo) Find(companyId domain.CompanyID, workerId domain.Worker
 		&employment.ID,
 		&employment.Kind,
 		&employment.Status,
-		&employment.CompanyID,
 		&employment.WorkerID,
+		&employment.CompanyID,
 		&employment.CreatedAt,
 		&employment.UpdatedAt,
 	); err != nil {
@@ -39,8 +39,8 @@ func (r *employmentRepo) FindById(employmentId domain.EmploymentID) (*domain.Emp
 		&employment.ID,
 		&employment.Kind,
 		&employment.Status,
-		&employment.CompanyID,
 		&employment.WorkerID,
+		&employment.CompanyID,
 		&employment.CreatedAt,
 		&employment.UpdatedAt,
 	); err != nil {
