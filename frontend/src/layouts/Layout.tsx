@@ -2,23 +2,23 @@ import Head from 'next/head'
 import { ReactNode, useEffect } from 'react'
 import { Navbar } from './Navbar'
 import { useTheme } from '@/context/ThemeProvider'
-import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { useRouter } from 'next/router'
+import { useGetMeQuery } from '@/graphql/types'
 
 interface LayoutProps {
   children: ReactNode
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { worker, loading } = useWorkerInfo()
+  const { data, loading } = useGetMeQuery()
   const { theme } = useTheme()
   const router = useRouter()
 
   useEffect(() => {
     if (loading) return
-    if (worker) return
+    if (data?.me) return
     void router.push('/accounts/sign_in')
-  }, [worker, loading, router.asPath])
+  }, [data?.me, loading, router.asPath])
 
   if (loading) return <div>Loading...</div>
   return (

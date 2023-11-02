@@ -1,34 +1,41 @@
 import { TestID } from '@/resources/TestID'
-import CompanySelect from './CompanySelect'
+import CompanySelect from '../components/Kintai/CompanySelect'
 import { getData, postData } from '@/utils/api'
-import { useWorkerInfo } from '@/context/WorkerInfoProvider'
 import { useCallback, useEffect, useState } from 'react'
-import { EmploymentKind, WorkStatus, workStatusLabels } from '@/resources/types'
+import { WorkStatus, workStatusLabels } from '@/resources/types'
 import Link from 'next/link'
+import {
+  Company,
+  EmploymentKind,
+  useGetCompaniesQuery,
+  useGetCompanyLazyQuery,
+} from '@/graphql/types'
 
 export const App: React.FC = () => {
-  const { company, employment } = useWorkerInfo()
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null)
+  const { data: companiesData } = useGetCompaniesQuery()
+  const [loadCompany, { data: companyData }] = useGetCompanyLazyQuery()
 
   const fetchWorkStatus = useCallback(async () => {
-    if (!company) return
+    if (!selectedCompany) return
 
     const json = (
-      await getData(`/member/companies/${company.id}/work_status`)
+      await getData(`/member/companies/${selectedCompany.id}/work_status`)
     )[1]
 
     setWorkStatus(json.work_status)
-  }, [company])
+  }, [selectedCompany])
 
   const createStamp = useCallback(async () => {
-    if (!company) return
+    if (!selectedCompany) return
 
     await postData({
-      url: `/member/companies/${company.id}/stamps/now`,
+      url: `/member/companies/${selectedCompany.id}/stamps/now`,
       data: {},
     })
     void fetchWorkStatus()
-  }, [company, fetchWorkStatus])
+  }, [selectedCompany, fetchWorkStatus])
 
   useEffect(() => {
     void fetchWorkStatus()
@@ -38,8 +45,14 @@ export const App: React.FC = () => {
     <div id="app" data-testid={TestID.APP}>
       <h1>勤怠プラス+</h1>
       <div className="container">
-        <CompanySelect />
-        {company && (
+        {companiesData?.companies && (
+          <CompanySelect
+            setSelectedCompany={setSelectedCompany}
+            selectedCompany={selectedCompany}
+            companies={companiesData.companies}
+          />
+        )}
+        {companyData?.company && (
           <div className="mt-5">
             <h2 className="d-none">打刻</h2>
             <section className="stamp">
@@ -62,19 +75,19 @@ export const App: React.FC = () => {
               <div className="list-group mt-5">
                 <Link
                   className="list-group-item"
-                  href={`/companies/${company.id}/desired_shifts`}
+                  href={`/companies/${companyData.company.id}/desired_shifts`}
                 >
                   希望シフト
                 </Link>
               </div>
             </section>
-            {employment?.kind === EmploymentKind.ADMIN && (
+            {companyData.company.employment?.kind === EmploymentKind.Admin && (
               <section className="mt-5">
                 <h2 className="">管理者ページ</h2>
                 <div className="list-group">
                   <Link
                     className="list-group-item"
-                    href={`/companies/${company.id}/admin/shifts/new`}
+                    href={`/companies/${companyData.company.id}/admin/shifts/new`}
                   >
                     シフト作成
                   </Link>
