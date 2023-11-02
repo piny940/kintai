@@ -1,4 +1,7 @@
-import { useGetDesiredShiftsLazyQuery } from '@/graphql/types'
+import {
+  useGetCompanyDesiredShiftsLazyQuery,
+  useGetDesiredShiftsLazyQuery,
+} from '@/graphql/types'
 import dayjs, { Dayjs } from 'dayjs'
 import { useEffect, useMemo } from 'react'
 
@@ -33,6 +36,27 @@ export const useMappedDesiredShifts = (
   const desiredShiftsMap = useMemo(() => {
     return mapShifts(desiredShiftsData?.desiredShifts || [], selectedMonth)
   }, [desiredShiftsData?.desiredShifts, selectedMonth])
+
+  useEffect(() => {
+    if (!companyId) return
+    void loadDesiredShifts({ variables: { companyId } })
+  }, [companyId, loadDesiredShifts])
+
+  return desiredShiftsMap
+}
+export const useMappedCompanyDesiredShifts = (
+  companyId: number,
+  selectedMonth: Dayjs
+) => {
+  const [loadDesiredShifts, { data: desiredShiftsData }] =
+    useGetCompanyDesiredShiftsLazyQuery()
+
+  const desiredShiftsMap = useMemo(() => {
+    return mapShifts(
+      desiredShiftsData?.companyDesiredShifts || [],
+      selectedMonth
+    )
+  }, [desiredShiftsData?.companyDesiredShifts, selectedMonth])
 
   useEffect(() => {
     if (!companyId) return
