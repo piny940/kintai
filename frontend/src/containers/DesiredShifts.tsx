@@ -13,6 +13,8 @@ import 'react-calendar/dist/Calendar.css'
 const ADD_DESIRED_SHIFTS_MODAL_ID = 'add-desired-shifts-modal'
 const DesiredShifts = (): JSX.Element => {
   const companyId = useCompanyId()
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
+  const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
 
   // GraphQL
   const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
@@ -20,10 +22,6 @@ const DesiredShifts = (): JSX.Element => {
     useGetDesiredShiftsLazyQuery()
   const [createDesiredShift, { error: desiredShiftError }] =
     useCreateDesiredShiftMutation()
-
-  const [alert, setAlert] = useState('')
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
-  const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
 
   const onAddButtonClicked = async (date: Dayjs) => {
     setSelectedDate(date)
@@ -33,10 +31,6 @@ const DesiredShifts = (): JSX.Element => {
   const postDesiredShift = useCallback(
     async (since: Dayjs, till: Dayjs) => {
       if (!companyId) return
-      if (till.isBefore(since)) {
-        setAlert('開始時間は終了時間よりも前に設定してください')
-        return
-      }
       try {
         await createDesiredShift({
           variables: {
@@ -71,7 +65,7 @@ const DesiredShifts = (): JSX.Element => {
         selectedDate={selectedDate}
         addDesiredShiftsModalID={ADD_DESIRED_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
-        alert={desiredShiftError?.message || alert}
+        alert={desiredShiftError?.message || ''}
       />
     </div>
   )
