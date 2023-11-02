@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
+import { useRouter } from 'next/router'
 
 export const useCalendar = ({
   yearMonth,
@@ -35,4 +36,18 @@ export const useCalendar = ({
   const goPrevMonth = () => setYearMonth(yearMonth.subtract(1, 'month'))
 
   return { year, month, datesMatrix, goNextMonth, goPrevMonth }
+}
+
+export const useCompanyId = () => {
+  const router = useRouter()
+
+  const companyId = useMemo(() => {
+    const { company_id: id } = router.query
+    if (typeof id === 'string') {
+      return parseInt(id)
+    } else {
+      return undefined
+    }
+  }, [router.query])
+  return companyId
 }
