@@ -1,7 +1,7 @@
 import WeekDays from './WeekDays'
 import { memo } from 'react'
 import Month from './Month'
-import { useCalendar } from '@/utils/hooks'
+import { useCalendar } from '@/hooks/calendar'
 import { Dayjs } from 'dayjs'
 
 export type CalendarProps = {

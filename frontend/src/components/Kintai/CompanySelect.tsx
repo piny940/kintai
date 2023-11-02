@@ -18,7 +18,7 @@ const SelectCompany = ({
       const newCompany = companies.find((c) => c.id.toString() === value)
       setSelectedCompanyId(newCompany?.id || null)
     },
-    [companies, selectedCompanyId]
+    [companies, setSelectedCompanyId]
   )
 
   return (

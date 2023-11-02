@@ -1,5 +1,5 @@
-query getDesiredShifts($companyId: Uint!) {
-  desiredShifts(companyId: $companyId) {
+query getDesiredShifts($companyId: Uint!, $fromTime: Time!, $toTime: Time!) {
+  desiredShifts(companyId: $companyId, fromTime: $fromTime, toTime: $toTime) {
     id
     since
     till
@@ -8,8 +8,16 @@ query getDesiredShifts($companyId: Uint!) {
     updatedAt
   }
 }
-query getCompanyDesiredShifts($companyId: Uint!) {
-  companyDesiredShifts(companyId: $companyId) {
+query getCompanyDesiredShifts(
+  $companyId: Uint!
+  $fromTime: Time!
+  $toTime: Time!
+) {
+  companyDesiredShifts(
+    companyId: $companyId
+    fromTime: $fromTime
+    toTime: $toTime
+  ) {
     id
     since
     till
