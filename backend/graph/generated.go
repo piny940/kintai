@@ -628,7 +628,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/company.gql" "schema/desired_shift.gql" "schema/session.gql" "schema/stamp.gql" "schema/work_status.gql" "schema/worker.gql"
+//go:embed "schema/company.gql" "schema/desired_shift.gql" "schema/employment.gql" "schema/session.gql" "schema/stamp.gql" "schema/work_status.gql" "schema/worker.gql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -642,6 +642,7 @@ func sourceData(filename string) string {
 var sources = []*ast.Source{
 	{Name: "schema/company.gql", Input: sourceData("schema/company.gql"), BuiltIn: false},
 	{Name: "schema/desired_shift.gql", Input: sourceData("schema/desired_shift.gql"), BuiltIn: false},
+	{Name: "schema/employment.gql", Input: sourceData("schema/employment.gql"), BuiltIn: false},
 	{Name: "schema/session.gql", Input: sourceData("schema/session.gql"), BuiltIn: false},
 	{Name: "schema/stamp.gql", Input: sourceData("schema/stamp.gql"), BuiltIn: false},
 	{Name: "schema/work_status.gql", Input: sourceData("schema/work_status.gql"), BuiltIn: false},

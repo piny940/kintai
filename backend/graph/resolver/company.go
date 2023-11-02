@@ -25,15 +25,6 @@ func (r *companyResolver) Employment(ctx context.Context, obj *model.Company) (*
 	return model.NewEmployment(employment), nil
 }
 
-func (r *employmentResolver) Worker(ctx context.Context, obj *model.Employment) (*model.Worker, error) {
-	registry := registry.GetRegistry()
-	worker, err := registry.WorkerRepo().FindById(domain.WorkerID(obj.WorkerID))
-	if err != nil {
-		return nil, newError(err, "従業員情報の取得に失敗しました")
-	}
-	return model.NewWorker(worker), nil
-}
-
 func (r *queryResolver) Company(ctx context.Context, id uint) (*model.Company, error) {
 	company, err := GetCompany(ctx, id)
 	if err != nil {
@@ -58,10 +49,7 @@ func (r *queryResolver) Companies(ctx context.Context) ([]*model.Company, error)
 
 func (r *Resolver) Company() graph.CompanyResolver { return &companyResolver{r} }
 
-func (r *Resolver) Employment() graph.EmploymentResolver { return &employmentResolver{r} }
-
 func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
 type companyResolver struct{ *Resolver }
-type employmentResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
