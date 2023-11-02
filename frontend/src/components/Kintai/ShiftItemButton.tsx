@@ -1,9 +1,9 @@
-import { DesiredShift, Worker } from '@/graphql/types'
+import { Worker } from '@/graphql/types'
 import dayjs from 'dayjs'
 import { memo } from 'react'
 
 export type ShiftItemButtonProps = {
-  shift: DesiredShift
+  shift: { since: string; till: string }
   worker?: Worker
   className?: string
 }
