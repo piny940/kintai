@@ -22,6 +22,14 @@ type LoginResponse struct {
 	Worker *Worker `json:"worker,omitempty"`
 }
 
+type Stamp struct {
+	ID           uint      `json:"id"`
+	StampedAt    time.Time `json:"stampedAt"`
+	EmploymentID uint      `json:"employmentID"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+}
+
 type Worker struct {
 	ID         uint         `json:"id"`
 	Status     WorkerStatus `json:"status"`
