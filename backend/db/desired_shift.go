@@ -15,18 +15,19 @@ func NewDesiredShiftRepo(db *DB) domain.IDesiredShiftRepo {
 type desiredShiftQuery struct {
 	queryObj
 }
+
 func newDesiredShiftQuery(query domain.DesiredShiftQuery) *desiredShiftQuery {
 	queryObj := queryObj{}
-	if (query.ID != nil) {
+	if query.ID != nil {
 		queryObj.add("id = ", *query.ID)
 	}
-	if (query.EmploymentID != nil) {
+	if query.EmploymentID != nil {
 		queryObj.add("employment_id = ", *query.EmploymentID)
 	}
-	if (query.FromTime != nil) {
+	if query.FromTime != nil {
 		queryObj.add("since >= ", *query.FromTime)
 	}
-	if (query.ToTime != nil) {
+	if query.ToTime != nil {
 		queryObj.add("till <= ", *query.ToTime)
 	}
 	return &desiredShiftQuery{queryObj: queryObj}

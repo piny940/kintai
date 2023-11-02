@@ -16,7 +16,7 @@ func Init() error {
 	// }
 
 	e.Use(EchoContextToContextMiddleware)
-	e.POST("/query", graphqlHandler())
+	e.Any("/query", graphqlHandler())
 	e.GET("/", playgroundHandler())
 	e.Use(corsHandler())
 	e.Use(middleware.Logger())
