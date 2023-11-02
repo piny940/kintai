@@ -30,6 +30,17 @@ func newError(err error, message string) error {
 	return fmt.Errorf(message)
 }
 
+func currentWorkerId(ctx context.Context) (*domain.WorkerID, error) {
+	echoCtx, err := echoContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	workerId, err := auth.CurrentWorkerId(echoCtx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	return workerId, nil
+}
 func currentWorker(ctx context.Context) (*domain.Worker, error) {
 	echoCtx, err := echoContextFromContext(ctx)
 	if err != nil {

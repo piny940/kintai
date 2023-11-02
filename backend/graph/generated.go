@@ -89,11 +89,12 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Companies     func(childComplexity int) int
-		Company       func(childComplexity int, id uint) int
-		DesiredShifts func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
-		Me            func(childComplexity int) int
-		WorkStatus    func(childComplexity int, companyID uint) int
+		Companies            func(childComplexity int) int
+		Company              func(childComplexity int, id uint) int
+		CompanyDesiredShifts func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
+		DesiredShifts        func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
+		Me                   func(childComplexity int) int
+		WorkStatus           func(childComplexity int, companyID uint) int
 	}
 
 	Stamp struct {
@@ -133,6 +134,7 @@ type QueryResolver interface {
 	Company(ctx context.Context, id uint) (*model.Company, error)
 	Companies(ctx context.Context) ([]*model.Company, error)
 	DesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error)
+	CompanyDesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error)
 	WorkStatus(ctx context.Context, companyID uint) (model.WorkStatus, error)
 	Me(ctx context.Context) (*model.Worker, error)
 }
@@ -357,6 +359,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Company(childComplexity, args["id"].(uint)), true
+
+	case "Query.companyDesiredShifts":
+		if e.complexity.Query.CompanyDesiredShifts == nil {
+			break
+		}
+
+		args, err := ec.field_Query_companyDesiredShifts_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.CompanyDesiredShifts(childComplexity, args["companyId"].(uint), args["fromTime"].(*time.Time), args["toTime"].(*time.Time)), true
 
 	case "Query.desiredShifts":
 		if e.complexity.Query.DesiredShifts == nil {
@@ -699,6 +713,39 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_companyDesiredShifts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uint
+	if tmp, ok := rawArgs["companyId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
+		arg0, err = ec.unmarshalNUint2uint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["companyId"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["fromTime"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fromTime"))
+		arg1, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["fromTime"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["toTime"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("toTime"))
+		arg2, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["toTime"] = arg2
 	return args, nil
 }
 
@@ -2138,6 +2185,75 @@ func (ec *executionContext) fieldContext_Query_desiredShifts(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_desiredShifts_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_companyDesiredShifts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_companyDesiredShifts(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().CompanyDesiredShifts(rctx, fc.Args["companyId"].(uint), fc.Args["fromTime"].(*time.Time), fc.Args["toTime"].(*time.Time))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.DesiredShift)
+	fc.Result = res
+	return ec.marshalNDesiredShift2ᚕᚖkintai_backendᚋgraphᚋmodelᚐDesiredShiftᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_companyDesiredShifts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_DesiredShift_id(ctx, field)
+			case "since":
+				return ec.fieldContext_DesiredShift_since(ctx, field)
+			case "till":
+				return ec.fieldContext_DesiredShift_till(ctx, field)
+			case "employmentId":
+				return ec.fieldContext_DesiredShift_employmentId(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_DesiredShift_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_DesiredShift_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DesiredShift", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_companyDesiredShifts_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -5189,6 +5305,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_desiredShifts(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "companyDesiredShifts":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_companyDesiredShifts(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
