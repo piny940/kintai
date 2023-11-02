@@ -20,19 +20,14 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ApolloProvider client={client}>
-      <WorkerInfoProvider>
-        <ThemeProvider>
-          <Head>
-            <meta
-              content="width=device-width,initial-scale=1"
-              name="viewport"
-            />
-          </Head>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ThemeProvider>
-      </WorkerInfoProvider>
+      <ThemeProvider>
+        <Head>
+          <meta content="width=device-width,initial-scale=1" name="viewport" />
+        </Head>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ThemeProvider>
     </ApolloProvider>
   )
 }
