@@ -1,7 +1,7 @@
 import { TestID } from '@/resources/TestID'
 import CompanySelect from '../components/Kintai/CompanySelect'
 import { getData, postData } from '@/utils/api'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { WorkStatus, workStatusLabels } from '@/resources/types'
 import Link from 'next/link'
 import {
@@ -16,6 +16,18 @@ export const App: React.FC = () => {
   const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null)
   const { data: companiesData } = useGetCompaniesQuery()
   const [loadCompany, { data: companyData }] = useGetCompanyLazyQuery()
+
+  const _setSelectedCompany = useCallback(
+    (company: Company | null) => {
+      setSelectedCompany(company)
+      if (!company) return
+      void loadCompany({ variables: { id: company.id } })
+    },
+    [setSelectedCompany]
+  )
+  const company = useMemo(() => {
+    return ((selectedCompany && companyData?.company) as Company) || null
+  }, [companyData?.company, selectedCompany])
 
   const fetchWorkStatus = useCallback(async () => {
     if (!selectedCompany) return
@@ -47,12 +59,12 @@ export const App: React.FC = () => {
       <div className="container">
         {companiesData?.companies && (
           <CompanySelect
-            setSelectedCompany={setSelectedCompany}
+            setSelectedCompany={_setSelectedCompany}
             selectedCompany={selectedCompany}
             companies={companiesData.companies}
           />
         )}
-        {companyData?.company && (
+        {company && (
           <div className="mt-5">
             <h2 className="d-none">打刻</h2>
             <section className="stamp">
@@ -75,19 +87,19 @@ export const App: React.FC = () => {
               <div className="list-group mt-5">
                 <Link
                   className="list-group-item"
-                  href={`/companies/${companyData.company.id}/desired_shifts`}
+                  href={`/companies/${company.id}/desired_shifts`}
                 >
                   希望シフト
                 </Link>
               </div>
             </section>
-            {companyData.company.employment?.kind === EmploymentKind.Admin && (
+            {company.employment?.kind === EmploymentKind.Admin && (
               <section className="mt-5">
                 <h2 className="">管理者ページ</h2>
                 <div className="list-group">
                   <Link
                     className="list-group-item"
-                    href={`/companies/${companyData.company.id}/admin/shifts/new`}
+                    href={`/companies/${company.id}/admin/shifts/new`}
                   >
                     シフト作成
                   </Link>
