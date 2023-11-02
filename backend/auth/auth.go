@@ -22,6 +22,12 @@ var sessionsOptions = &sessions.Options{
 	MaxAge:   86400 * 7,
 }
 
+type authorizationError struct{}
+
+func (e authorizationError) Error() string {
+	return "ログインしてください"
+}
+
 func setSession(c echo.Context, key string, value interface{}) error {
 	session, _ := store.Get(c.Request(), SESSION_NAME)
 	session.Options = sessionsOptions
@@ -46,11 +52,14 @@ func CurrentWorker(c echo.Context) (*domain.Worker, error) {
 	registry := registry.GetRegistry()
 	workerId, err := getSession(c, "worker_id")
 	if err != nil || workerId == nil {
-		return nil, err
+		return nil, authorizationError{}
 	}
 	worker, err := registry.WorkerRepo().FindById(domain.WorkerID(workerId.(uint)))
 	if err != nil {
-		return nil, err
+		return nil, authorizationError{}
+	}
+	if worker == nil {
+		return nil, authorizationError{}
 	}
 	return worker, nil
 }

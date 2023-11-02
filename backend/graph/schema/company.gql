@@ -1,0 +1,31 @@
+scalar Uint
+
+type Company {
+  id: Uint!
+  name: String!
+  employmentId: Uint!
+  employment: Employment!
+  createdAt: Time!
+  updatedAt: Time!
+}
+enum EmploymentKind {
+  ADMIN
+  MEMBER
+}
+enum EmploymentStatus {
+  ACTIVE
+  INACTIVE
+}
+type Employment {
+  id: Uint!
+  kind: EmploymentKind!
+  status: EmploymentStatus!
+  companyId: Int!
+  workerId: Int!
+  createdAt: Time!
+  updatedAt: Time!
+}
+extend type Query {
+  company(id: Uint!): Company!
+  companies: [Company!]!
+}

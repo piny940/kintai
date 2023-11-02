@@ -2,8 +2,8 @@ import { memo, useMemo } from 'react'
 import AddDesiredShiftsModal from './AddDesiredShiftsModal'
 import Calendar from '../Calendar/Calendar'
 import DesiredShiftsDate from './DesiredShiftsDate'
-import { Dayjs } from 'dayjs'
-import { DesiredShift } from '@/resources/types'
+import dayjs, { Dayjs } from 'dayjs'
+import { DesiredShift } from '@/graphql/types'
 
 export type DesiredShiftsCalendarProps = {
   alert: string
@@ -32,10 +32,16 @@ const DesiredShiftsCalendar = ({
       map.set(i, [])
     }
     desiredShifts.forEach((desiredShift) => {
-      map.get(desiredShift.since.date())?.push(desiredShift)
+      const date = dayjs(desiredShift.since)
+      if (
+        date.year() !== selectedMonth.year() ||
+        date.month() !== selectedMonth.month()
+      )
+        return
+      map.get(dayjs(desiredShift.since).date())?.push(desiredShift)
     })
     return map
-  }, [desiredShifts])
+  }, [desiredShifts, selectedMonth])
 
   return (
     <>

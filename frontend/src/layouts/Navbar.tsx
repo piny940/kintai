@@ -1,30 +1,27 @@
 import { MaterialIcon } from '@/components/Common/MaterialIcon'
 import { ThemeToggler } from '@/components/Common/ThemeToggler'
 import { useTheme } from '@/context/ThemeProvider'
-import { useWorkerInfo } from '@/context/WorkerInfoProvider'
+import { useGetMeQuery } from '@/graphql/types'
 import { TestID } from '@/resources/TestID'
-import { fetchApi } from '@/utils/api'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
 export const Navbar: React.FC = () => {
   const { theme, setTheme } = useTheme()
-  const { worker, setWorker } = useWorkerInfo()
-  const router = useRouter()
+  const { data } = useGetMeQuery()
 
   const toggleTheme = useCallback(() => {
     setTheme(theme === 'light' ? 'dark' : 'light')
   }, [theme])
 
   const logout = useCallback(async () => {
-    await fetchApi({
-      url: '/session',
-      method: 'DELETE',
-    })
-    setWorker(null)
-    void router.push('/')
-  }, [setWorker])
+    // await fetchApi({
+    //   url: '/session',
+    //   method: 'DELETE',
+    // })
+    // setWorker(null)
+    // void router.push('/')
+  }, [])
 
   return (
     <nav
@@ -53,7 +50,7 @@ export const Navbar: React.FC = () => {
         <div className="collapse navbar-collapse" id="navbar-collapse-target">
           <div className="d-flex justify-content-end navbar-nav w-100 mx-3">
             <ul className="navbar-nav">
-              {worker && (
+              {data?.me && (
                 <li className="nav-item">
                   <div className="nav-link">
                     <button role="button" onClick={logout}>

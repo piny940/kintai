@@ -1,58 +1,73 @@
 import { TestID } from '@/resources/TestID'
-import CompanySelect from './CompanySelect'
-import { getData, postData } from '@/utils/api'
-import { useWorkerInfo } from '@/context/WorkerInfoProvider'
-import { useCallback, useEffect, useState } from 'react'
-import { EmploymentKind, WorkStatus, workStatusLabels } from '@/resources/types'
+import CompanySelect from '../components/Kintai/CompanySelect'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
+import {
+  Company,
+  EmploymentKind,
+  GetWorkStatusDocument,
+  useGetCompaniesQuery,
+  useGetCompanyLazyQuery,
+  useGetWorkStatusLazyQuery,
+  usePushStampMutation,
+} from '@/graphql/types'
+import { workStatusLabels } from '@/resources/enums'
+import { useApolloClient } from '@apollo/client'
 
 export const App: React.FC = () => {
-  const { company, employment } = useWorkerInfo()
-  const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null)
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
+    null
+  )
+  const { data: companiesData } = useGetCompaniesQuery()
+  const [loadCompany, { data: companyData }] = useGetCompanyLazyQuery()
+  const [loadWorkStatus, { data: workStatusData }] = useGetWorkStatusLazyQuery()
+  const pushStamp = usePushStampMutation()[0]
+  const client = useApolloClient()
 
-  const fetchWorkStatus = useCallback(async () => {
+  const company = useMemo(
+    () => (selectedCompanyId && (companyData?.company as Company)) || null,
+    [selectedCompanyId, companyData?.company]
+  )
+
+  const _pushStamp = useCallback(async () => {
     if (!company) return
 
-    const json = (
-      await getData(`/member/companies/${company.id}/work_status`)
-    )[1]
-
-    setWorkStatus(json.work_status)
-  }, [company])
-
-  const createStamp = useCallback(async () => {
-    if (!company) return
-
-    await postData({
-      url: `/member/companies/${company.id}/stamps/now`,
-      data: {},
-    })
-    void fetchWorkStatus()
-  }, [company, fetchWorkStatus])
+    await pushStamp({ variables: { companyId: company.id } })
+    await client.refetchQueries({ include: [GetWorkStatusDocument] })
+  }, [company, client, pushStamp])
 
   useEffect(() => {
-    void fetchWorkStatus()
-  }, [fetchWorkStatus])
+    if (!selectedCompanyId) return
+
+    void loadCompany({ variables: { id: selectedCompanyId } })
+    void loadWorkStatus({ variables: { companyId: selectedCompanyId } })
+  }, [selectedCompanyId, loadCompany, loadWorkStatus])
 
   return (
     <div id="app" data-testid={TestID.APP}>
       <h1>勤怠プラス+</h1>
       <div className="container">
-        <CompanySelect />
+        {companiesData?.companies && (
+          <CompanySelect
+            setSelectedCompanyId={setSelectedCompanyId}
+            selectedCompanyId={selectedCompanyId}
+            companies={companiesData.companies}
+          />
+        )}
         {company && (
           <div className="mt-5">
             <h2 className="d-none">打刻</h2>
             <section className="stamp">
-              {workStatus != null && (
+              {workStatusData?.workStatus != null && (
                 <div className="">
                   <p className="work-status h2">
-                    {workStatusLabels[workStatus]}
+                    {workStatusLabels[workStatusData?.workStatus]}
                   </p>
                 </div>
               )}
               <button
                 className="btn btn-primary btn-lg w-100 py-5 fs-2"
-                onClick={createStamp}
+                onClick={_pushStamp}
               >
                 打刻する
               </button>
@@ -68,7 +83,7 @@ export const App: React.FC = () => {
                 </Link>
               </div>
             </section>
-            {employment?.kind === EmploymentKind.ADMIN && (
+            {company.employment?.kind === EmploymentKind.Admin && (
               <section className="mt-5">
                 <h2 className="">管理者ページ</h2>
                 <div className="list-group">

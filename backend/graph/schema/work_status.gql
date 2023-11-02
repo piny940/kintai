@@ -1,0 +1,7 @@
+enum WorkStatus {
+  WORKING
+  LEFT
+}
+extend type Query {
+  workStatus(companyId: Uint!): WorkStatus!
+}

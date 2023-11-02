@@ -1,4 +1,4 @@
-import { DesiredShift } from '@/resources/types'
+import { DesiredShift } from '@/graphql/types'
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
 import ShiftItem from './ShiftItem'

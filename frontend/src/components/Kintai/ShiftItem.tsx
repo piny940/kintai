@@ -1,4 +1,5 @@
-import { DesiredShift } from '@/resources/types'
+import { DesiredShift } from '@/graphql/types'
+import dayjs from 'dayjs'
 import { memo } from 'react'
 
 export type ShiftItemProps = {
@@ -8,7 +9,7 @@ export type ShiftItemProps = {
 const ShiftItem = ({ shift }: ShiftItemProps): JSX.Element => {
   return (
     <li className="small bg-info rounded p-1 m-1">
-      {shift.since.format('HH:mm')} ~ {shift.till.format('HH:mm')}
+      {dayjs(shift.since).format('HH:mm')} ~ {dayjs(shift.till).format('HH:mm')}
     </li>
   )
 }

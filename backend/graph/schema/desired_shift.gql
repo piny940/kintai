@@ -1,0 +1,21 @@
+scalar Time
+
+type DesiredShift {
+  id: Uint!
+  since: Time!
+  till: Time!
+  employmentId: Uint!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+extend type Query {
+  desiredShifts(
+    companyId: Uint!
+    fromTime: Time
+    toTime: Time
+  ): [DesiredShift!]!
+}
+extend type Mutation {
+  createDesiredShift(companyId: Uint!, since: Time!, till: Time!): DesiredShift!
+}

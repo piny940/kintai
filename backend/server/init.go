@@ -3,18 +3,25 @@ package server
 import (
 	"kintai_backend/config"
 
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func Init() error {
 	c := config.GetConfig()
-	echo, err := NewRouter()
-	if err != nil {
-		return err
-	}
-	echo.Use(middleware.Logger())
-	echo.Use(middleware.Recover())
+	e := echo.New()
+	// echo, err := NewRouter()
+	// if err != nil {
+	// 	return err
+	// }
 
-	echo.Logger.Fatal(echo.Start(":" + c.GetString("server.port")))
+	e.Use(EchoContextToContextMiddleware)
+	e.Any("/query", graphqlHandler())
+	e.GET("/", playgroundHandler())
+	e.Use(corsHandler())
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	e.Logger.Fatal(e.Start(":" + c.GetString("server.port")))
 	return nil
 }
