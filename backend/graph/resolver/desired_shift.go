@@ -13,6 +13,27 @@ import (
 	"time"
 )
 
+func (r *mutationResolver) CreateDesiredShift(ctx context.Context, companyID uint, since time.Time, till time.Time) (*model.DesiredShift, error) {
+	registry := registry.GetRegistry()
+	worker, err := currentWorker(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	company, err := GetCompany(ctx, companyID)
+	if err != nil {
+		return nil, newError(err, "company_idが適切ではありません")
+	}
+	employment, err := registry.EmploymentRepo().Find(company.ID, worker.ID)
+	if err != nil {
+		return nil, newError(err, "会社に属していません")
+	}
+	desiredShift, err := registry.DesiredShiftUseCase().Create(employment.ID, since, till)
+	if err != nil {
+		return nil, newError(err, "希望シフトの作成に失敗しました")
+	}
+	return model.NewDesiredShift(desiredShift), nil
+}
+
 func (r *queryResolver) DesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error) {
 	registry := registry.GetRegistry()
 	worker, err := currentWorker(ctx)
@@ -39,6 +60,6 @@ func (r *queryResolver) DesiredShifts(ctx context.Context, companyID uint, fromT
 	return model.NewDesiredShifts(desiredShifts), nil
 }
 
-func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
+func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
-type queryResolver struct{ *Resolver }
+type mutationResolver struct{ *Resolver }

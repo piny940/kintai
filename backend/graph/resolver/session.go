@@ -8,7 +8,6 @@ import (
 	"context"
 	"kintai_backend/auth"
 	"kintai_backend/domain"
-	"kintai_backend/graph"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
 )
@@ -40,7 +39,3 @@ func (r *mutationResolver) Logout(ctx context.Context) (bool, error) {
 	auth.Logout(echoCtx)
 	return true, nil
 }
-
-func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
-
-type mutationResolver struct{ *Resolver }
