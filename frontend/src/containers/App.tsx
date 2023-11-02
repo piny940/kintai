@@ -1,56 +1,46 @@
 import { TestID } from '@/resources/TestID'
 import CompanySelect from '../components/Kintai/CompanySelect'
-import { getData, postData } from '@/utils/api'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { WorkStatus, workStatusLabels } from '@/resources/types'
 import Link from 'next/link'
 import {
   Company,
   EmploymentKind,
+  GetWorkStatusDocument,
   useGetCompaniesQuery,
   useGetCompanyLazyQuery,
+  useGetWorkStatusLazyQuery,
+  usePushStampMutation,
 } from '@/graphql/types'
+import { workStatusLabels } from '@/resources/enums'
+import { useApolloClient } from '@apollo/client'
 
 export const App: React.FC = () => {
   const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
     null
   )
-  const [workStatus, setWorkStatus] = useState<WorkStatus | null>(null)
   const { data: companiesData } = useGetCompaniesQuery()
   const [loadCompany, { data: companyData }] = useGetCompanyLazyQuery()
+  const [loadWorkStatus, { data: workStatusData }] = useGetWorkStatusLazyQuery()
+  const pushStamp = usePushStampMutation()[0]
+  const client = useApolloClient()
 
   const company = useMemo(
     () => (selectedCompanyId && (companyData?.company as Company)) || null,
     [selectedCompanyId, companyData?.company]
   )
 
-  const fetchWorkStatus = useCallback(async () => {
+  const _pushStamp = useCallback(async () => {
     if (!company) return
 
-    const json = (
-      await getData(`/member/companies/${company.id}/work_status`)
-    )[1]
-
-    setWorkStatus(json.work_status)
+    await pushStamp({ variables: { companyId: company.id } })
+    await client.refetchQueries({ include: [GetWorkStatusDocument] })
   }, [company])
-
-  const createStamp = useCallback(async () => {
-    if (!company) return
-
-    await postData({
-      url: `/member/companies/${company.id}/stamps/now`,
-      data: {},
-    })
-    void fetchWorkStatus()
-  }, [company, fetchWorkStatus])
-
-  useEffect(() => {
-    void fetchWorkStatus()
-  }, [fetchWorkStatus])
 
   useEffect(() => {
     if (!selectedCompanyId) return
+
     void loadCompany({ variables: { id: selectedCompanyId } })
+    void loadWorkStatus({ variables: { companyId: selectedCompanyId } })
   }, [selectedCompanyId])
 
   return (
@@ -68,16 +58,16 @@ export const App: React.FC = () => {
           <div className="mt-5">
             <h2 className="d-none">打刻</h2>
             <section className="stamp">
-              {workStatus != null && (
+              {workStatusData?.workStatus != null && (
                 <div className="">
                   <p className="work-status h2">
-                    {workStatusLabels[workStatus]}
+                    {workStatusLabels[workStatusData?.workStatus]}
                   </p>
                 </div>
               )}
               <button
                 className="btn btn-primary btn-lg w-100 py-5 fs-2"
-                onClick={createStamp}
+                onClick={_pushStamp}
               >
                 打刻する
               </button>
