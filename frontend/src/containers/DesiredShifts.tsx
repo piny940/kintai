@@ -3,7 +3,6 @@ import {
   GetDesiredShiftsDocument,
   useCreateDesiredShiftMutation,
   useGetCompanyLazyQuery,
-  useGetDesiredShiftsLazyQuery,
 } from '@/graphql/types'
 import { useCompanyId } from '@/utils/hooks'
 import dayjs, { Dayjs } from 'dayjs'
@@ -20,8 +19,6 @@ const DesiredShifts = (): JSX.Element => {
 
   // GraphQL
   const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
-  const [loadDesiredShifts, { data: desiredShiftsData }] =
-    useGetDesiredShiftsLazyQuery()
   const [createDesiredShift, { error: desiredShiftError }] =
     useCreateDesiredShiftMutation()
   const client = useApolloClient()
@@ -51,12 +48,10 @@ const DesiredShifts = (): JSX.Element => {
   useEffect(() => {
     if (!companyId) return
     void loadCompany({ variables: { id: companyId } })
-    void loadDesiredShifts({ variables: { companyId } })
-  }, [companyId, loadCompany, loadDesiredShifts])
+  }, [companyId, loadCompany])
 
   if (error) return <Error statusCode={404} />
-  if (!companyData?.company || !desiredShiftsData?.desiredShifts)
-    return <>loading...</>
+  if (!companyId || !companyData?.company) return <>loading...</>
   return (
     <div>
       <h1>希望シフト作成</h1>
@@ -65,7 +60,7 @@ const DesiredShifts = (): JSX.Element => {
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
         addDesiredShift={postDesiredShift}
-        desiredShifts={desiredShiftsData?.desiredShifts || []}
+        companyId={companyId}
         selectedDate={selectedDate}
         addDesiredShiftsModalID={ADD_DESIRED_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}

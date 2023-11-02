@@ -1,16 +1,16 @@
-import { memo, useMemo } from 'react'
+import { memo } from 'react'
 import AddDesiredShiftsModal from './AddDesiredShiftsModal'
 import Calendar from '../Calendar/Calendar'
 import DesiredShiftsDate from './DesiredShiftsDate'
-import dayjs, { Dayjs } from 'dayjs'
-import { DesiredShift } from '@/graphql/types'
+import { Dayjs } from 'dayjs'
+import { useMappedDesiredShifts } from '@/utils/hooks'
 
 export type DesiredShiftsCalendarProps = {
   alert: string
   addDesiredShiftsModalID: string
   onAddButtonClicked: (date: Dayjs) => void
   selectedDate: Dayjs | null
-  desiredShifts: DesiredShift[]
+  companyId: number
   addDesiredShift: (since: Dayjs, till: Dayjs) => void
   selectedMonth: Dayjs
   setSelectedMonth: (selectedMonth: Dayjs) => void
@@ -21,27 +21,12 @@ const DesiredShiftsCalendar = ({
   addDesiredShiftsModalID,
   onAddButtonClicked,
   selectedDate,
-  desiredShifts,
+  companyId,
   addDesiredShift,
   selectedMonth,
   setSelectedMonth,
 }: DesiredShiftsCalendarProps): JSX.Element => {
-  const desiredShiftsMap = useMemo(() => {
-    const map = new Map<number, DesiredShift[]>()
-    for (let i = 1; i <= 31; i++) {
-      map.set(i, [])
-    }
-    desiredShifts.forEach((desiredShift) => {
-      const date = dayjs(desiredShift.since)
-      if (
-        date.year() !== selectedMonth.year() ||
-        date.month() !== selectedMonth.month()
-      )
-        return
-      map.get(dayjs(desiredShift.since).date())?.push(desiredShift)
-    })
-    return map
-  }, [desiredShifts, selectedMonth])
+  const desiredShiftsMap = useMappedDesiredShifts(companyId, selectedMonth)
 
   return (
     <>
