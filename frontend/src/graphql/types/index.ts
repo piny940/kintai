@@ -45,10 +45,10 @@ export type Company = {
 export type DesiredShift = {
   __typename?: 'DesiredShift'
   createdAt: Scalars['Time']['output']
-  employmentId: Scalars['Int']['output']
+  employmentId: Scalars['Uint']['output']
   id: Scalars['Uint']['output']
-  since: Scalars['String']['output']
-  till: Scalars['String']['output']
+  since: Scalars['Time']['output']
+  till: Scalars['Time']['output']
   updatedAt: Scalars['Time']['output']
 }
 
@@ -98,12 +98,19 @@ export type Query = {
   __typename?: 'Query'
   companies: Company[]
   company: Company
+  desiredShifts: DesiredShift[]
   me?: Maybe<Worker>
   workStatus: WorkStatus
 }
 
 export type QueryCompanyArgs = {
   id: Scalars['Uint']['input']
+}
+
+export type QueryDesiredShiftsArgs = {
+  companyId: Scalars['Uint']['input']
+  fromTime?: InputMaybe<Scalars['Time']['input']>
+  toTime?: InputMaybe<Scalars['Time']['input']>
 }
 
 export type QueryWorkStatusArgs = {
@@ -177,6 +184,23 @@ export type GetCompaniesQuery = {
     __typename?: 'Company'
     id: number
     name: string
+    createdAt: string
+    updatedAt: string
+  }>
+}
+
+export type GetDesiredShiftsQueryVariables = Exact<{
+  companyId: Scalars['Uint']['input']
+}>
+
+export type GetDesiredShiftsQuery = {
+  __typename?: 'Query'
+  desiredShifts: Array<{
+    __typename?: 'DesiredShift'
+    id: number
+    since: string
+    till: string
+    employmentId: number
     createdAt: string
     updatedAt: string
   }>
@@ -391,6 +415,84 @@ export type GetCompaniesSuspenseQueryHookResult = ReturnType<
 export type GetCompaniesQueryResult = Apollo.QueryResult<
   GetCompaniesQuery,
   GetCompaniesQueryVariables
+>
+export const GetDesiredShiftsDocument = gql`
+  query getDesiredShifts($companyId: Uint!) {
+    desiredShifts(companyId: $companyId) {
+      id
+      since
+      till
+      employmentId
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+/**
+ * __useGetDesiredShiftsQuery__
+ *
+ * To run a query within a React component, call `useGetDesiredShiftsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDesiredShiftsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDesiredShiftsQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useGetDesiredShiftsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetDesiredShiftsQuery,
+    GetDesiredShiftsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetDesiredShiftsQuery, GetDesiredShiftsQueryVariables>(
+    GetDesiredShiftsDocument,
+    options
+  )
+}
+export function useGetDesiredShiftsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetDesiredShiftsQuery,
+    GetDesiredShiftsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<
+    GetDesiredShiftsQuery,
+    GetDesiredShiftsQueryVariables
+  >(GetDesiredShiftsDocument, options)
+}
+export function useGetDesiredShiftsSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetDesiredShiftsQuery,
+    GetDesiredShiftsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<
+    GetDesiredShiftsQuery,
+    GetDesiredShiftsQueryVariables
+  >(GetDesiredShiftsDocument, options)
+}
+export type GetDesiredShiftsQueryHookResult = ReturnType<
+  typeof useGetDesiredShiftsQuery
+>
+export type GetDesiredShiftsLazyQueryHookResult = ReturnType<
+  typeof useGetDesiredShiftsLazyQuery
+>
+export type GetDesiredShiftsSuspenseQueryHookResult = ReturnType<
+  typeof useGetDesiredShiftsSuspenseQuery
+>
+export type GetDesiredShiftsQueryResult = Apollo.QueryResult<
+  GetDesiredShiftsQuery,
+  GetDesiredShiftsQueryVariables
 >
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
