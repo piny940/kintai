@@ -1,7 +1,7 @@
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
-import ShiftItem from './ShiftItem'
 import { DesiredShift } from '@/graphql/types'
+import ShiftItemButton from './ShiftItemButton'
 
 export type NewShiftsDateProps = {
   month: number
@@ -41,15 +41,15 @@ const NewShiftsDate = ({
         )}
       </div>
       {isCurrentMonth && (
-        <ul className="list-unstyled">
+        <div className="list-unstyled">
           {desiredShifts.map((desiredShift) => (
-            <ShiftItem
-              className="btn btn-outlined"
+            <ShiftItemButton
+              className="btn-outline-info text-body"
               key={desiredShift.id}
               shift={desiredShift}
             />
           ))}
-        </ul>
+        </div>
       )}
     </div>
   )

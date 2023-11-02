@@ -1,4 +1,5 @@
 import Calendar from '@/components/Calendar/Calendar'
+import NewShiftDate from '@/components/Kintai/NewShiftDate'
 import {
   useGetCompanyDesiredShiftsLazyQuery,
   useGetCompanyLazyQuery,
@@ -33,7 +34,14 @@ const NewShifts = (): JSX.Element => {
       <Calendar
         yearMonth={selectedMonth}
         setYearMonth={setSelectedMonth}
-        renderDate={() => <div>test</div>}
+        renderDate={(month, date) => (
+          <NewShiftDate
+            onAddButtonClicked={() => console.log('add')}
+            month={month}
+            date={date}
+            desiredShifts={desiredShiftsData.companyDesiredShifts}
+          />
+        )}
       />
     </div>
   )
