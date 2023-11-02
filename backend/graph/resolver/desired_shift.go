@@ -6,7 +6,6 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
@@ -15,7 +14,12 @@ import (
 )
 
 func (r *desiredShiftResolver) Employment(ctx context.Context, obj *model.DesiredShift) (*model.Employment, error) {
-	panic(fmt.Errorf("not implemented: Employment - employment"))
+	registry := registry.GetRegistry()
+	employment, err := registry.EmploymentRepo().FindById(domain.EmploymentID(obj.EmploymentID))
+	if err != nil {
+		return nil, newError(err, "所属情報の取得に失敗しました")
+	}
+	return model.NewEmployment(employment), nil
 }
 
 func (r *mutationResolver) CreateDesiredShift(ctx context.Context, companyID uint, since time.Time, till time.Time) (*model.DesiredShift, error) {
