@@ -1,5 +1,7 @@
+import NewShifts from '@/containers/NewShifts'
+
 const NewShiftsPage = (): JSX.Element => {
-  return <div className="">hoge</div>
+  return <NewShifts />
 }
 
 export default NewShiftsPage

@@ -105,6 +105,7 @@ export type Query = {
   __typename?: 'Query'
   companies: Company[]
   company: Company
+  companyDesiredShifts: DesiredShift[]
   desiredShifts: DesiredShift[]
   me?: Maybe<Worker>
   workStatus: WorkStatus
@@ -112,6 +113,12 @@ export type Query = {
 
 export type QueryCompanyArgs = {
   id: Scalars['Uint']['input']
+}
+
+export type QueryCompanyDesiredShiftsArgs = {
+  companyId: Scalars['Uint']['input']
+  fromTime?: InputMaybe<Scalars['Time']['input']>
+  toTime?: InputMaybe<Scalars['Time']['input']>
 }
 
 export type QueryDesiredShiftsArgs = {
@@ -203,6 +210,23 @@ export type GetDesiredShiftsQueryVariables = Exact<{
 export type GetDesiredShiftsQuery = {
   __typename?: 'Query'
   desiredShifts: Array<{
+    __typename?: 'DesiredShift'
+    id: number
+    since: string
+    till: string
+    employmentId: number
+    createdAt: string
+    updatedAt: string
+  }>
+}
+
+export type GetCompanyDesiredShiftsQueryVariables = Exact<{
+  companyId: Scalars['Uint']['input']
+}>
+
+export type GetCompanyDesiredShiftsQuery = {
+  __typename?: 'Query'
+  companyDesiredShifts: Array<{
     __typename?: 'DesiredShift'
     id: number
     since: string
@@ -511,6 +535,84 @@ export type GetDesiredShiftsSuspenseQueryHookResult = ReturnType<
 export type GetDesiredShiftsQueryResult = Apollo.QueryResult<
   GetDesiredShiftsQuery,
   GetDesiredShiftsQueryVariables
+>
+export const GetCompanyDesiredShiftsDocument = gql`
+  query getCompanyDesiredShifts($companyId: Uint!) {
+    companyDesiredShifts(companyId: $companyId) {
+      id
+      since
+      till
+      employmentId
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+/**
+ * __useGetCompanyDesiredShiftsQuery__
+ *
+ * To run a query within a React component, call `useGetCompanyDesiredShiftsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompanyDesiredShiftsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCompanyDesiredShiftsQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useGetCompanyDesiredShiftsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCompanyDesiredShiftsQuery,
+    GetCompanyDesiredShiftsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<
+    GetCompanyDesiredShiftsQuery,
+    GetCompanyDesiredShiftsQueryVariables
+  >(GetCompanyDesiredShiftsDocument, options)
+}
+export function useGetCompanyDesiredShiftsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCompanyDesiredShiftsQuery,
+    GetCompanyDesiredShiftsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<
+    GetCompanyDesiredShiftsQuery,
+    GetCompanyDesiredShiftsQueryVariables
+  >(GetCompanyDesiredShiftsDocument, options)
+}
+export function useGetCompanyDesiredShiftsSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetCompanyDesiredShiftsQuery,
+    GetCompanyDesiredShiftsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<
+    GetCompanyDesiredShiftsQuery,
+    GetCompanyDesiredShiftsQueryVariables
+  >(GetCompanyDesiredShiftsDocument, options)
+}
+export type GetCompanyDesiredShiftsQueryHookResult = ReturnType<
+  typeof useGetCompanyDesiredShiftsQuery
+>
+export type GetCompanyDesiredShiftsLazyQueryHookResult = ReturnType<
+  typeof useGetCompanyDesiredShiftsLazyQuery
+>
+export type GetCompanyDesiredShiftsSuspenseQueryHookResult = ReturnType<
+  typeof useGetCompanyDesiredShiftsSuspenseQuery
+>
+export type GetCompanyDesiredShiftsQueryResult = Apollo.QueryResult<
+  GetCompanyDesiredShiftsQuery,
+  GetCompanyDesiredShiftsQueryVariables
 >
 export const CreateDesiredShiftDocument = gql`
   mutation createDesiredShift($companyId: Uint!, $since: Time!, $till: Time!) {
