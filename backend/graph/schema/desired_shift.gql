@@ -1,0 +1,18 @@
+scalar Time
+
+type DesiredShift {
+  id: Uint!
+  since: Time!
+  till: Time!
+  employmentId: Uint!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type Query {
+  desiredShifts(
+    companyId: Uint!
+    fromTime: Time
+    toTime: Time
+  ): [DesiredShift!]!
+}

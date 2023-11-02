@@ -49,7 +49,4 @@ func (r *queryResolver) Companies(ctx context.Context) ([]*model.Company, error)
 
 func (r *Resolver) Company() graph.CompanyResolver { return &companyResolver{r} }
 
-func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
-
 type companyResolver struct{ *Resolver }
-type queryResolver struct{ *Resolver }

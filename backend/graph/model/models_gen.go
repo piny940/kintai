@@ -11,9 +11,9 @@ import (
 
 type DesiredShift struct {
 	ID           uint      `json:"id"`
-	Since        string    `json:"since"`
-	Till         string    `json:"till"`
-	EmploymentID int       `json:"employmentId"`
+	Since        time.Time `json:"since"`
+	Till         time.Time `json:"till"`
+	EmploymentID uint      `json:"employmentId"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
 }
