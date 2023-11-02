@@ -63,6 +63,9 @@ func (r *queryResolver) DesiredShifts(ctx context.Context, companyID uint, fromT
 func (r *queryResolver) CompanyDesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error) {
 	registry := registry.GetRegistry()
 	workerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
 	desiredShifts, err := registry.DesiredShiftUseCase().ListCompanyDesiredShifts(*workerId, domain.CompanyID(companyID))
 	if err != nil {
 		return nil, newError(err, "希望シフトの取得に失敗しました")

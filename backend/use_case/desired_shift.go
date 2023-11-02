@@ -16,8 +16,8 @@ type desiredShiftUseCase struct {
 	employmentRepo   domain.IEmploymentRepo
 }
 
-func NewDesiredShiftUseCase(desiredShiftRepo domain.IDesiredShiftRepo) IDesiredShiftUseCase {
-	return &desiredShiftUseCase{desiredShiftRepo: desiredShiftRepo}
+func NewDesiredShiftUseCase(desiredShiftRepo domain.IDesiredShiftRepo, employmentRepo domain.IEmploymentRepo) IDesiredShiftUseCase {
+	return &desiredShiftUseCase{desiredShiftRepo: desiredShiftRepo, employmentRepo: employmentRepo}
 }
 
 func (u *desiredShiftUseCase) Create(employmentId domain.EmploymentID, since time.Time, till time.Time) (*domain.DesiredShift, error) {
@@ -40,5 +40,6 @@ func (u *desiredShiftUseCase) ListCompanyDesiredShifts(workerId domain.WorkerID,
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("usecase", desiredShifts)
 	return desiredShifts, nil
 }
