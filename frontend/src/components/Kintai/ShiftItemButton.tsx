@@ -2,24 +2,24 @@ import { DesiredShift, Worker } from '@/graphql/types'
 import dayjs from 'dayjs'
 import { memo } from 'react'
 
-export type ShiftItemProps = {
+export type ShiftItemButtonProps = {
   shift: DesiredShift
   worker?: Worker
   className?: string
 }
 
-const ShiftItem = ({
+const ShiftItemButton = ({
   shift,
   worker,
   className = '',
-}: ShiftItemProps): JSX.Element => {
+}: ShiftItemButtonProps): JSX.Element => {
   const renderRange = () => (
     <>
       {dayjs(shift.since).format('HH:mm')} ~ {dayjs(shift.till).format('HH:mm')}
     </>
   )
   return (
-    <li className={'small rounded p-1 m-1 ' + className}>
+    <button className={'btn d-block small rounded p-1 m-1 ' + className}>
       {worker ? (
         <>
           {worker?.name.firstName}: {renderRange()}
@@ -27,8 +27,8 @@ const ShiftItem = ({
       ) : (
         <>{renderRange()}</>
       )}
-    </li>
+    </button>
   )
 }
 
-export default memo(ShiftItem)
+export default memo(ShiftItemButton)

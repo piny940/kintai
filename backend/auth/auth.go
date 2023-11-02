@@ -47,14 +47,18 @@ func Login(c echo.Context, worker *domain.Worker) {
 func Logout(c echo.Context) {
 	setSession(c, "worker_id", nil)
 }
-
-func CurrentWorker(c echo.Context) (*domain.Worker, error) {
-	registry := registry.GetRegistry()
+func CurrentWorkerId(c echo.Context) (*domain.WorkerID, error) {
 	workerId, err := getSession(c, "worker_id")
 	if err != nil || workerId == nil {
 		return nil, authorizationError{}
 	}
-	worker, err := registry.WorkerRepo().FindById(domain.WorkerID(workerId.(uint)))
+	domainWorkerId := domain.WorkerID(workerId.(uint))
+	return &domainWorkerId, nil
+}
+func CurrentWorker(c echo.Context) (*domain.Worker, error) {
+	registry := registry.GetRegistry()
+	workerId, err := CurrentWorkerId(c)
+	worker, err := registry.WorkerRepo().FindById(*workerId)
 	if err != nil {
 		return nil, authorizationError{}
 	}

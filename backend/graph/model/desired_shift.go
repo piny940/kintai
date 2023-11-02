@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"kintai_backend/domain"
 )
 
@@ -18,7 +17,6 @@ func NewDesiredShift(desiredShift *domain.DesiredShift) *DesiredShift {
 
 func NewDesiredShifts(desiredShifts []*domain.DesiredShift) []*DesiredShift {
 	result := make([]*DesiredShift, len(desiredShifts))
-	fmt.Println(result)
 	for i, desiredShift := range desiredShifts {
 		result[i] = NewDesiredShift(desiredShift)
 	}

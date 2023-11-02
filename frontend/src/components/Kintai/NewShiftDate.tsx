@@ -1,21 +1,21 @@
-import { DesiredShift } from '@/graphql/types'
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
-import ShiftItem from './ShiftItem'
+import { DesiredShift } from '@/graphql/types'
+import ShiftItemButton from './ShiftItemButton'
 
-export type DesiredShiftsDateProps = {
+export type NewShiftsDateProps = {
   month: number
   date: Dayjs
   onAddButtonClicked: () => void
   desiredShifts: DesiredShift[]
 }
 
-const DesiredShiftsDate = ({
+const NewShiftsDate = ({
   date,
   month,
   onAddButtonClicked,
   desiredShifts,
-}: DesiredShiftsDateProps): JSX.Element => {
+}: NewShiftsDateProps): JSX.Element => {
   const textColor = (): string => {
     if (date.month() !== month) {
       return 'text-secondary'
@@ -41,18 +41,18 @@ const DesiredShiftsDate = ({
         )}
       </div>
       {isCurrentMonth && (
-        <ul className="list-unstyled">
+        <div className="list-unstyled">
           {desiredShifts.map((desiredShift) => (
-            <ShiftItem
-              className="bg-info"
+            <ShiftItemButton
+              className="btn-outline-info text-body"
               key={desiredShift.id}
               shift={desiredShift}
             />
           ))}
-        </ul>
+        </div>
       )}
     </div>
   )
 }
 
-export default memo(DesiredShiftsDate)
+export default memo(NewShiftsDate)

@@ -15,6 +15,11 @@ extend type Query {
     fromTime: Time
     toTime: Time
   ): [DesiredShift!]!
+  companyDesiredShifts(
+    companyId: Uint!
+    fromTime: Time
+    toTime: Time
+  ): [DesiredShift!]!
 }
 extend type Mutation {
   createDesiredShift(companyId: Uint!, since: Time!, till: Time!): DesiredShift!

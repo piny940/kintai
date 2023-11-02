@@ -60,6 +60,19 @@ func (r *queryResolver) DesiredShifts(ctx context.Context, companyID uint, fromT
 	return model.NewDesiredShifts(desiredShifts), nil
 }
 
+func (r *queryResolver) CompanyDesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error) {
+	registry := registry.GetRegistry()
+	workerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	desiredShifts, err := registry.DesiredShiftUseCase().ListCompanyDesiredShifts(*workerId, domain.CompanyID(companyID))
+	if err != nil {
+		return nil, newError(err, "希望シフトの取得に失敗しました")
+	}
+	return model.NewDesiredShifts(desiredShifts), nil
+}
+
 func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }
