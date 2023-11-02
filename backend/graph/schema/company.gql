@@ -20,8 +20,8 @@ type Employment {
   id: Uint!
   kind: EmploymentKind!
   status: EmploymentStatus!
-  companyId: Int!
-  workerId: Int!
+  companyId: Uint!
+  workerId: Uint!
   worker: Worker!
   createdAt: Time!
   updatedAt: Time!

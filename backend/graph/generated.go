@@ -1640,9 +1640,9 @@ func (ec *executionContext) _Employment_companyId(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uint)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNUint2uint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Employment_companyId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1652,7 +1652,7 @@ func (ec *executionContext) fieldContext_Employment_companyId(ctx context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Uint does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1684,9 +1684,9 @@ func (ec *executionContext) _Employment_workerId(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uint)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNUint2uint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Employment_workerId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1696,7 +1696,7 @@ func (ec *executionContext) fieldContext_Employment_workerId(ctx context.Context
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Uint does not have child fields")
 		},
 	}
 	return fc, nil
@@ -6295,21 +6295,6 @@ func (ec *executionContext) unmarshalNEmploymentStatus2kintai_backendᚋgraphᚋ
 
 func (ec *executionContext) marshalNEmploymentStatus2kintai_backendᚋgraphᚋmodelᚐEmploymentStatus(ctx context.Context, sel ast.SelectionSet, v model.EmploymentStatus) graphql.Marshaler {
 	return v
-}
-
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
 }
 
 func (ec *executionContext) marshalNStamp2kintai_backendᚋgraphᚋmodelᚐStamp(ctx context.Context, sel ast.SelectionSet, v model.Stamp) graphql.Marshaler {
