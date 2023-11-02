@@ -41,14 +41,14 @@ const DesiredShifts = (): JSX.Element => {
         })
       } catch {}
     },
-    [companyId]
+    [companyId, createDesiredShift]
   )
 
   useEffect(() => {
     if (!companyId) return
     void loadCompany({ variables: { id: companyId } })
     void loadDesiredShifts({ variables: { companyId } })
-  }, [companyId])
+  }, [companyId, loadCompany, loadDesiredShifts])
 
   if (error) return <Error statusCode={404} />
   if (!companyData?.company || !desiredShiftsData?.desiredShifts)

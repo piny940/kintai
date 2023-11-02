@@ -34,14 +34,14 @@ export const App: React.FC = () => {
 
     await pushStamp({ variables: { companyId: company.id } })
     await client.refetchQueries({ include: [GetWorkStatusDocument] })
-  }, [company])
+  }, [company, client, pushStamp])
 
   useEffect(() => {
     if (!selectedCompanyId) return
 
     void loadCompany({ variables: { id: selectedCompanyId } })
     void loadWorkStatus({ variables: { companyId: selectedCompanyId } })
-  }, [selectedCompanyId])
+  }, [selectedCompanyId, loadCompany, loadWorkStatus])
 
   return (
     <div id="app" data-testid={TestID.APP}>
