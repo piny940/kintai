@@ -788,11 +788,14 @@ func (ec *executionContext) _Company_employmentId(ctx context.Context, field gra
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*uint)
 	fc.Result = res
-	return ec.marshalOUint2ᚖuint(ctx, field.Selections, res)
+	return ec.marshalNUint2ᚖuint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Company_employmentId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -829,11 +832,14 @@ func (ec *executionContext) _Company_employment(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Employment)
 	fc.Result = res
-	return ec.marshalOEmployment2ᚖkintai_backendᚋgraphᚋmodelᚐEmployment(ctx, field.Selections, res)
+	return ec.marshalNEmployment2ᚖkintai_backendᚋgraphᚋmodelᚐEmployment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Company_employment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1770,11 +1776,14 @@ func (ec *executionContext) _Query_company(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Company)
 	fc.Result = res
-	return ec.marshalOCompany2ᚖkintai_backendᚋgraphᚋmodelᚐCompany(ctx, field.Selections, res)
+	return ec.marshalNCompany2ᚖkintai_backendᚋgraphᚋmodelᚐCompany(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_company(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1836,11 +1845,14 @@ func (ec *executionContext) _Query_companies(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]*model.Company)
 	fc.Result = res
-	return ec.marshalOCompany2ᚕᚖkintai_backendᚋgraphᚋmodelᚐCompanyᚄ(ctx, field.Selections, res)
+	return ec.marshalNCompany2ᚕᚖkintai_backendᚋgraphᚋmodelᚐCompanyᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_companies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4479,6 +4491,9 @@ func (ec *executionContext) _Company(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "employmentId":
 			out.Values[i] = ec._Company_employmentId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "employment":
 			field := field
 
@@ -4489,6 +4504,9 @@ func (ec *executionContext) _Company(ctx context.Context, sel ast.SelectionSet, 
 					}
 				}()
 				res = ec._Company_employment(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -4803,6 +4821,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_company(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -4822,6 +4843,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_companies(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -5391,6 +5415,54 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) marshalNCompany2kintai_backendᚋgraphᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v model.Company) graphql.Marshaler {
+	return ec._Company(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNCompany2ᚕᚖkintai_backendᚋgraphᚋmodelᚐCompanyᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Company) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNCompany2ᚖkintai_backendᚋgraphᚋmodelᚐCompany(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) marshalNCompany2ᚖkintai_backendᚋgraphᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model.Company) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -5399,6 +5471,20 @@ func (ec *executionContext) marshalNCompany2ᚖkintai_backendᚋgraphᚋmodelᚐ
 		return graphql.Null
 	}
 	return ec._Company(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNEmployment2kintai_backendᚋgraphᚋmodelᚐEmployment(ctx context.Context, sel ast.SelectionSet, v model.Employment) graphql.Marshaler {
+	return ec._Employment(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNEmployment2ᚖkintai_backendᚋgraphᚋmodelᚐEmployment(ctx context.Context, sel ast.SelectionSet, v *model.Employment) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Employment(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNEmploymentKind2kintai_backendᚋgraphᚋmodelᚐEmploymentKind(ctx context.Context, v interface{}) (model.EmploymentKind, error) {
@@ -5487,6 +5573,27 @@ func (ec *executionContext) unmarshalNUint2uint(ctx context.Context, v interface
 
 func (ec *executionContext) marshalNUint2uint(ctx context.Context, sel ast.SelectionSet, v uint) graphql.Marshaler {
 	res := graphql.MarshalUint(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNUint2ᚖuint(ctx context.Context, v interface{}) (*uint, error) {
+	res, err := graphql.UnmarshalUint(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNUint2ᚖuint(ctx context.Context, sel ast.SelectionSet, v *uint) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	res := graphql.MarshalUint(*v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5794,67 +5901,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOCompany2ᚕᚖkintai_backendᚋgraphᚋmodelᚐCompanyᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Company) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNCompany2ᚖkintai_backendᚋgraphᚋmodelᚐCompany(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalOCompany2ᚖkintai_backendᚋgraphᚋmodelᚐCompany(ctx context.Context, sel ast.SelectionSet, v *model.Company) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Company(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOEmployment2ᚖkintai_backendᚋgraphᚋmodelᚐEmployment(ctx context.Context, sel ast.SelectionSet, v *model.Employment) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Employment(ctx, sel, v)
-}
-
 func (ec *executionContext) marshalOLoginResponse2ᚖkintai_backendᚋgraphᚋmodelᚐLoginResponse(ctx context.Context, sel ast.SelectionSet, v *model.LoginResponse) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -5875,22 +5921,6 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	res := graphql.MarshalString(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOUint2ᚖuint(ctx context.Context, v interface{}) (*uint, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalUint(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOUint2ᚖuint(ctx context.Context, sel ast.SelectionSet, v *uint) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalUint(*v)
 	return res
 }
 
