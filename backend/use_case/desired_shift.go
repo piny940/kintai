@@ -40,6 +40,5 @@ func (u *desiredShiftUseCase) ListCompanyDesiredShifts(workerId domain.WorkerID,
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("usecase", desiredShifts)
 	return desiredShifts, nil
 }
