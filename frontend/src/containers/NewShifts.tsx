@@ -1,5 +1,8 @@
 import Calendar from '@/components/Calendar/Calendar'
-import { useGetCompanyLazyQuery } from '@/graphql/types'
+import {
+  useGetCompanyDesiredShiftsLazyQuery,
+  useGetCompanyLazyQuery,
+} from '@/graphql/types'
 import { useCompanyId } from '@/utils/hooks'
 import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
@@ -7,17 +10,22 @@ import { memo, useEffect, useState } from 'react'
 
 const NewShifts = (): JSX.Element => {
   const companyId = useCompanyId()
-  const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
   const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
+
+  // Graphql
+  const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
+  const [loadDesiredShifts, { data: desiredShiftsData }] =
+    useGetCompanyDesiredShiftsLazyQuery()
 
   useEffect(() => {
     if (!companyId) return
     void loadCompany({ variables: { id: companyId } })
-  }, [companyId, loadCompany])
+    void loadDesiredShifts({ variables: { companyId } })
+  }, [companyId, loadCompany, loadDesiredShifts])
 
   if (error) return <Error statusCode={404} />
-  if (!companyData?.company) return <>loading...</>
+  if (!companyData?.company || !desiredShiftsData?.companyDesiredShifts)
+    return <>loading...</>
   return (
     <div>
       <h1>シフト作成</h1>
