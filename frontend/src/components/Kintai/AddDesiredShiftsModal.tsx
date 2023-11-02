@@ -33,7 +33,7 @@ const AddDesiredShiftsModal = ({
       const till = date.hour(tillHour).minute(tillMinute)
       addDesiredShift(since, till)
     },
-    [date]
+    [date, sinceHour, sinceMinute, tillHour, tillMinute]
   )
 
   return (
