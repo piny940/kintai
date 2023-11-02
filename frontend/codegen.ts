@@ -12,10 +12,14 @@ const config: CodegenConfig = {
       ],
       config: {
         scalars: {
-          Time: 'Dayjs.Dayjs',
+          Time: 'Date',
           Uint: 'number',
         },
         withHooks: true,
+      },
+      hooks: {
+        afterOneFileWrite:
+          'npx prettier --write src/graphql/types/index.ts && npx eslint . --fix',
       },
     },
   },

@@ -1,164 +1,221 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-const defaultOptions = {} as const;
+import { gql } from '@apollo/client'
+import * as Apollo from '@apollo/client'
+export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
+export type Exact<T extends Record<string, unknown>> = {
+  [K in keyof T]: T[K]
+}
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>
+}
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>
+}
+export type MakeEmpty<
+  T extends Record<string, unknown>,
+  K extends keyof T
+> = { [_ in K]?: never }
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never
+    }
+const defaultOptions = {} as const
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  Time: { input: Dayjs.Dayjs; output: Dayjs.Dayjs; }
-  Uint: { input: number; output: number; }
-};
+  ID: { input: string; output: string }
+  String: { input: string; output: string }
+  Boolean: { input: boolean; output: boolean }
+  Int: { input: number; output: number }
+  Float: { input: number; output: number }
+  Time: { input: Date; output: Date }
+  Uint: { input: number; output: number }
+}
 
 export type Company = {
-  __typename?: 'Company';
-  createdAt: Scalars['Time']['output'];
-  employment?: Maybe<Employment>;
-  employmentId?: Maybe<Scalars['Uint']['output']>;
-  id: Scalars['Uint']['output'];
-  name: Scalars['String']['output'];
-  updatedAt: Scalars['Time']['output'];
-};
+  __typename?: 'Company'
+  createdAt: Scalars['Time']['output']
+  employment?: Maybe<Employment>
+  employmentId?: Maybe<Scalars['Uint']['output']>
+  id: Scalars['Uint']['output']
+  name: Scalars['String']['output']
+  updatedAt: Scalars['Time']['output']
+}
 
 export type DesiredShift = {
-  __typename?: 'DesiredShift';
-  createdAt: Scalars['Time']['output'];
-  employmentId: Scalars['Int']['output'];
-  id: Scalars['Uint']['output'];
-  since: Scalars['String']['output'];
-  till: Scalars['String']['output'];
-  updatedAt: Scalars['Time']['output'];
-};
+  __typename?: 'DesiredShift'
+  createdAt: Scalars['Time']['output']
+  employmentId: Scalars['Int']['output']
+  id: Scalars['Uint']['output']
+  since: Scalars['String']['output']
+  till: Scalars['String']['output']
+  updatedAt: Scalars['Time']['output']
+}
 
 export type Employment = {
-  __typename?: 'Employment';
-  companyId: Scalars['Int']['output'];
-  createdAt: Scalars['Time']['output'];
-  id: Scalars['Uint']['output'];
-  kind: EmploymentKind;
-  status: EmploymentStatus;
-  updatedAt: Scalars['Time']['output'];
-  workerId: Scalars['Int']['output'];
-};
+  __typename?: 'Employment'
+  companyId: Scalars['Int']['output']
+  createdAt: Scalars['Time']['output']
+  id: Scalars['Uint']['output']
+  kind: EmploymentKind
+  status: EmploymentStatus
+  updatedAt: Scalars['Time']['output']
+  workerId: Scalars['Int']['output']
+}
 
 export enum EmploymentKind {
   Admin = 'ADMIN',
-  Member = 'MEMBER'
+  Member = 'MEMBER',
 }
 
 export enum EmploymentStatus {
   Active = 'ACTIVE',
-  Inactive = 'INACTIVE'
+  Inactive = 'INACTIVE',
 }
 
 export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  worker?: Maybe<Worker>;
-};
+  __typename?: 'LoginResponse'
+  worker?: Maybe<Worker>
+}
 
 export type Mutation = {
-  __typename?: 'Mutation';
-  login?: Maybe<LoginResponse>;
-  logout: Scalars['Boolean']['output'];
-};
-
+  __typename?: 'Mutation'
+  login?: Maybe<LoginResponse>
+  logout: Scalars['Boolean']['output']
+}
 
 export type MutationLoginArgs = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-};
+  email: Scalars['String']['input']
+  password: Scalars['String']['input']
+}
 
 export type Query = {
-  __typename?: 'Query';
-  companies?: Maybe<Array<Company>>;
-  company?: Maybe<Company>;
-  me?: Maybe<Worker>;
-};
-
+  __typename?: 'Query'
+  companies?: Maybe<Company[]>
+  company?: Maybe<Company>
+  me?: Maybe<Worker>
+}
 
 export type QueryCompanyArgs = {
-  id: Scalars['Uint']['input'];
-};
+  id: Scalars['Uint']['input']
+}
 
 export enum WorkStatus {
   Left = 'LEFT',
-  Working = 'WORKING'
+  Working = 'WORKING',
 }
 
 export type Worker = {
-  __typename?: 'Worker';
-  createdAt: Scalars['Time']['output'];
-  email: Scalars['String']['output'];
-  id: Scalars['Uint']['output'];
-  name: WorkerName;
-  status: WorkerStatus;
-  updatedAt: Scalars['Time']['output'];
-  workStatus?: Maybe<WorkStatus>;
-};
+  __typename?: 'Worker'
+  createdAt: Scalars['Time']['output']
+  email: Scalars['String']['output']
+  id: Scalars['Uint']['output']
+  name: WorkerName
+  status: WorkerStatus
+  updatedAt: Scalars['Time']['output']
+  workStatus?: Maybe<WorkStatus>
+}
 
 export type WorkerName = {
-  __typename?: 'WorkerName';
-  firstName: Scalars['String']['output'];
-  lastName: Scalars['String']['output'];
-};
+  __typename?: 'WorkerName'
+  firstName: Scalars['String']['output']
+  lastName: Scalars['String']['output']
+}
 
 export enum WorkerStatus {
   Active = 'ACTIVE',
-  Inactive = 'INACTIVE'
+  Inactive = 'INACTIVE',
 }
 
 export type GetCompanyQueryVariables = Exact<{
-  id: Scalars['Uint']['input'];
-}>;
+  id: Scalars['Uint']['input']
+}>
 
+export type GetCompanyQuery = {
+  __typename?: 'Query'
+  company?: {
+    __typename?: 'Company'
+    id: number
+    name: string
+    createdAt: Date
+    updatedAt: Date
+    employment?: {
+      __typename?: 'Employment'
+      id: number
+      kind: EmploymentKind
+      status: EmploymentStatus
+      createdAt: Date
+      updatedAt: Date
+    } | null
+  } | null
+}
 
-export type GetCompanyQuery = { __typename?: 'Query', company?: { __typename?: 'Company', id: number, name: string, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs, employment?: { __typename?: 'Employment', id: number, kind: EmploymentKind, status: EmploymentStatus, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs } | null } | null };
+export type GetCompaniesQueryVariables = Exact<Record<string, never>>
 
-export type GetCompaniesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetCompaniesQuery = { __typename?: 'Query', companies?: Array<{ __typename?: 'Company', id: number, name: string, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs }> | null };
+export type GetCompaniesQuery = {
+  __typename?: 'Query'
+  companies?: Array<{
+    __typename?: 'Company'
+    id: number
+    name: string
+    createdAt: Date
+    updatedAt: Date
+  }> | null
+}
 
 export type LoginMutationVariables = Exact<{
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-}>;
+  email: Scalars['String']['input']
+  password: Scalars['String']['input']
+}>
 
+export type LoginMutation = {
+  __typename?: 'Mutation'
+  login?: {
+    __typename?: 'LoginResponse'
+    worker?: {
+      __typename?: 'Worker'
+      id: number
+      status: WorkerStatus
+      email: string
+      createdAt: Date
+      updatedAt: Date
+      name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
+    } | null
+  } | null
+}
 
-export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'LoginResponse', worker?: { __typename?: 'Worker', id: number, status: WorkerStatus, email: string, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null } | null };
+export type GetMeQueryVariables = Exact<Record<string, never>>
 
-export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'Worker', id: number, status: WorkerStatus, email: string, createdAt: Dayjs.Dayjs, updatedAt: Dayjs.Dayjs, name: { __typename?: 'WorkerName', firstName: string, lastName: string } } | null };
-
+export type GetMeQuery = {
+  __typename?: 'Query'
+  me?: {
+    __typename?: 'Worker'
+    id: number
+    status: WorkerStatus
+    email: string
+    createdAt: Date
+    updatedAt: Date
+    name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
+  } | null
+}
 
 export const GetCompanyDocument = gql`
-    query getCompany($id: Uint!) {
-  company(id: $id) {
-    id
-    name
-    employment {
+  query getCompany($id: Uint!) {
+    company(id: $id) {
       id
-      kind
-      status
+      name
+      employment {
+        id
+        kind
+        status
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
-    createdAt
-    updatedAt
   }
-}
-    `;
+`
 
 /**
  * __useGetCompanyQuery__
@@ -176,32 +233,63 @@ export const GetCompanyDocument = gql`
  *   },
  * });
  */
-export function useGetCompanyQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, options);
-      }
-export function useGetCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, options);
-        }
-export function useGetCompanySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, options);
-        }
-export type GetCompanyQueryHookResult = ReturnType<typeof useGetCompanyQuery>;
-export type GetCompanyLazyQueryHookResult = ReturnType<typeof useGetCompanyLazyQuery>;
-export type GetCompanySuspenseQueryHookResult = ReturnType<typeof useGetCompanySuspenseQuery>;
-export type GetCompanyQueryResult = Apollo.QueryResult<GetCompanyQuery, GetCompanyQueryVariables>;
-export const GetCompaniesDocument = gql`
-    query getCompanies {
-  companies {
-    id
-    name
-    createdAt
-    updatedAt
-  }
+export function useGetCompanyQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCompanyQuery,
+    GetCompanyQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetCompanyQuery, GetCompanyQueryVariables>(
+    GetCompanyDocument,
+    options
+  )
 }
-    `;
+export function useGetCompanyLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCompanyQuery,
+    GetCompanyQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetCompanyQuery, GetCompanyQueryVariables>(
+    GetCompanyDocument,
+    options
+  )
+}
+export function useGetCompanySuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetCompanyQuery,
+    GetCompanyQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetCompanyQuery, GetCompanyQueryVariables>(
+    GetCompanyDocument,
+    options
+  )
+}
+export type GetCompanyQueryHookResult = ReturnType<typeof useGetCompanyQuery>
+export type GetCompanyLazyQueryHookResult = ReturnType<
+  typeof useGetCompanyLazyQuery
+>
+export type GetCompanySuspenseQueryHookResult = ReturnType<
+  typeof useGetCompanySuspenseQuery
+>
+export type GetCompanyQueryResult = Apollo.QueryResult<
+  GetCompanyQuery,
+  GetCompanyQueryVariables
+>
+export const GetCompaniesDocument = gql`
+  query getCompanies {
+    companies {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+  }
+`
 
 /**
  * __useGetCompaniesQuery__
@@ -218,40 +306,76 @@ export const GetCompaniesDocument = gql`
  *   },
  * });
  */
-export function useGetCompaniesQuery(baseOptions?: Apollo.QueryHookOptions<GetCompaniesQuery, GetCompaniesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCompaniesQuery, GetCompaniesQueryVariables>(GetCompaniesDocument, options);
-      }
-export function useGetCompaniesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompaniesQuery, GetCompaniesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCompaniesQuery, GetCompaniesQueryVariables>(GetCompaniesDocument, options);
-        }
-export function useGetCompaniesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCompaniesQuery, GetCompaniesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetCompaniesQuery, GetCompaniesQueryVariables>(GetCompaniesDocument, options);
-        }
-export type GetCompaniesQueryHookResult = ReturnType<typeof useGetCompaniesQuery>;
-export type GetCompaniesLazyQueryHookResult = ReturnType<typeof useGetCompaniesLazyQuery>;
-export type GetCompaniesSuspenseQueryHookResult = ReturnType<typeof useGetCompaniesSuspenseQuery>;
-export type GetCompaniesQueryResult = Apollo.QueryResult<GetCompaniesQuery, GetCompaniesQueryVariables>;
+export function useGetCompaniesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetCompaniesQuery,
+    GetCompaniesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetCompaniesQuery, GetCompaniesQueryVariables>(
+    GetCompaniesDocument,
+    options
+  )
+}
+export function useGetCompaniesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCompaniesQuery,
+    GetCompaniesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetCompaniesQuery, GetCompaniesQueryVariables>(
+    GetCompaniesDocument,
+    options
+  )
+}
+export function useGetCompaniesSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetCompaniesQuery,
+    GetCompaniesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetCompaniesQuery, GetCompaniesQueryVariables>(
+    GetCompaniesDocument,
+    options
+  )
+}
+export type GetCompaniesQueryHookResult = ReturnType<
+  typeof useGetCompaniesQuery
+>
+export type GetCompaniesLazyQueryHookResult = ReturnType<
+  typeof useGetCompaniesLazyQuery
+>
+export type GetCompaniesSuspenseQueryHookResult = ReturnType<
+  typeof useGetCompaniesSuspenseQuery
+>
+export type GetCompaniesQueryResult = Apollo.QueryResult<
+  GetCompaniesQuery,
+  GetCompaniesQueryVariables
+>
 export const LoginDocument = gql`
-    mutation Login($email: String!, $password: String!) {
-  login(email: $email, password: $password) {
-    worker {
-      id
-      status
-      email
-      name {
-        firstName
-        lastName
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      worker {
+        id
+        status
+        email
+        name {
+          firstName
+          lastName
+        }
+        createdAt
+        updatedAt
       }
-      createdAt
-      updatedAt
     }
   }
-}
-    `;
-export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+`
+export type LoginMutationFn = Apollo.MutationFunction<
+  LoginMutation,
+  LoginMutationVariables
+>
 
 /**
  * __useLoginMutation__
@@ -271,28 +395,39 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  *   },
  * });
  */
-export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-      }
-export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
-export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const GetMeDocument = gql`
-    query getMe {
-  me {
-    id
-    status
-    email
-    name {
-      firstName
-      lastName
-    }
-    createdAt
-    updatedAt
-  }
+export function useLoginMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    LoginMutation,
+    LoginMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(
+    LoginDocument,
+    options
+  )
 }
-    `;
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>
+export type LoginMutationOptions = Apollo.BaseMutationOptions<
+  LoginMutation,
+  LoginMutationVariables
+>
+export const GetMeDocument = gql`
+  query getMe {
+    me {
+      id
+      status
+      email
+      name {
+        firstName
+        lastName
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`
 
 /**
  * __useGetMeQuery__
@@ -309,19 +444,39 @@ export const GetMeDocument = gql`
  *   },
  * });
  */
-export function useGetMeQuery(baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-      }
-export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-        }
-export function useGetMeSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-        }
-export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>;
-export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>;
-export type GetMeSuspenseQueryHookResult = ReturnType<typeof useGetMeSuspenseQuery>;
-export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>;
+export function useGetMeQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(
+    GetMeDocument,
+    options
+  )
+}
+export function useGetMeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(
+    GetMeDocument,
+    options
+  )
+}
+export function useGetMeSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetMeQuery, GetMeQueryVariables>(
+    GetMeDocument,
+    options
+  )
+}
+export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>
+export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>
+export type GetMeSuspenseQueryHookResult = ReturnType<
+  typeof useGetMeSuspenseQuery
+>
+export type GetMeQueryResult = Apollo.QueryResult<
+  GetMeQuery,
+  GetMeQueryVariables
+>
