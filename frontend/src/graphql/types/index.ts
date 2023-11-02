@@ -11,9 +11,10 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-export type MakeEmpty<T extends Record<string, unknown>, K extends keyof T> = {
-  [_ in K]?: never
-}
+export type MakeEmpty<
+  T extends Record<string, unknown>,
+  K extends keyof T
+> = { [_ in K]?: never }
 export type Incremental<T> =
   | T
   | {
@@ -98,10 +99,15 @@ export type Query = {
   companies: Company[]
   company: Company
   me?: Maybe<Worker>
+  workStatus: WorkStatus
 }
 
 export type QueryCompanyArgs = {
   id: Scalars['Uint']['input']
+}
+
+export type QueryWorkStatusArgs = {
+  companyId: Scalars['Uint']['input']
 }
 
 export type Stamp = {
@@ -195,6 +201,24 @@ export type LoginMutation = {
       name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
     } | null
   } | null
+}
+
+export type PushStampMutationVariables = Exact<{
+  companyId: Scalars['Uint']['input']
+}>
+
+export type PushStampMutation = {
+  __typename?: 'Mutation'
+  pushStamp: { __typename?: 'Stamp'; id: number; stampedAt: string }
+}
+
+export type GetWorkStatusQueryVariables = Exact<{
+  companyId: Scalars['Uint']['input']
+}>
+
+export type GetWorkStatusQuery = {
+  __typename?: 'Query'
+  workStatus: WorkStatus
 }
 
 export type GetMeQueryVariables = Exact<Record<string, never>>
@@ -425,6 +449,127 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>
 export type LoginMutationOptions = Apollo.BaseMutationOptions<
   LoginMutation,
   LoginMutationVariables
+>
+export const PushStampDocument = gql`
+  mutation pushStamp($companyId: Uint!) {
+    pushStamp(companyId: $companyId) {
+      id
+      stampedAt
+    }
+  }
+`
+export type PushStampMutationFn = Apollo.MutationFunction<
+  PushStampMutation,
+  PushStampMutationVariables
+>
+
+/**
+ * __usePushStampMutation__
+ *
+ * To run a mutation, you first call `usePushStampMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePushStampMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [pushStampMutation, { data, loading, error }] = usePushStampMutation({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function usePushStampMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    PushStampMutation,
+    PushStampMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<PushStampMutation, PushStampMutationVariables>(
+    PushStampDocument,
+    options
+  )
+}
+export type PushStampMutationHookResult = ReturnType<
+  typeof usePushStampMutation
+>
+export type PushStampMutationResult = Apollo.MutationResult<PushStampMutation>
+export type PushStampMutationOptions = Apollo.BaseMutationOptions<
+  PushStampMutation,
+  PushStampMutationVariables
+>
+export const GetWorkStatusDocument = gql`
+  query getWorkStatus($companyId: Uint!) {
+    workStatus(companyId: $companyId)
+  }
+`
+
+/**
+ * __useGetWorkStatusQuery__
+ *
+ * To run a query within a React component, call `useGetWorkStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWorkStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWorkStatusQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useGetWorkStatusQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetWorkStatusQuery,
+    GetWorkStatusQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetWorkStatusQuery, GetWorkStatusQueryVariables>(
+    GetWorkStatusDocument,
+    options
+  )
+}
+export function useGetWorkStatusLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetWorkStatusQuery,
+    GetWorkStatusQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetWorkStatusQuery, GetWorkStatusQueryVariables>(
+    GetWorkStatusDocument,
+    options
+  )
+}
+export function useGetWorkStatusSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetWorkStatusQuery,
+    GetWorkStatusQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<
+    GetWorkStatusQuery,
+    GetWorkStatusQueryVariables
+  >(GetWorkStatusDocument, options)
+}
+export type GetWorkStatusQueryHookResult = ReturnType<
+  typeof useGetWorkStatusQuery
+>
+export type GetWorkStatusLazyQueryHookResult = ReturnType<
+  typeof useGetWorkStatusLazyQuery
+>
+export type GetWorkStatusSuspenseQueryHookResult = ReturnType<
+  typeof useGetWorkStatusSuspenseQuery
+>
+export type GetWorkStatusQueryResult = Apollo.QueryResult<
+  GetWorkStatusQuery,
+  GetWorkStatusQueryVariables
 >
 export const GetMeDocument = gql`
   query getMe {
