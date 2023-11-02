@@ -6,12 +6,17 @@ package resolver
 
 import (
 	"context"
+	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
 	"time"
 )
+
+func (r *desiredShiftResolver) Employment(ctx context.Context, obj *model.DesiredShift) (*model.Employment, error) {
+	panic(fmt.Errorf("not implemented: Employment - employment"))
+}
 
 func (r *mutationResolver) CreateDesiredShift(ctx context.Context, companyID uint, since time.Time, till time.Time) (*model.DesiredShift, error) {
 	registry := registry.GetRegistry()
@@ -73,6 +78,9 @@ func (r *queryResolver) CompanyDesiredShifts(ctx context.Context, companyID uint
 	return model.NewDesiredShifts(desiredShifts), nil
 }
 
+func (r *Resolver) DesiredShift() graph.DesiredShiftResolver { return &desiredShiftResolver{r} }
+
 func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
+type desiredShiftResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }

@@ -5,6 +5,7 @@ type DesiredShift {
   since: Time!
   till: Time!
   employmentId: Uint!
+  employment: Employment!
   createdAt: Time!
   updatedAt: Time!
 }
