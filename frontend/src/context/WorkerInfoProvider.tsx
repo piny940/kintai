@@ -8,8 +8,8 @@ import {
 } from 'react'
 import {
   Company,
-  useGetCompanyQuery,
-  useGetMeQuery,
+  useGetCompanyLazyQuery,
+  useGetMeLazyQuery,
   Worker,
 } from '@/graphql/types'
 import { useRouter } from 'next/router'
@@ -39,23 +39,39 @@ interface WorkerInfoProviderProps {
 const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
   children,
 }) => {
-  const [companyId, setCompanyId] = useState<number | null>(null)
   const router = useRouter()
-  const { data: meData, loading: meLoading } = useGetMeQuery()
-  const { data: companyData, loading: companyLoading } = useGetCompanyQuery({
-    variables: { id: companyId },
-  })
-  console.log(typeof meData?.me?.createdAt)
+  const [company, setCompany] = useState<Company | null>(null)
+  const [loadMe, { data: meData, loading: meLoading }] = useGetMeLazyQuery()
+  const [loadCompany, { loading: companyLoading }] = useGetCompanyLazyQuery()
+
   const setCurrentCompany = useCallback(async () => {
-    if (!meData?.me) return
+    if (!meData?.me) setCompany(null)
     const companyId = router.query.company_id
     if (typeof companyId !== 'string') return
-    setCompanyId(Number(companyId))
+    const { data } = await loadCompany({
+      variables: { id: Number(companyId) },
+    })
+    setCompany((data?.company as Company) || null)
   }, [meData?.me, router.query])
 
+  console.log(meData?.me)
   const _setCompany = useCallback(async (company: Company | null) => {
-    setCompanyId(company?.id || null)
+    console.log(company)
+    console.log(meData?.me)
+    if (!company || !meData?.me) {
+      setCompany(null)
+      return
+    }
+
+    const { data } = await loadCompany({
+      variables: { id: company.id },
+    })
+    setCompany((data?.company as Company) || null)
   }, [])
+
+  useEffect(() => {
+    void loadMe()
+  }, [loadMe])
 
   useEffect(() => {
     void setCurrentCompany()
@@ -63,7 +79,7 @@ const WorkerInfoProvider: React.FC<WorkerInfoProviderProps> = ({
 
   const value: WorkerInfoInterface = {
     worker: meData?.me || null,
-    company: (companyData?.company as Company) || null,
+    company: company,
     setCompany: _setCompany,
     loading: meLoading || companyLoading,
   }
