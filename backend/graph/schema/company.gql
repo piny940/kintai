@@ -22,6 +22,7 @@ type Employment {
   status: EmploymentStatus!
   companyId: Int!
   workerId: Int!
+  worker: Worker!
   createdAt: Time!
   updatedAt: Time!
 }
