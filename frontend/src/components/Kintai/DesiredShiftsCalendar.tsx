@@ -3,7 +3,7 @@ import AddDesiredShiftsModal from './AddDesiredShiftsModal'
 import Calendar from '../Calendar/Calendar'
 import DesiredShiftsDate from './DesiredShiftsDate'
 import { Dayjs } from 'dayjs'
-import { useMappedDesiredShifts } from '@/utils/hooks'
+import { useMappedDesiredShifts } from '@/hooks/desired_shift'
 
 export type DesiredShiftsCalendarProps = {
   alert: string

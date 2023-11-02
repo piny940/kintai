@@ -4,7 +4,7 @@ import {
   useCreateDesiredShiftMutation,
   useGetCompanyLazyQuery,
 } from '@/graphql/types'
-import { useCompanyId } from '@/utils/hooks'
+import { useCompanyId } from '@/hooks/calendar'
 import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
 import { memo, useCallback, useEffect, useState } from 'react'
