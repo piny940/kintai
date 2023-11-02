@@ -205,6 +205,8 @@ export type GetCompaniesQuery = {
 
 export type GetDesiredShiftsQueryVariables = Exact<{
   companyId: Scalars['Uint']['input']
+  fromTime: Scalars['Time']['input']
+  toTime: Scalars['Time']['input']
 }>
 
 export type GetDesiredShiftsQuery = {
@@ -222,6 +224,8 @@ export type GetDesiredShiftsQuery = {
 
 export type GetCompanyDesiredShiftsQueryVariables = Exact<{
   companyId: Scalars['Uint']['input']
+  fromTime: Scalars['Time']['input']
+  toTime: Scalars['Time']['input']
 }>
 
 export type GetCompanyDesiredShiftsQuery = {
@@ -459,8 +463,8 @@ export type GetCompaniesQueryResult = Apollo.QueryResult<
   GetCompaniesQueryVariables
 >
 export const GetDesiredShiftsDocument = gql`
-  query getDesiredShifts($companyId: Uint!) {
-    desiredShifts(companyId: $companyId) {
+  query getDesiredShifts($companyId: Uint!, $fromTime: Time!, $toTime: Time!) {
+    desiredShifts(companyId: $companyId, fromTime: $fromTime, toTime: $toTime) {
       id
       since
       till
@@ -484,6 +488,8 @@ export const GetDesiredShiftsDocument = gql`
  * const { data, loading, error } = useGetDesiredShiftsQuery({
  *   variables: {
  *      companyId: // value for 'companyId'
+ *      fromTime: // value for 'fromTime'
+ *      toTime: // value for 'toTime'
  *   },
  * });
  */
@@ -537,8 +543,16 @@ export type GetDesiredShiftsQueryResult = Apollo.QueryResult<
   GetDesiredShiftsQueryVariables
 >
 export const GetCompanyDesiredShiftsDocument = gql`
-  query getCompanyDesiredShifts($companyId: Uint!) {
-    companyDesiredShifts(companyId: $companyId) {
+  query getCompanyDesiredShifts(
+    $companyId: Uint!
+    $fromTime: Time!
+    $toTime: Time!
+  ) {
+    companyDesiredShifts(
+      companyId: $companyId
+      fromTime: $fromTime
+      toTime: $toTime
+    ) {
       id
       since
       till
@@ -562,6 +576,8 @@ export const GetCompanyDesiredShiftsDocument = gql`
  * const { data, loading, error } = useGetCompanyDesiredShiftsQuery({
  *   variables: {
  *      companyId: // value for 'companyId'
+ *      fromTime: // value for 'fromTime'
+ *      toTime: // value for 'toTime'
  *   },
  * });
  */

@@ -39,8 +39,14 @@ export const useMappedDesiredShifts = (
 
   useEffect(() => {
     if (!companyId) return
-    void loadDesiredShifts({ variables: { companyId } })
-  }, [companyId, loadDesiredShifts])
+    void loadDesiredShifts({
+      variables: {
+        companyId,
+        fromTime: selectedMonth.startOf('month').toISOString(),
+        toTime: selectedMonth.endOf('month').toISOString(),
+      },
+    })
+  }, [companyId, loadDesiredShifts, selectedMonth])
 
   return desiredShiftsMap
 }
@@ -60,8 +66,14 @@ export const useMappedCompanyDesiredShifts = (
 
   useEffect(() => {
     if (!companyId) return
-    void loadDesiredShifts({ variables: { companyId } })
-  }, [companyId, loadDesiredShifts])
+    void loadDesiredShifts({
+      variables: {
+        companyId,
+        fromTime: selectedMonth.startOf('month').toISOString(),
+        toTime: selectedMonth.endOf('month').toISOString(),
+      },
+    })
+  }, [companyId, loadDesiredShifts, selectedMonth])
 
   return desiredShiftsMap
 }
