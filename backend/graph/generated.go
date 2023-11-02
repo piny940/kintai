@@ -88,9 +88,10 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Companies func(childComplexity int) int
-		Company   func(childComplexity int, id uint) int
-		Me        func(childComplexity int) int
+		Companies  func(childComplexity int) int
+		Company    func(childComplexity int, id uint) int
+		Me         func(childComplexity int) int
+		WorkStatus func(childComplexity int, companyID uint) int
 	}
 
 	Stamp struct {
@@ -128,6 +129,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Company(ctx context.Context, id uint) (*model.Company, error)
 	Companies(ctx context.Context) ([]*model.Company, error)
+	WorkStatus(ctx context.Context, companyID uint) (model.WorkStatus, error)
 	Me(ctx context.Context) (*model.Worker, error)
 }
 
@@ -347,6 +349,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Me(childComplexity), true
 
+	case "Query.workStatus":
+		if e.complexity.Query.WorkStatus == nil {
+			break
+		}
+
+		args, err := ec.field_Query_workStatus_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.WorkStatus(childComplexity, args["companyId"].(uint)), true
+
 	case "Stamp.createdAt":
 		if e.complexity.Stamp.CreatedAt == nil {
 			break
@@ -548,7 +562,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/company.gql" "schema/schema.gql" "schema/session.gql" "schema/stamp.gql" "schema/worker.gql"
+//go:embed "schema/company.gql" "schema/schema.gql" "schema/session.gql" "schema/stamp.gql" "schema/work_status.gql" "schema/worker.gql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -564,6 +578,7 @@ var sources = []*ast.Source{
 	{Name: "schema/schema.gql", Input: sourceData("schema/schema.gql"), BuiltIn: false},
 	{Name: "schema/session.gql", Input: sourceData("schema/session.gql"), BuiltIn: false},
 	{Name: "schema/stamp.gql", Input: sourceData("schema/stamp.gql"), BuiltIn: false},
+	{Name: "schema/work_status.gql", Input: sourceData("schema/work_status.gql"), BuiltIn: false},
 	{Name: "schema/worker.gql", Input: sourceData("schema/worker.gql"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -638,6 +653,21 @@ func (ec *executionContext) field_Query_company_args(ctx context.Context, rawArg
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_workStatus_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uint
+	if tmp, ok := rawArgs["companyId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
+		arg0, err = ec.unmarshalNUint2uint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["companyId"] = arg0
 	return args, nil
 }
 
@@ -1878,6 +1908,61 @@ func (ec *executionContext) fieldContext_Query_companies(ctx context.Context, fi
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Company", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_workStatus(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_workStatus(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().WorkStatus(rctx, fc.Args["companyId"].(uint))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.WorkStatus)
+	fc.Result = res
+	return ec.marshalNWorkStatus2kintai_backendᚋgraphᚋmodelᚐWorkStatus(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_workStatus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type WorkStatus does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_workStatus_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -4855,6 +4940,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "workStatus":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_workStatus(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "me":
 			field := field
 
@@ -5600,6 +5707,16 @@ func (ec *executionContext) marshalNUint2ᚖuint(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNWorkStatus2kintai_backendᚋgraphᚋmodelᚐWorkStatus(ctx context.Context, v interface{}) (model.WorkStatus, error) {
+	var res model.WorkStatus
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNWorkStatus2kintai_backendᚋgraphᚋmodelᚐWorkStatus(ctx context.Context, sel ast.SelectionSet, v model.WorkStatus) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) marshalNWorkerName2ᚖkintai_backendᚋgraphᚋmodelᚐWorkerName(ctx context.Context, sel ast.SelectionSet, v *model.WorkerName) graphql.Marshaler {

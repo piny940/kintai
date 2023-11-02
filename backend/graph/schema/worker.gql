@@ -2,10 +2,6 @@ enum WorkerStatus {
   ACTIVE
   INACTIVE
 }
-enum WorkStatus {
-  WORKING
-  LEFT
-}
 type WorkerName {
   firstName: String!
   lastName: String!

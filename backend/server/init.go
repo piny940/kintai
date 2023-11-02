@@ -14,7 +14,7 @@ func Init() error {
 	// if err != nil {
 	// 	return err
 	// }
-	
+
 	e.Use(EchoContextToContextMiddleware)
 	e.POST("/query", graphqlHandler())
 	e.GET("/", playgroundHandler())
