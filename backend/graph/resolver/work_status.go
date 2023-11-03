@@ -12,7 +12,7 @@ import (
 
 func (r *queryResolver) WorkStatus(ctx context.Context, companyID uint) (model.WorkStatus, error) {
 	registry := registry.GetRegistry()
-	worker, err := currentWorker(ctx)
+	workerId, err := currentWorkerId(ctx)
 	if err != nil {
 		return "", newError(err, "ログインしてください")
 	}
@@ -20,7 +20,7 @@ func (r *queryResolver) WorkStatus(ctx context.Context, companyID uint) (model.W
 	if err != nil {
 		return "", newError(err, "会社IDが正しくありません")
 	}
-	employment, err := registry.EmploymentRepo().Find(company.ID, worker.ID)
+	employment, err := registry.EmploymentRepo().Find(company.ID, *workerId)
 	if err != nil {
 		return "", newError(err, "この会社に属していません")
 	}

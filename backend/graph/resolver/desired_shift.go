@@ -23,7 +23,7 @@ func (r *desiredShiftResolver) Employment(ctx context.Context, obj *model.Desire
 
 func (r *mutationResolver) CreateDesiredShift(ctx context.Context, companyID uint, since time.Time, till time.Time) (*model.DesiredShift, error) {
 	registry := registry.GetRegistry()
-	worker, err := currentWorker(ctx)
+	workerId, err := currentWorkerId(ctx)
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
@@ -31,7 +31,7 @@ func (r *mutationResolver) CreateDesiredShift(ctx context.Context, companyID uin
 	if err != nil {
 		return nil, newError(err, "company_idが適切ではありません")
 	}
-	employment, err := registry.EmploymentRepo().Find(company.ID, worker.ID)
+	employment, err := registry.EmploymentRepo().Find(company.ID, *workerId)
 	if err != nil {
 		return nil, newError(err, "会社に属していません")
 	}
@@ -44,7 +44,7 @@ func (r *mutationResolver) CreateDesiredShift(ctx context.Context, companyID uin
 
 func (r *queryResolver) DesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error) {
 	registry := registry.GetRegistry()
-	worker, err := currentWorker(ctx)
+	workerId, err := currentWorkerId(ctx)
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
@@ -52,7 +52,7 @@ func (r *queryResolver) DesiredShifts(ctx context.Context, companyID uint, fromT
 	if err != nil {
 		return nil, newError(err, "company_idが適切ではありません")
 	}
-	employment, err := registry.EmploymentRepo().Find(company.ID, worker.ID)
+	employment, err := registry.EmploymentRepo().Find(company.ID, *workerId)
 	if err != nil {
 		return nil, newError(err, "会社に属していません")
 	}
