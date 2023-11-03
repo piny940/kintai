@@ -68,6 +68,12 @@ const AddShiftsModal = ({
             {date.month()}月{date.date()}日
           </h4>
           <div className="row my-3">
+            <div className="col-md-3 fw-bold col-form-label">従業員</div>
+            <div className="col-md-9">
+              <select className="form-select"></select>
+            </div>
+          </div>
+          <div className="row my-3">
             <div className="col-md-3 fw-bold col-form-label">開始時間</div>
             <div className="col-md-9">
               <select
