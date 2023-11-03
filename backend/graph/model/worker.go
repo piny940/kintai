@@ -16,6 +16,14 @@ func NewWorker(worker *domain.Worker) *Worker {
 	}
 }
 
+func NewWorkers(workers []*domain.Worker) []*Worker {
+	result := make([]*Worker, len(workers))
+	for i, worker := range workers {
+		result[i] = NewWorker(worker)
+	}
+	return result
+}
+
 var workerStatusMap = map[domain.WorkerStatus]WorkerStatus{
 	domain.WorkerActive:   WorkerStatusActive,
 	domain.WorkerInactive: WorkerStatusInactive,

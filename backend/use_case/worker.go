@@ -7,6 +7,7 @@ import (
 
 type IWorkerUseCase interface {
 	SignUp(email domain.WorkerEmail, password domain.WorkerRawPassword, name *domain.WorkerName) (*domain.Worker, error)
+	ListCompanyWorkers(currentWorkerId domain.WorkerID, companyId domain.CompanyID) ([]*domain.Worker, error)
 }
 
 type workerUseCase struct {

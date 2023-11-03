@@ -17,4 +17,5 @@ type Worker {
 }
 extend type Query {
   me: Worker
+  companyWorkers(companyId: Uint!): [Worker!]!
 }
