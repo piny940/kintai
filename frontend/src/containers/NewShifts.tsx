@@ -16,8 +16,6 @@ const NewShifts = (): JSX.Element => {
     till: string
     employment: { worker: { id: number } }
   } | null>(null)
-
-  // Graphql
   const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
 
   const onAddButtonClicked = async (date: Dayjs) => {
@@ -49,11 +47,9 @@ const NewShifts = (): JSX.Element => {
     <div className="mb-5">
       <h1>シフト作成- {companyData.company.name}</h1>
       <NewShiftCalendar
-        alert={''}
         addShiftsModalID={ADD_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
         selectedDate={selectedDate}
-        addShift={() => console.log('add')}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
         onDesiredShiftItemClicked={onDesiredShiftItemClicked}
