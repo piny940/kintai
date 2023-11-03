@@ -58,6 +58,9 @@ func CurrentWorkerId(c echo.Context) (*domain.WorkerID, error) {
 func CurrentWorker(c echo.Context) (*domain.Worker, error) {
 	registry := registry.GetRegistry()
 	workerId, err := CurrentWorkerId(c)
+	if err != nil {
+		return nil, authorizationError{}
+	}
 	worker, err := registry.WorkerRepo().FindById(*workerId)
 	if err != nil {
 		return nil, authorizationError{}
