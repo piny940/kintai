@@ -42,11 +42,9 @@ const DesiredShiftsDate = ({
       {isCurrentMonth && (
         <ul className="list-unstyled">
           {desiredShifts.map((desiredShift) => (
-            <ShiftItem
-              className="bg-info"
-              key={desiredShift.id}
-              shift={desiredShift}
-            />
+            <li key={desiredShift.id}>
+              <ShiftItem className="bg-info" shift={desiredShift} />
+            </li>
           ))}
         </ul>
       )}

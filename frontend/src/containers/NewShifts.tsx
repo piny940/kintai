@@ -1,4 +1,5 @@
 import NewShiftCalendar from '@/components/Kintai/NewShiftCalendar'
+import ShiftsDisplayToggler from '@/components/Kintai/ShiftsDisplayToggler'
 import { useGetCompanyLazyQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
 import dayjs, { Dayjs } from 'dayjs'
@@ -8,6 +9,8 @@ import { memo, useEffect, useState } from 'react'
 const ADD_SHIFTS_MODAL_ID = 'add-shifts-modal'
 const NewShifts = (): JSX.Element => {
   const companyId = useCompanyId()
+  const [showDesiredShifts, setShowDesiredShifts] = useState<boolean>(true)
+  const [showShifts, setShowShifts] = useState<boolean>(true)
   const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
   const [selectedDesiredShift, setSelectedDesiredShift] = useState<{
@@ -46,7 +49,19 @@ const NewShifts = (): JSX.Element => {
   return (
     <div className="mb-5">
       <h1>シフト作成- {companyData.company.name}</h1>
+      <div className="mb-4">
+        <ShiftsDisplayToggler
+          showDesiredShifts={showDesiredShifts}
+          showShifts={showShifts}
+          toggleShowShifts={() => setShowShifts(!showShifts)}
+          toggleShowDesiredShifts={() =>
+            setShowDesiredShifts(!showDesiredShifts)
+          }
+        />
+      </div>
       <NewShiftCalendar
+        showDesiredShifts={showDesiredShifts}
+        showShifts={showShifts}
         addShiftsModalID={ADD_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
         selectedDate={selectedDate}

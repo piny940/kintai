@@ -6,6 +6,8 @@ import ShiftItem from './ShiftItem'
 export type NewShiftsDateProps = {
   month: number
   date: Dayjs
+  showShifts: boolean
+  showDesiredShifts: boolean
   onAddButtonClicked: () => void
   desiredShifts: Array<{
     since: string
@@ -32,6 +34,8 @@ export type NewShiftsDateProps = {
 const NewShiftsDate = ({
   date,
   month,
+  showShifts,
+  showDesiredShifts,
   onAddButtonClicked,
   desiredShifts,
   shifts,
@@ -63,21 +67,23 @@ const NewShiftsDate = ({
       </div>
       {isCurrentMonth && (
         <div className="list-unstyled">
-          {desiredShifts.map((desiredShift) => (
-            <ShiftItemButton
-              className="btn-outline-info text-body"
-              key={desiredShift.id}
-              shift={desiredShift}
-              onClick={() => onDesiredShiftItemClicked(desiredShift)}
-            />
-          ))}
-          {shifts.map((shift) => (
-            <ShiftItem
-              className="bg-info text-body"
-              key={shift.id}
-              shift={shift}
-            />
-          ))}
+          {showDesiredShifts &&
+            desiredShifts.map((desiredShift) => (
+              <ShiftItemButton
+                className="btn-outline-info text-body"
+                key={desiredShift.id}
+                shift={desiredShift}
+                onClick={() => onDesiredShiftItemClicked(desiredShift)}
+              />
+            ))}
+          {showShifts &&
+            shifts.map((shift) => (
+              <ShiftItem
+                className="bg-info text-body"
+                key={shift.id}
+                shift={shift}
+              />
+            ))}
         </div>
       )}
     </div>
