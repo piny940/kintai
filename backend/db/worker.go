@@ -103,7 +103,7 @@ func (u *workerRepo) List(companyId domain.CompanyID) ([]*domain.Worker, error) 
 	var workers = make([]*domain.Worker, 0)
 	rows, err := u.db.Client.Query(
 		`select workers.* from workers
-			inner join employments on employments.id = employment_id
+			inner join employments on employments.worker_id = workers.id
 			where employments.company_id = $1`,
 		companyId,
 	)
