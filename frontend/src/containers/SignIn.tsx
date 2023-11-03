@@ -1,4 +1,4 @@
-import { GetMeDocument, useLoginMutation } from '@/graphql/types'
+import { useLoginMutation } from '@/graphql/types'
 import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { FormEventHandler, memo, useState } from 'react'
@@ -17,7 +17,7 @@ const SignIn = (): JSX.Element => {
       await login({
         variables: { email, password },
       })
-      await client.refetchQueries({ include: [GetMeDocument] })
+      await client.resetStore()
       void router.push('/')
     } catch {}
   }

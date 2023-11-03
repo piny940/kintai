@@ -18,11 +18,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     if (loading) return
     if (data?.me) return
     void router.push('/accounts/sign_in')
-  }, [data?.me, loading, router.asPath])
+  }, [data?.me, loading, router])
 
   if (loading) return <div>Loading...</div>
   return (
-    <div data-bs-theme={theme} className="bg-body text-body">
+    <div id="root" data-bs-theme={theme} className="bg-body text-body">
       <Head>
         <title>勤怠プラス+</title>
       </Head>
