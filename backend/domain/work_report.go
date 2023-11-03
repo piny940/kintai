@@ -10,13 +10,19 @@ const (
 )
 
 type WorkReport struct {
-	EmploymentId EmploymentID `json:"employment_id"`
-	Stamps       []*Stamp     `json:"stamps"`
-	Since        time.Time    `json:"since"`
-	Until        time.Time    `json:"until"`
+	employmentId EmploymentID
+	since        time.Time
+	until        time.Time
+	stampRepo    IStampRepo
 }
-type IWorkReportRepo interface {
-	Show(employmentId EmploymentID, since time.Time, until time.Time) (*WorkReport, error)
+
+func NewWorkReport(employmentId EmploymentID, since time.Time, until time.Time, stampRepo IStampRepo) *WorkReport {
+	return &WorkReport{
+		employmentId: employmentId,
+		since:        since,
+		until:        until,
+		stampRepo:    stampRepo,
+	}
 }
 
 func (wr *WorkReport) Total() time.Duration {
