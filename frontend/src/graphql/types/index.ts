@@ -96,9 +96,10 @@ export type MutationCreateDesiredShiftArgs = {
 }
 
 export type MutationCreateShiftArgs = {
-  employmentId: Scalars['Uint']['input']
+  companyId: Scalars['Uint']['input']
   since: Scalars['Time']['input']
   till: Scalars['Time']['input']
+  workerId: Scalars['Uint']['input']
 }
 
 export type MutationLoginArgs = {
@@ -116,6 +117,7 @@ export type Query = {
   company: Company
   companyDesiredShifts: DesiredShift[]
   companyShifts: Shift[]
+  companyWorkers: Worker[]
   desiredShifts: DesiredShift[]
   me?: Maybe<Worker>
   workStatus: WorkStatus
@@ -135,6 +137,10 @@ export type QueryCompanyShiftsArgs = {
   companyId: Scalars['Uint']['input']
   fromTime?: InputMaybe<Scalars['Time']['input']>
   toTime?: InputMaybe<Scalars['Time']['input']>
+}
+
+export type QueryCompanyWorkersArgs = {
+  companyId: Scalars['Uint']['input']
 }
 
 export type QueryDesiredShiftsArgs = {
@@ -306,7 +312,8 @@ export type GetCompanyShiftsQuery = {
 export type CreateShiftMutationVariables = Exact<{
   since: Scalars['Time']['input']
   till: Scalars['Time']['input']
-  employmentId: Scalars['Uint']['input']
+  workerId: Scalars['Uint']['input']
+  companyId: Scalars['Uint']['input']
 }>
 
 export type CreateShiftMutation = {
@@ -337,6 +344,19 @@ export type GetMeQueryVariables = Exact<Record<string, never>>
 export type GetMeQuery = {
   __typename?: 'Query'
   me?: { __typename?: 'Worker'; id: number } | null
+}
+
+export type GetCompanyWorkersQueryVariables = Exact<{
+  companyId: Scalars['Uint']['input']
+}>
+
+export type GetCompanyWorkersQuery = {
+  __typename?: 'Query'
+  companyWorkers: Array<{
+    __typename?: 'Worker'
+    id: number
+    name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
+  }>
 }
 
 export const GetCompanyDocument = gql`
@@ -847,8 +867,18 @@ export type GetCompanyShiftsQueryResult = Apollo.QueryResult<
   GetCompanyShiftsQueryVariables
 >
 export const CreateShiftDocument = gql`
-  mutation createShift($since: Time!, $till: Time!, $employmentId: Uint!) {
-    createShift(since: $since, till: $till, employmentId: $employmentId) {
+  mutation createShift(
+    $since: Time!
+    $till: Time!
+    $workerId: Uint!
+    $companyId: Uint!
+  ) {
+    createShift(
+      since: $since
+      till: $till
+      workerId: $workerId
+      companyId: $companyId
+    ) {
       id
     }
   }
@@ -873,7 +903,8 @@ export type CreateShiftMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      since: // value for 'since'
  *      till: // value for 'till'
- *      employmentId: // value for 'employmentId'
+ *      workerId: // value for 'workerId'
+ *      companyId: // value for 'companyId'
  *   },
  * });
  */
@@ -1076,4 +1107,81 @@ export type GetMeSuspenseQueryHookResult = ReturnType<
 export type GetMeQueryResult = Apollo.QueryResult<
   GetMeQuery,
   GetMeQueryVariables
+>
+export const GetCompanyWorkersDocument = gql`
+  query getCompanyWorkers($companyId: Uint!) {
+    companyWorkers(companyId: $companyId) {
+      id
+      name {
+        firstName
+        lastName
+      }
+    }
+  }
+`
+
+/**
+ * __useGetCompanyWorkersQuery__
+ *
+ * To run a query within a React component, call `useGetCompanyWorkersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompanyWorkersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCompanyWorkersQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useGetCompanyWorkersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCompanyWorkersQuery,
+    GetCompanyWorkersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<
+    GetCompanyWorkersQuery,
+    GetCompanyWorkersQueryVariables
+  >(GetCompanyWorkersDocument, options)
+}
+export function useGetCompanyWorkersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCompanyWorkersQuery,
+    GetCompanyWorkersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<
+    GetCompanyWorkersQuery,
+    GetCompanyWorkersQueryVariables
+  >(GetCompanyWorkersDocument, options)
+}
+export function useGetCompanyWorkersSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetCompanyWorkersQuery,
+    GetCompanyWorkersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<
+    GetCompanyWorkersQuery,
+    GetCompanyWorkersQueryVariables
+  >(GetCompanyWorkersDocument, options)
+}
+export type GetCompanyWorkersQueryHookResult = ReturnType<
+  typeof useGetCompanyWorkersQuery
+>
+export type GetCompanyWorkersLazyQueryHookResult = ReturnType<
+  typeof useGetCompanyWorkersLazyQuery
+>
+export type GetCompanyWorkersSuspenseQueryHookResult = ReturnType<
+  typeof useGetCompanyWorkersSuspenseQuery
+>
+export type GetCompanyWorkersQueryResult = Apollo.QueryResult<
+  GetCompanyWorkersQuery,
+  GetCompanyWorkersQueryVariables
 >
