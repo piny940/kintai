@@ -11,9 +11,15 @@ type Stamp struct {
 	CreatedAt    time.Time    `json:"created_at"`
 	UpdatedAt    time.Time    `json:"updated_at"`
 }
+type StampQuery struct {
+	EmploymentId *EmploymentID
+	FromTime     *time.Time
+	ToTime       *time.Time
+}
 type IStampRepo interface {
 	List(workerId WorkerID, companyId CompanyID) ([]*Stamp, error)
 	Create(stamp *Stamp) (*Stamp, error)
+	Count(query *StampQuery) (int, error)
 }
 
 func NewStamp(stampedAt time.Time, employmentID EmploymentID) (*Stamp, error) {

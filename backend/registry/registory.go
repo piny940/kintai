@@ -52,16 +52,12 @@ func (r *registry) CompanyRepo() domain.ICompanyRepo {
 	return db.NewCompanyRepo(r.db)
 }
 
-func (r *registry) WorkReportRepo() domain.IWorkReportRepo {
-	return db.NewWorkReportRepo(r.db)
+func (r *registry) WorkStatusUseCase() use_case.IWorkStatusUseCase {
+	return use_case.NewWorkStatusUseCase(r.EmploymentRepo(), r.StampRepo())
 }
 
 func (r *registry) WorkReportUseCase() use_case.IWorkReportUseCase {
-	return use_case.NewWorkReportUseCase(r.WorkReportRepo(), r.EmploymentRepo())
-}
-
-func (r *registry) WorkStatusUseCase() use_case.IWorkStatusUseCase {
-	return use_case.NewWorkStatusUseCase(r.WorkReportRepo())
+	return use_case.NewWorkReportUseCase(r.EmploymentRepo(), r.StampRepo())
 }
 
 func (r *registry) DesiredShiftRepo() domain.IDesiredShiftRepo {
