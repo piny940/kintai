@@ -33,16 +33,17 @@ func newShiftQuery(query *domain.ShiftQuery) *shiftQuery {
 
 func (r *shiftRepo) ListAll(companyId domain.CompanyID, query *domain.ShiftQuery) ([]*domain.Shift, error) {
 	var shifts []*domain.Shift
+
 	queryObj := newShiftQuery(query)
-	queryStr := `select * from shifts
+	queryStr := `select shifts.* from shifts
 			inner join employments on shifts.employment_id = employments.id
 			where employments.company_id = $1`
 	filter, params := queryObj.toFilter([]interface{}{companyId})
 	if queryObj.exists() {
 		queryStr += " and " + filter
 	}
-	rows, err := r.db.Client.Query(queryStr, params...)
 
+	rows, err := r.db.Client.Query(queryStr, params...)
 	if err != nil {
 		return nil, err
 	}
