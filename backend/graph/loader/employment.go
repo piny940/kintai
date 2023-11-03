@@ -11,10 +11,10 @@ import (
 type IEmploymentLoader dataloader.Interface[uint, *domain.Employment]
 
 func newEmploymentLoader() IEmploymentLoader {
-	return dataloader.NewBatchedLoader(batchGetEmployments)
+	return dataloader.NewBatchedLoader(getEmployments)
 }
 
-func batchGetEmployments(ctx context.Context, Ids []uint) []*dataloader.Result[*domain.Employment] {
+func getEmployments(ctx context.Context, Ids []uint) []*dataloader.Result[*domain.Employment] {
 	registry := registry.GetRegistry()
 	employmentIds := make([]domain.EmploymentID, len(Ids))
 	for i, id := range Ids {

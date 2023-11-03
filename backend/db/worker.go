@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"kintai_backend/domain"
 	"time"
 )
@@ -43,6 +44,38 @@ func (u *workerRepo) FindById(id domain.WorkerID) (*domain.Worker, error) {
 	}
 
 	return workerTable.toDomain(), nil
+}
+
+func (u *workerRepo) FindAllByIds(ids []domain.WorkerID) ([]*domain.Worker, error) {
+	var workers = make([]*domain.Worker, 0)
+	strParams, args := arrayParam(ids)
+	rows, err := u.db.Client.Query(
+		fmt.Sprintf("select * from workers where id in (%s)", strParams),
+		args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var workerTable WorkerTable
+		if err := rows.Scan(
+			&workerTable.ID,
+			&workerTable.Status,
+			&workerTable.Email,
+			&workerTable.EncryptedPassword,
+			&workerTable.FirstName,
+			&workerTable.LastName,
+			&workerTable.CreatedAt,
+			&workerTable.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		workers = append(workers, workerTable.toDomain())
+	}
+
+	return workers, nil
 }
 
 func (u *workerRepo) FindByEmail(email domain.WorkerEmail) (*domain.Worker, error) {

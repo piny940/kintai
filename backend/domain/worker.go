@@ -25,6 +25,7 @@ type Worker struct {
 type IWorkerRepo interface {
 	FindByEmail(email WorkerEmail) (*Worker, error)
 	FindById(id WorkerID) (*Worker, error)
+	FindAllByIds(ids []WorkerID) ([]*Worker, error)
 	List() ([]*Worker, error)
 	Create(worker *Worker) (*Worker, error)
 }

@@ -6,15 +6,12 @@ package resolver
 
 import (
 	"context"
-	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
-	"kintai_backend/registry"
 )
 
 func (r *employmentResolver) Worker(ctx context.Context, obj *model.Employment) (*model.Worker, error) {
-	registry := registry.GetRegistry()
-	worker, err := registry.WorkerRepo().FindById(domain.WorkerID(obj.WorkerID))
+	worker, err := r.WorkerLoader.Load(ctx, uint(obj.WorkerID))()
 	if err != nil {
 		return nil, newError(err, "従業員情報の取得に失敗しました")
 	}
