@@ -97,7 +97,7 @@ type ComplexityRoot struct {
 		Companies            func(childComplexity int) int
 		Company              func(childComplexity int, id uint) int
 		CompanyDesiredShifts func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
-		CompanyShifts        func(childComplexity int, companyID uint) int
+		CompanyShifts        func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
 		DesiredShifts        func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
 		Me                   func(childComplexity int) int
 		WorkStatus           func(childComplexity int, companyID uint) int
@@ -157,7 +157,7 @@ type QueryResolver interface {
 	Companies(ctx context.Context) ([]*model.Company, error)
 	DesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error)
 	CompanyDesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error)
-	CompanyShifts(ctx context.Context, companyID uint) ([]*model.Shift, error)
+	CompanyShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.Shift, error)
 	WorkStatus(ctx context.Context, companyID uint) (model.WorkStatus, error)
 	Me(ctx context.Context) (*model.Worker, error)
 }
@@ -422,7 +422,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.CompanyShifts(childComplexity, args["companyId"].(uint)), true
+		return e.complexity.Query.CompanyShifts(childComplexity, args["companyId"].(uint), args["fromTime"].(*time.Time), args["toTime"].(*time.Time)), true
 
 	case "Query.desiredShifts":
 		if e.complexity.Query.DesiredShifts == nil {
@@ -864,6 +864,24 @@ func (ec *executionContext) field_Query_companyShifts_args(ctx context.Context, 
 		}
 	}
 	args["companyId"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["fromTime"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fromTime"))
+		arg1, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["fromTime"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["toTime"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("toTime"))
+		arg2, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["toTime"] = arg2
 	return args, nil
 }
 
@@ -2522,7 +2540,7 @@ func (ec *executionContext) _Query_companyShifts(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().CompanyShifts(rctx, fc.Args["companyId"].(uint))
+		return ec.resolvers.Query().CompanyShifts(rctx, fc.Args["companyId"].(uint), fc.Args["fromTime"].(*time.Time), fc.Args["toTime"].(*time.Time))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

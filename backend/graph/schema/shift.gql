@@ -9,5 +9,5 @@ type Shift {
 }
 
 extend type Query {
-  companyShifts(companyId: Uint!): [Shift!]!
+  companyShifts(companyId: Uint!, fromTime: Time, toTime: Time): [Shift!]!
 }

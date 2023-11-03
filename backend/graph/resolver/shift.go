@@ -10,15 +10,19 @@ import (
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
+	"time"
 )
 
-func (r *queryResolver) CompanyShifts(ctx context.Context, companyID uint) ([]*model.Shift, error) {
+func (r *queryResolver) CompanyShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.Shift, error) {
 	registry := registry.GetRegistry()
 	workerId, err := currentWorkerId(ctx)
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
-	query := &domain.ShiftQuery{}
+	query := &domain.ShiftQuery{
+		FromTime: fromTime,
+		ToTime:   toTime,
+	}
 	shifts, err := registry.ShiftUseCase().ListCompanyShifts(*workerId, domain.CompanyID(companyID), query)
 	if err != nil {
 		return nil, newError(err, "シフト情報の取得に失敗しました")
