@@ -3,7 +3,10 @@ import Calendar from '../Calendar/Calendar'
 import NewShiftDate from './NewShiftDate'
 import { memo } from 'react'
 import AddShiftModal from './AddShiftModal'
-import { useMappedCompanyDesiredShifts } from '@/hooks/desired_shift'
+import {
+  useMappedCompanyDesiredShifts,
+  useMappedCompanyShifts,
+} from '@/hooks/desired_shift'
 
 export type NewShiftCalendarProps = {
   alert: string
@@ -30,6 +33,7 @@ const NewShiftCalendar = ({
     companyId,
     selectedMonth
   )
+  const shiftsMap = useMappedCompanyShifts(companyId, selectedMonth)
 
   return (
     <>
@@ -42,6 +46,7 @@ const NewShiftCalendar = ({
             month={month}
             date={date}
             desiredShifts={desiredShiftsMap.get(date.date()) || []}
+            shifts={shiftsMap.get(date.date()) || []}
           />
         )}
       />
