@@ -23,7 +23,7 @@ func newStampQuery(query *domain.StampQuery) *stampQuery {
 		queryObj.add("stamped_at >= ", query.FromTime)
 	}
 	if query.ToTime != nil {
-		queryObj.add("stamped_at <= ", query.ToTime)
+		queryObj.add("stamped_at < ", query.ToTime)
 	}
 	return &stampQuery{queryObj: queryObj}
 }

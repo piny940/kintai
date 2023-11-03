@@ -28,7 +28,7 @@ func newDesiredShiftQuery(query *domain.DesiredShiftQuery) *desiredShiftQuery {
 		queryObj.add("since >= ", query.FromTime)
 	}
 	if query.ToTime != nil {
-		queryObj.add("till <= ", query.ToTime)
+		queryObj.add("since < ", query.ToTime)
 	}
 	return &desiredShiftQuery{queryObj: queryObj}
 }
