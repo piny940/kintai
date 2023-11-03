@@ -1,4 +1,6 @@
 import NewShiftCalendar from '@/components/Kintai/NewShiftCalendar'
+import ShiftItem from '@/components/Kintai/ShiftItem'
+import ShiftItemButton from '@/components/Kintai/ShiftItemButton'
 import { useGetCompanyLazyQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
 import dayjs, { Dayjs } from 'dayjs'
@@ -46,6 +48,46 @@ const NewShifts = (): JSX.Element => {
   return (
     <div className="mb-5">
       <h1>シフト作成- {companyData.company.name}</h1>
+      <div className="mb-4 rounded border px-4 py-2 bg-body-tertiary">
+        <h2 className="h5 mb-0">表示</h2>
+        <div className="row">
+          <div className="col col-lg-4 d-flex flex-wrap mb-1 align-items-center">
+            <span className="mx-2">希望シフト</span>
+            <div className="">
+              <ShiftItemButton
+                className="btn-outline-info text-body d-inline-block"
+                onClick={() => undefined}
+                shift={{
+                  since: '2023-11-10T00:00+09:00',
+                  till: '2023-11-10T00:00+09:00',
+                  employment: {
+                    worker: {
+                      name: { firstName: 'xx', lastName: 'xx' },
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+          <div className="col col-lg-4 d-flex flex-wrap mb-1 align-items-center">
+            <span className="mx-2">シフト</span>
+            <div className="">
+              <ShiftItem
+                className="bg-info d-inline-block"
+                shift={{
+                  since: '2023-11-10T00:00+09:00',
+                  till: '2023-11-10T00:00+09:00',
+                  employment: {
+                    worker: {
+                      name: { firstName: 'xx', lastName: 'xx' },
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
       <NewShiftCalendar
         addShiftsModalID={ADD_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
