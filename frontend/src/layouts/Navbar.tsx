@@ -1,27 +1,29 @@
 import { MaterialIcon } from '@/components/Common/MaterialIcon'
 import { ThemeToggler } from '@/components/Common/ThemeToggler'
 import { useTheme } from '@/context/ThemeProvider'
-import { useGetMeQuery } from '@/graphql/types'
+import { useGetMeQuery, useLogoutMutation } from '@/graphql/types'
 import { TestID } from '@/resources/TestID'
+import { useApolloClient } from '@apollo/client'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
 export const Navbar: React.FC = () => {
   const { theme, setTheme } = useTheme()
   const { data } = useGetMeQuery()
+  const logout = useLogoutMutation()[0]
+  const client = useApolloClient()
+  const router = useRouter()
+
+  const onLogoutClicked = async () => {
+    await logout()
+    await client.resetStore()
+    void router.push('/accounts/sign_in')
+  }
 
   const toggleTheme = useCallback(() => {
     setTheme(theme === 'light' ? 'dark' : 'light')
-  }, [theme])
-
-  const logout = useCallback(async () => {
-    // await fetchApi({
-    //   url: '/session',
-    //   method: 'DELETE',
-    // })
-    // setWorker(null)
-    // void router.push('/')
-  }, [])
+  }, [theme, setTheme])
 
   return (
     <nav
@@ -53,7 +55,7 @@ export const Navbar: React.FC = () => {
               {data?.me && (
                 <li className="nav-item">
                   <div className="nav-link">
-                    <button role="button" onClick={logout}>
+                    <button role="button" onClick={onLogoutClicked}>
                       ログアウト
                     </button>
                   </div>
