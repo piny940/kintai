@@ -42,7 +42,7 @@ const NewShifts = (): JSX.Element => {
   }, [companyId, loadCompany])
 
   if (error) return <Error statusCode={404} />
-  if (!companyId || !companyData?.company) return <>loading...</>
+  if (!companyData?.company) return <>loading...</>
   return (
     <div>
       <h1>シフト作成- {companyData.company.name}</h1>
@@ -51,7 +51,6 @@ const NewShifts = (): JSX.Element => {
         addShiftsModalID={ADD_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
         selectedDate={selectedDate}
-        companyId={companyId}
         addShift={() => console.log('add')}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}

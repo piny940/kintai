@@ -25,14 +25,13 @@ const DesiredShifts = (): JSX.Element => {
   }, [companyId, loadCompany])
 
   if (error) return <Error statusCode={404} />
-  if (!companyId || !companyData?.company) return <>loading...</>
+  if (!companyData?.company) return <>loading...</>
   return (
     <div>
       <h1>希望シフト作成 - {companyData.company.name}</h1>
       <DesiredShiftsCalendar
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
-        companyId={companyId}
         selectedDate={selectedDate}
         addDesiredShiftsModalID={ADD_DESIRED_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
