@@ -11,3 +11,11 @@ type Shift {
 extend type Query {
   companyShifts(companyId: Uint!, fromTime: Time, toTime: Time): [Shift!]!
 }
+extend type Mutation {
+  createShift(
+    companyId: Uint!
+    since: Time!
+    till: Time!
+    employmentId: Uint!
+  ): Shift!
+}

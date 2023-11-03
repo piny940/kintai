@@ -88,6 +88,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateDesiredShift func(childComplexity int, companyID uint, since time.Time, till time.Time) int
+		CreateShift        func(childComplexity int, companyID uint, since time.Time, till time.Time, employmentID uint) int
 		Login              func(childComplexity int, email string, password string) int
 		Logout             func(childComplexity int) int
 		PushStamp          func(childComplexity int, companyID uint) int
@@ -150,6 +151,7 @@ type MutationResolver interface {
 	CreateDesiredShift(ctx context.Context, companyID uint, since time.Time, till time.Time) (*model.DesiredShift, error)
 	Login(ctx context.Context, email string, password string) (*model.LoginResponse, error)
 	Logout(ctx context.Context) (bool, error)
+	CreateShift(ctx context.Context, companyID uint, since time.Time, till time.Time, employmentID uint) (*model.Shift, error)
 	PushStamp(ctx context.Context, companyID uint) (*model.Stamp, error)
 }
 type QueryResolver interface {
@@ -349,6 +351,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateDesiredShift(childComplexity, args["companyId"].(uint), args["since"].(time.Time), args["till"].(time.Time)), true
+
+	case "Mutation.createShift":
+		if e.complexity.Mutation.CreateShift == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createShift_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateShift(childComplexity, args["companyId"].(uint), args["since"].(time.Time), args["till"].(time.Time), args["employmentId"].(uint)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -762,6 +776,48 @@ func (ec *executionContext) field_Mutation_createDesiredShift_args(ctx context.C
 		}
 	}
 	args["till"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createShift_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uint
+	if tmp, ok := rawArgs["companyId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
+		arg0, err = ec.unmarshalNUint2uint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["companyId"] = arg0
+	var arg1 time.Time
+	if tmp, ok := rawArgs["since"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("since"))
+		arg1, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["since"] = arg1
+	var arg2 time.Time
+	if tmp, ok := rawArgs["till"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("till"))
+		arg2, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["till"] = arg2
+	var arg3 uint
+	if tmp, ok := rawArgs["employmentId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentId"))
+		arg3, err = ec.unmarshalNUint2uint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["employmentId"] = arg3
 	return args, nil
 }
 
@@ -2186,6 +2242,77 @@ func (ec *executionContext) fieldContext_Mutation_logout(ctx context.Context, fi
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Boolean does not have child fields")
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createShift(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createShift(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateShift(rctx, fc.Args["companyId"].(uint), fc.Args["since"].(time.Time), fc.Args["till"].(time.Time), fc.Args["employmentId"].(uint))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Shift)
+	fc.Result = res
+	return ec.marshalNShift2ᚖkintai_backendᚋgraphᚋmodelᚐShift(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createShift(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Shift_id(ctx, field)
+			case "since":
+				return ec.fieldContext_Shift_since(ctx, field)
+			case "till":
+				return ec.fieldContext_Shift_till(ctx, field)
+			case "employmentId":
+				return ec.fieldContext_Shift_employmentId(ctx, field)
+			case "employment":
+				return ec.fieldContext_Shift_employment(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Shift_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Shift_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Shift", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createShift_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -5937,6 +6064,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "createShift":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createShift(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "pushStamp":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_pushStamp(ctx, field)
@@ -6926,6 +7060,10 @@ func (ec *executionContext) unmarshalNEmploymentStatus2kintai_backendᚋgraphᚋ
 
 func (ec *executionContext) marshalNEmploymentStatus2kintai_backendᚋgraphᚋmodelᚐEmploymentStatus(ctx context.Context, sel ast.SelectionSet, v model.EmploymentStatus) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) marshalNShift2kintai_backendᚋgraphᚋmodelᚐShift(ctx context.Context, sel ast.SelectionSet, v model.Shift) graphql.Marshaler {
+	return ec._Shift(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNShift2ᚕᚖkintai_backendᚋgraphᚋmodelᚐShiftᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Shift) graphql.Marshaler {

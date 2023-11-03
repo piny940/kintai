@@ -6,12 +6,17 @@ package resolver
 
 import (
 	"context"
+	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
 	"time"
 )
+
+func (r *mutationResolver) CreateShift(ctx context.Context, companyID uint, since time.Time, till time.Time, employmentID uint) (*model.Shift, error) {
+	panic(fmt.Errorf("not implemented: CreateShift - createShift"))
+}
 
 func (r *queryResolver) CompanyShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.Shift, error) {
 	registry := registry.GetRegistry()
