@@ -19,7 +19,7 @@ const ShiftCheckBox = ({
         <input
           type="checkbox"
           className="form-check-input"
-          value={checked ? 1 : 0}
+          checked={checked}
           onChange={toggle}
         />
         <div className="form-check-label d-flex flex-wrap align-items-center">
