@@ -3,9 +3,6 @@ query getDesiredShifts($companyId: Uint!, $fromTime: Time!, $toTime: Time!) {
     id
     since
     till
-    employmentId
-    createdAt
-    updatedAt
   }
 }
 query getCompanyDesiredShifts(
@@ -21,27 +18,15 @@ query getCompanyDesiredShifts(
     id
     since
     till
-    employmentId
     employment {
-      id
-      kind
-      status
       worker {
         id
-        status
-        email
         name {
           firstName
           lastName
         }
-        createdAt
-        updatedAt
       }
-      createdAt
-      updatedAt
     }
-    createdAt
-    updatedAt
   }
 }
 mutation createDesiredShift($companyId: Uint!, $since: Time!, $till: Time!) {

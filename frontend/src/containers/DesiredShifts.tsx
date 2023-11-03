@@ -54,8 +54,7 @@ const DesiredShifts = (): JSX.Element => {
   if (!companyId || !companyData?.company) return <>loading...</>
   return (
     <div>
-      <h1>希望シフト作成</h1>
-      <h2 className="ms-2 mb-4">{companyData.company.name}</h2>
+      <h1>希望シフト作成 - {companyData.company.name}</h1>
       <DesiredShiftsCalendar
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
