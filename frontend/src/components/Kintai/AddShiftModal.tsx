@@ -1,69 +1,111 @@
-import { FormEventHandler, memo, useCallback, useState } from 'react'
+import { FormEventHandler, memo, useCallback, useEffect, useState } from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
+import { useCompanyId } from '@/hooks/calendar'
 import {
-  GetDesiredShiftsDocument,
-  useCreateDesiredShiftMutation,
+  GetCompanyShiftsDocument,
+  useCreateShiftMutation,
+  useGetCompanyWorkersQuery,
 } from '@/graphql/types'
 import { useApolloClient } from '@apollo/client'
-import { useCompanyId } from '@/hooks/calendar'
 
-export type AddDesiredShiftsModalProps = {
+export type AddShiftsModalProps = {
   targetID: string
   date: Dayjs | null
+  selectedDesiredShift: {
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  } | null
 }
 
 const SINCE_HOUR_OPTIONS = [9, 10, 11, 12, 13, 14, 15, 16, 17]
 const TILL_HOUR_OPTIONS = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 const MINUTE_OPTIONS = [0, 15, 30, 45]
-const AddDesiredShiftsModal = ({
+const AddShiftsModal = ({
   targetID,
   date,
-}: AddDesiredShiftsModalProps): JSX.Element => {
+  selectedDesiredShift,
+}: AddShiftsModalProps): JSX.Element => {
+  const [alert, setAlert] = useState('')
   const [sinceHour, setSinceHour] = useState<number>(SINCE_HOUR_OPTIONS[0])
   const [sinceMinute, setSinceMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
-
+  const [selectedWorkerId, setSelectedWorkerId] = useState<number | null>(null)
   const companyId = useCompanyId()
-  const [createDesiredShift, { error: desiredShiftError }] =
-    useCreateDesiredShiftMutation()
+  const { data: workersData } = useGetCompanyWorkersQuery({
+    variables: { companyId: companyId },
+  })
+  const [postShift, { error: shiftError }] = useCreateShiftMutation()
   const client = useApolloClient()
 
-  const postDesiredShift = useCallback(
-    async (since: Dayjs, till: Dayjs) => {
-      if (!companyId) return
-      try {
-        await createDesiredShift({
-          variables: {
-            companyId,
-            since: since.toISOString(),
-            till: till.toISOString(),
-          },
-        })
-        await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
-      } catch {}
+  const selectedWorkerChange = useCallback(
+    (value: string) => {
+      setSelectedWorkerId(Number(value))
     },
-    [companyId, createDesiredShift, client]
+    [setSelectedWorkerId]
   )
 
   const onSubmit: FormEventHandler = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault()
 
       if (!date) return
+      if (!selectedWorkerId) {
+        setAlert('従業員を選択してください')
+        return
+      }
+      setAlert('')
       const since = date.hour(sinceHour).minute(sinceMinute)
       const till = date.hour(tillHour).minute(tillMinute)
-      void postDesiredShift(since, till)
+      await postShift({
+        variables: {
+          since: since.toISOString(),
+          till: till.toISOString(),
+          workerId: selectedWorkerId,
+          companyId: companyId,
+        },
+      })
+      await client.refetchQueries({ include: [GetCompanyShiftsDocument] })
     },
-    [date, sinceHour, sinceMinute, tillHour, tillMinute, postDesiredShift]
+    [
+      date,
+      sinceHour,
+      sinceMinute,
+      tillHour,
+      tillMinute,
+      selectedWorkerId,
+      client,
+      companyId,
+      postShift,
+    ]
   )
+
+  useEffect(() => {
+    if (!selectedDesiredShift) {
+      setSinceHour(SINCE_HOUR_OPTIONS[0])
+      setSinceMinute(MINUTE_OPTIONS[0])
+      setTillHour(TILL_HOUR_OPTIONS[0])
+      setTillMinute(MINUTE_OPTIONS[0])
+      setSelectedWorkerId(null)
+      return
+    }
+    const since = dayjs(selectedDesiredShift.since)
+    const till = dayjs(selectedDesiredShift.till)
+    setSinceHour(since.hour())
+    setSinceMinute(since.minute())
+    setTillHour(till.hour())
+    setTillMinute(till.minute())
+    setSelectedWorkerId(selectedDesiredShift.employment.worker.id)
+  }, [selectedDesiredShift])
 
   return (
     <ModalFormBox
-      title="希望シフト作成"
-      alert={desiredShiftError?.message || ''}
+      title="シフト作成"
+      alert={shiftError?.message || alert}
       targetID={targetID}
       submitButtonText="作成"
       onSubmit={onSubmit}
@@ -73,6 +115,23 @@ const AddDesiredShiftsModal = ({
           <h4>
             {date.month()}月{date.date()}日
           </h4>
+          <div className="row my-3">
+            <div className="col-md-3 fw-bold col-form-label">従業員</div>
+            <div className="col-md-9">
+              <select
+                className="form-select"
+                onChange={(e) => selectedWorkerChange(e.target.value)}
+                value={selectedWorkerId || ''}
+              >
+                <option value="">--</option>
+                {workersData?.companyWorkers?.map((worker) => (
+                  <option key={worker.id} value={worker.id}>
+                    {worker.name.lastName} {worker.name.firstName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
           <div className="row my-3">
             <div className="col-md-3 fw-bold col-form-label">開始時間</div>
             <div className="col-md-9">
@@ -143,4 +202,4 @@ const AddDesiredShiftsModal = ({
   )
 }
 
-export default memo(AddDesiredShiftsModal)
+export default memo(AddShiftsModal)

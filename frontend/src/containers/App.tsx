@@ -3,7 +3,6 @@ import CompanySelect from '../components/Kintai/CompanySelect'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
-  Company,
   EmploymentKind,
   GetWorkStatusDocument,
   useGetCompaniesQuery,
@@ -25,7 +24,7 @@ export const App: React.FC = () => {
   const client = useApolloClient()
 
   const company = useMemo(
-    () => (selectedCompanyId && (companyData?.company as Company)) || null,
+    () => (selectedCompanyId && companyData?.company) || null,
     [selectedCompanyId, companyData?.company]
   )
 

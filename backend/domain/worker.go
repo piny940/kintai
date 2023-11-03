@@ -26,7 +26,7 @@ type IWorkerRepo interface {
 	FindByEmail(email WorkerEmail) (*Worker, error)
 	FindById(id WorkerID) (*Worker, error)
 	FindAllByIds(ids []WorkerID) ([]*Worker, error)
-	List() ([]*Worker, error)
+	List(companyId CompanyID) ([]*Worker, error)
 	Create(worker *Worker) (*Worker, error)
 }
 

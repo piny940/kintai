@@ -8,7 +8,13 @@ import (
 
 type IShiftUseCase interface {
 	ListCompanyShifts(workerId domain.WorkerID, companyId domain.CompanyID, query *domain.ShiftQuery) ([]*domain.Shift, error)
-	Create(currentWorkerId domain.WorkerID, employmentId domain.EmploymentID, since, till time.Time) (*domain.Shift, error)
+	Create(
+		currentWorkerId domain.WorkerID,
+		targetWorkerId domain.WorkerID,
+		companyId domain.CompanyID,
+		since,
+		till time.Time,
+	) (*domain.Shift, error)
 }
 
 type shiftUseCase struct {
@@ -32,8 +38,14 @@ func (u *shiftUseCase) ListCompanyShifts(currentWorkerId domain.WorkerID, compan
 	return shifts, nil
 }
 
-func (u *shiftUseCase) Create(currentWorkerId domain.WorkerID, employmentId domain.EmploymentID, since, till time.Time) (*domain.Shift, error) {
-	employment, err := u.employmentRepo.FindById(employmentId)
+func (u *shiftUseCase) Create(
+	currentWorkerId domain.WorkerID,
+	targetWorkerId domain.WorkerID,
+	companyId domain.CompanyID,
+	since,
+	till time.Time,
+) (*domain.Shift, error) {
+	employment, err := u.employmentRepo.Find(companyId, targetWorkerId)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +57,7 @@ func (u *shiftUseCase) Create(currentWorkerId domain.WorkerID, employmentId doma
 		return nil, fmt.Errorf("権限がありません")
 	}
 
-	shift := domain.NewShift(since, till, employmentId)
+	shift := domain.NewShift(since, till, employment.ID)
 	shiftResult, err := u.shiftRepo.Create(shift)
 	if err != nil {
 		return nil, err

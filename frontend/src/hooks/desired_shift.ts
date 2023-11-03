@@ -1,5 +1,6 @@
 import {
   useGetCompanyDesiredShiftsLazyQuery,
+  useGetCompanyShiftsQuery,
   useGetDesiredShiftsLazyQuery,
 } from '@/graphql/types'
 import dayjs, { Dayjs } from 'dayjs'
@@ -76,4 +77,23 @@ export const useMappedCompanyDesiredShifts = (
   }, [companyId, loadDesiredShifts, selectedMonth])
 
   return desiredShiftsMap
+}
+
+export const useMappedCompanyShifts = (
+  companyId: number,
+  selectedMonth: Dayjs
+) => {
+  const { data: shiftsData } = useGetCompanyShiftsQuery({
+    variables: {
+      companyId,
+      fromTime: selectedMonth.startOf('month').toISOString(),
+      toTime: selectedMonth.endOf('month').toISOString(),
+    },
+  })
+
+  const shiftsMap = useMemo(() => {
+    return mapShifts(shiftsData?.companyShifts || [], selectedMonth)
+  }, [shiftsData?.companyShifts, selectedMonth])
+
+  return shiftsMap
 }

@@ -3,3 +3,12 @@ query getMe {
     id
   }
 }
+query getCompanyWorkers($companyId: Uint!) {
+  companyWorkers(companyId: $companyId) {
+    id
+    name {
+      firstName
+      lastName
+    }
+  }
+}

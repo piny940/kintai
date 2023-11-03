@@ -1,0 +1,31 @@
+query getCompanyShifts($companyId: Uint!, $fromTime: Time!, $toTime: Time!) {
+  companyShifts(companyId: $companyId, fromTime: $fromTime, toTime: $toTime) {
+    id
+    since
+    till
+    employment {
+      worker {
+        id
+        name {
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+}
+mutation createShift(
+  $since: Time!
+  $till: Time!
+  $workerId: Uint!
+  $companyId: Uint!
+) {
+  createShift(
+    since: $since
+    till: $till
+    workerId: $workerId
+    companyId: $companyId
+  ) {
+    id
+  }
+}

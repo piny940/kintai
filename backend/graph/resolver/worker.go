@@ -6,7 +6,9 @@ package resolver
 
 import (
 	"context"
+	"kintai_backend/domain"
 	"kintai_backend/graph/model"
+	"kintai_backend/registry"
 )
 
 func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
@@ -15,4 +17,17 @@ func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
 		return nil, newError(err, "ログインしてください")
 	}
 	return model.NewWorker(worker), nil
+}
+
+func (r *queryResolver) CompanyWorkers(ctx context.Context, companyID uint) ([]*model.Worker, error) {
+	registry := registry.GetRegistry()
+	workerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	workers, err := registry.WorkerUseCase().ListCompanyWorkers(*workerId, domain.CompanyID(companyID))
+	if err != nil {
+		return nil, newError(err, "社員一覧の取得に失敗しました")
+	}
+	return model.NewWorkers(workers), nil
 }

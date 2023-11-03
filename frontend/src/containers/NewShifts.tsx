@@ -5,13 +5,38 @@ import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
 import { memo, useEffect, useState } from 'react'
 
+const ADD_SHIFTS_MODAL_ID = 'add-shifts-modal'
 const NewShifts = (): JSX.Element => {
   const companyId = useCompanyId()
   const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
+  const [selectedDesiredShift, setSelectedDesiredShift] = useState<{
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  } | null>(null)
 
   // Graphql
   const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
+
+  const onAddButtonClicked = async (date: Dayjs) => {
+    setSelectedDesiredShift(null)
+    setSelectedDate(date)
+    const bootstrap = await import('bootstrap')
+    void new bootstrap.Modal('#' + ADD_SHIFTS_MODAL_ID).show()
+  }
+  const onDesiredShiftItemClicked = async (desiredShift: {
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  }) => {
+    setSelectedDesiredShift(desiredShift)
+    setSelectedDate(dayjs(desiredShift.since))
+    const bootstrap = await import('bootstrap')
+    void new bootstrap.Modal('#' + ADD_SHIFTS_MODAL_ID).show()
+  }
 
   useEffect(() => {
     if (!companyId) return
@@ -19,19 +44,20 @@ const NewShifts = (): JSX.Element => {
   }, [companyId, loadCompany])
 
   if (error) return <Error statusCode={404} />
-  if (!companyId || !companyData?.company) return <>loading...</>
+  if (!companyData?.company) return <>loading...</>
   return (
     <div>
       <h1>シフト作成- {companyData.company.name}</h1>
       <NewShiftCalendar
         alert={''}
-        addDesiredShiftsModalID={''}
-        onAddButtonClicked={() => console.log('add')}
+        addShiftsModalID={ADD_SHIFTS_MODAL_ID}
+        onAddButtonClicked={onAddButtonClicked}
         selectedDate={selectedDate}
-        companyId={companyId}
-        addDesiredShift={() => console.log('add')}
+        addShift={() => console.log('add')}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
+        onDesiredShiftItemClicked={onDesiredShiftItemClicked}
+        selectedDesiredShift={selectedDesiredShift}
       />
     </div>
   )

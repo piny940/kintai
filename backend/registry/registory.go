@@ -33,7 +33,7 @@ func (r *registry) WorkerRepo() domain.IWorkerRepo {
 }
 
 func (r *registry) WorkerUseCase() use_case.IWorkerUseCase {
-	return use_case.NewWorkerUseCase(r.WorkerRepo())
+	return use_case.NewWorkerUseCase(r.WorkerRepo(), r.EmploymentRepo())
 }
 
 func (r *registry) StampRepo() domain.IStampRepo {

@@ -43,11 +43,7 @@ export const useCompanyId = () => {
 
   const companyId = useMemo(() => {
     const { company_id: id } = router.query
-    if (typeof id === 'string') {
-      return parseInt(id)
-    } else {
-      return undefined
-    }
+    return parseInt(id as string)
   }, [router.query])
   return companyId
 }

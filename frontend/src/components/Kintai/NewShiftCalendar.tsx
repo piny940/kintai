@@ -1,48 +1,78 @@
 import { Dayjs } from 'dayjs'
 import Calendar from '../Calendar/Calendar'
 import NewShiftDate from './NewShiftDate'
-import { useMappedCompanyDesiredShifts } from '@/hooks/desired_shift'
 import { memo } from 'react'
+import AddShiftModal from './AddShiftModal'
+import {
+  useMappedCompanyDesiredShifts,
+  useMappedCompanyShifts,
+} from '@/hooks/desired_shift'
+import { useCompanyId } from '@/hooks/calendar'
 
 export type NewShiftCalendarProps = {
   alert: string
-  addDesiredShiftsModalID: string
+  addShiftsModalID: string
   onAddButtonClicked: (date: Dayjs) => void
   selectedDate: Dayjs | null
-  companyId: number
-  addDesiredShift: (since: Dayjs, till: Dayjs) => void
+  addShift: (since: Dayjs, till: Dayjs) => void
   selectedMonth: Dayjs
   setSelectedMonth: (selectedMonth: Dayjs) => void
+  onDesiredShiftItemClicked: (desiredShift: {
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  }) => void
+  selectedDesiredShift: {
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  } | null
 }
 
 const NewShiftCalendar = ({
   alert,
-  addDesiredShiftsModalID,
+  addShiftsModalID,
   onAddButtonClicked,
   selectedDate,
-  companyId,
-  addDesiredShift,
+  addShift,
   selectedMonth,
   setSelectedMonth,
+  onDesiredShiftItemClicked,
+  selectedDesiredShift,
 }: NewShiftCalendarProps): JSX.Element => {
+  const companyId = useCompanyId()
   const desiredShiftsMap = useMappedCompanyDesiredShifts(
     companyId,
     selectedMonth
   )
+  const shiftsMap = useMappedCompanyShifts(companyId, selectedMonth)
 
   return (
-    <Calendar
-      yearMonth={selectedMonth}
-      setYearMonth={setSelectedMonth}
-      renderDate={(month, date) => (
-        <NewShiftDate
-          onAddButtonClicked={() => onAddButtonClicked(date)}
-          month={month}
-          date={date}
-          desiredShifts={desiredShiftsMap.get(date.date()) || []}
-        />
-      )}
-    />
+    <>
+      <Calendar
+        yearMonth={selectedMonth}
+        setYearMonth={setSelectedMonth}
+        renderDate={(month, date) => (
+          <NewShiftDate
+            onAddButtonClicked={() => onAddButtonClicked(date)}
+            month={month}
+            date={date}
+            desiredShifts={desiredShiftsMap.get(date.date()) || []}
+            shifts={shiftsMap.get(date.date()) || []}
+            onDesiredShiftItemClicked={onDesiredShiftItemClicked}
+          />
+        )}
+      />
+      <AddShiftModal
+        alert={alert}
+        addShift={addShift}
+        date={selectedDate}
+        targetID={addShiftsModalID}
+        selectedDesiredShift={selectedDesiredShift}
+      />
+    </>
   )
 }
 
