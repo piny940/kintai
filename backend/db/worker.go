@@ -10,7 +10,7 @@ type workerRepo struct {
 	db *DB
 }
 
-func NewWorkerRepo(db *DB) *workerRepo {
+func NewWorkerRepo(db *DB) domain.IWorkerRepo {
 	return &workerRepo{db: db}
 }
 
@@ -99,9 +99,14 @@ func (u *workerRepo) FindByEmail(email domain.WorkerEmail) (*domain.Worker, erro
 	return workerTable.toDomain(), nil
 }
 
-func (u *workerRepo) List() ([]*domain.Worker, error) {
+func (u *workerRepo) List(companyId domain.CompanyID) ([]*domain.Worker, error) {
 	var workers = make([]*domain.Worker, 0)
-	rows, err := u.db.Client.Query("select * from workers")
+	rows, err := u.db.Client.Query(
+		`select workers.* from workers
+			inner join employments on employments.id = employment_id
+			where employments.company_id = $1`,
+		companyId,
+	)
 	if err != nil {
 		return nil, err
 	}
