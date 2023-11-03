@@ -10,10 +10,6 @@ import (
 func Init() error {
 	c := config.GetConfig()
 	e := echo.New()
-	// echo, err := NewRouter()
-	// if err != nil {
-	// 	return err
-	// }
 
 	e.Use(EchoContextToContextMiddleware)
 	e.Any("/query", graphqlHandler())
