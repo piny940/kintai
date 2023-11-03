@@ -5,6 +5,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
 import { memo, useEffect, useState } from 'react'
 
+const ADD_SHIFTS_MODAL_ID = 'add-shifts-modal'
 const NewShifts = (): JSX.Element => {
   const companyId = useCompanyId()
   const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
@@ -12,6 +13,12 @@ const NewShifts = (): JSX.Element => {
 
   // Graphql
   const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
+
+  const onAddButtonClicked = async (date: Dayjs) => {
+    setSelectedDate(date)
+    const bootstrap = await import('bootstrap')
+    void new bootstrap.Modal('#' + ADD_SHIFTS_MODAL_ID).show()
+  }
 
   useEffect(() => {
     if (!companyId) return
@@ -25,8 +32,8 @@ const NewShifts = (): JSX.Element => {
       <h1>シフト作成- {companyData.company.name}</h1>
       <NewShiftCalendar
         alert={''}
-        addShiftsModalID={''}
-        onAddButtonClicked={() => console.log('add')}
+        addShiftsModalID={ADD_SHIFTS_MODAL_ID}
+        onAddButtonClicked={onAddButtonClicked}
         selectedDate={selectedDate}
         companyId={companyId}
         addShift={() => console.log('add')}
