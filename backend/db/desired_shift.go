@@ -37,7 +37,7 @@ func (r *desiredShiftRepo) List(query domain.DesiredShiftQuery) ([]*domain.Desir
 	desiredShifts := make([]*domain.DesiredShift, 0)
 	queryObj := newDesiredShiftQuery(query)
 	queryStr := "select * from desired_shifts"
-	filter, params := queryObj.toFilter()
+	filter, params := queryObj.toFilter(nil)
 	if queryObj.exists() {
 		queryStr += " where " + filter
 	}

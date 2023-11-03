@@ -10,12 +10,12 @@ type queryObj map[string]interface{}
 func (q queryObj) add(key string, value interface{}) {
 	q[key] = value
 }
-func (q queryObj) toFilter() (string, []interface{}) {
+func (q queryObj) toFilter(otherArgs []interface{}) (string, []interface{}) {
 	filter := ""
 	count := 1
-	params := make([]interface{}, 0)
+	params := otherArgs
 	for key, value := range q {
-		filter += fmt.Sprintf("%s$%d and ", key, count)
+		filter += fmt.Sprintf("%s$%d and ", key, count+len(otherArgs))
 		params = append(params, value)
 		count++
 	}
