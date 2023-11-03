@@ -48,3 +48,31 @@ func (r *employmentRepo) FindById(employmentId domain.EmploymentID) (*domain.Emp
 	}
 	return &employment, nil
 }
+
+func (r *employmentRepo) FindAllByIds(employmentIds []domain.EmploymentID) ([]*domain.Employment, error) {
+	var employments []*domain.Employment
+	rows, err := r.db.Client.Query(
+		"select * from employments where id in ($1)",
+		employmentIds,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var employment domain.Employment
+		if err := rows.Scan(
+			&employment.ID,
+			&employment.Kind,
+			&employment.Status,
+			&employment.WorkerID,
+			&employment.CompanyID,
+			&employment.CreatedAt,
+			&employment.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		employments = append(employments, &employment)
+	}
+	return employments, nil
+}
