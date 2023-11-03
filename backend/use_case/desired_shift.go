@@ -20,7 +20,7 @@ func NewDesiredShiftUseCase(desiredShiftRepo domain.IDesiredShiftRepo, employmen
 	return &desiredShiftUseCase{desiredShiftRepo: desiredShiftRepo, employmentRepo: employmentRepo}
 }
 
-func (u *desiredShiftUseCase) Create(employmentId domain.EmploymentID, since time.Time, till time.Time) (*domain.DesiredShift, error) {
+func (u *desiredShiftUseCase) Create(employmentId domain.EmploymentID, since, till time.Time) (*domain.DesiredShift, error) {
 	desiredShift := domain.NewDesiredShift(since, till, employmentId)
 	desiredShiftResult, err := u.desiredShiftRepo.Create(desiredShift)
 	if err != nil {
