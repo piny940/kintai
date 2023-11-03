@@ -7,12 +7,25 @@ export type NewShiftsDateProps = {
   month: number
   date: Dayjs
   onAddButtonClicked: () => void
-  desiredShifts: Array<{ since: string; till: string; id: number }>
-  shifts: Array<{ since: string; till: string; id: number }>
+  desiredShifts: Array<{
+    since: string
+    till: string
+    id: number
+    employment: {
+      worker: { id: number; name: { firstName: string; lastName: string } }
+    }
+  }>
+  shifts: Array<{
+    since: string
+    till: string
+    id: number
+    employment: { worker: { name: { firstName: string; lastName: string } } }
+  }>
   onDesiredShiftItemClicked: (desiredShift: {
     id: number
     since: string
     till: string
+    employment: { worker: { id: number } }
   }) => void
 }
 

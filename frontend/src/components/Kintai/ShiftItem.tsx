@@ -1,9 +1,12 @@
-import { Worker } from '@/graphql/types'
 import dayjs from 'dayjs'
 import { memo, useMemo } from 'react'
 
 export type ShiftItemProps = {
-  shift: { since: string; till: string; employment?: { worker: Worker } }
+  shift: {
+    since: string
+    till: string
+    employment?: { worker: { name: { firstName: string; lastName: string } } }
+  }
   className?: string
 }
 

@@ -14,6 +14,7 @@ const NewShifts = (): JSX.Element => {
     id: number
     since: string
     till: string
+    employment: { worker: { id: number } }
   } | null>(null)
 
   // Graphql
@@ -29,6 +30,7 @@ const NewShifts = (): JSX.Element => {
     id: number
     since: string
     till: string
+    employment: { worker: { id: number } }
   }) => {
     setSelectedDesiredShift(desiredShift)
     setSelectedDate(dayjs(desiredShift.since))

@@ -27,10 +27,18 @@ const AddShiftsModal = ({
   const [sinceMinute, setSinceMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
+  const [selectedWorkerId, setSelectedWorkerId] = useState<number | null>(null)
   const companyId = useCompanyId()
   const { data: workersData } = useGetCompanyWorkersQuery({
     variables: { companyId: companyId },
   })
+
+  const selectedWorkerChange = useCallback(
+    (value: string) => {
+      setSelectedWorkerId(Number(value))
+    },
+    [setSelectedWorkerId]
+  )
 
   const onSubmit: FormEventHandler = useCallback(
     (e) => {
@@ -76,7 +84,12 @@ const AddShiftsModal = ({
           <div className="row my-3">
             <div className="col-md-3 fw-bold col-form-label">従業員</div>
             <div className="col-md-9">
-              <select className="form-select">
+              <select
+                className="form-select"
+                onChange={(e) => selectedWorkerChange(e.target.value)}
+                value={selectedWorkerId || ''}
+              >
+                <option value="">--</option>
                 {workersData?.companyWorkers?.map((worker) => (
                   <option key={worker.id} value={worker.id}>
                     {worker.name.lastName}

@@ -21,8 +21,14 @@ export type NewShiftCalendarProps = {
     id: number
     since: string
     till: string
+    employment: { worker: { id: number } }
   }) => void
-  selectedDesiredShift: { id: number; since: string; till: string } | null
+  selectedDesiredShift: {
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  } | null
 }
 
 const NewShiftCalendar = ({
