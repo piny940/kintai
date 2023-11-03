@@ -13,11 +13,20 @@ type Shift struct {
 	UpdatedAt    time.Time    `json:"updated_at"`
 }
 type ShiftQuery struct {
-	ID           *DesiredShiftID `json:"id"`
-	EmploymentID *EmploymentID   `json:"employment_id"`
-	FromTime     *time.Time      `json:"from_time"`
-	ToTime       *time.Time      `json:"to_time"`
+	ID           *ShiftId      `json:"id"`
+	EmploymentID *EmploymentID `json:"employment_id"`
+	FromTime     *time.Time    `json:"from_time"`
+	ToTime       *time.Time    `json:"to_time"`
 }
 type IShiftRepo interface {
 	ListAll(companyId CompanyID, shiftQuery *ShiftQuery) ([]*Shift, error)
+	Create(shift *Shift) (*Shift, error)
+}
+
+func NewShift(since time.Time, till time.Time, employmentID EmploymentID) *Shift {
+	return &Shift{
+		Since:        since,
+		Till:         till,
+		EmploymentID: employmentID,
+	}
 }

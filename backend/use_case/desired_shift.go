@@ -20,7 +20,7 @@ func NewDesiredShiftUseCase(desiredShiftRepo domain.IDesiredShiftRepo, employmen
 	return &desiredShiftUseCase{desiredShiftRepo: desiredShiftRepo, employmentRepo: employmentRepo}
 }
 
-func (u *desiredShiftUseCase) Create(employmentId domain.EmploymentID, since time.Time, till time.Time) (*domain.DesiredShift, error) {
+func (u *desiredShiftUseCase) Create(employmentId domain.EmploymentID, since, till time.Time) (*domain.DesiredShift, error) {
 	desiredShift := domain.NewDesiredShift(since, till, employmentId)
 	desiredShiftResult, err := u.desiredShiftRepo.Create(desiredShift)
 	if err != nil {
@@ -28,8 +28,8 @@ func (u *desiredShiftUseCase) Create(employmentId domain.EmploymentID, since tim
 	}
 	return desiredShiftResult, nil
 }
-func (u *desiredShiftUseCase) ListCompanyDesiredShifts(workerId domain.WorkerID, companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
-	employment, err := u.employmentRepo.Find(companyId, workerId)
+func (u *desiredShiftUseCase) ListCompanyDesiredShifts(currentWorkerId domain.WorkerID, companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
+	employment, err := u.employmentRepo.Find(companyId, currentWorkerId)
 	if err != nil {
 		return nil, err
 	}
