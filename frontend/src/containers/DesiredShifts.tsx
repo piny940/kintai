@@ -27,7 +27,7 @@ const DesiredShifts = (): JSX.Element => {
   if (error) return <Error statusCode={404} />
   if (!companyData?.company) return <>loading...</>
   return (
-    <div>
+    <div className="mb-5">
       <h1>希望シフト作成 - {companyData.company.name}</h1>
       <DesiredShiftsCalendar
         selectedMonth={selectedMonth}

@@ -46,7 +46,7 @@ const NewShifts = (): JSX.Element => {
   if (error) return <Error statusCode={404} />
   if (!companyData?.company) return <>loading...</>
   return (
-    <div>
+    <div className="mb-5">
       <h1>シフト作成- {companyData.company.name}</h1>
       <NewShiftCalendar
         alert={''}
