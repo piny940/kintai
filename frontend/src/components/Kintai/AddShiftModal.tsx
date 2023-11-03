@@ -3,13 +3,14 @@ import { ModalFormBox } from '../Common/ModalFormBox'
 import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
 import { useCompanyId } from '@/hooks/calendar'
-import { useGetCompanyWorkersQuery } from '@/graphql/types'
+import {
+  useCreateShiftMutation,
+  useGetCompanyWorkersQuery,
+} from '@/graphql/types'
 
 export type AddShiftsModalProps = {
-  alert: string
   targetID: string
   date: Dayjs | null
-  addShift: (since: Dayjs, till: Dayjs) => void
   selectedDesiredShift: {
     id: number
     since: string
@@ -22,12 +23,11 @@ const SINCE_HOUR_OPTIONS = [9, 10, 11, 12, 13, 14, 15, 16, 17]
 const TILL_HOUR_OPTIONS = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 const MINUTE_OPTIONS = [0, 15, 30, 45]
 const AddShiftsModal = ({
-  alert,
   targetID,
   date,
-  addShift,
   selectedDesiredShift,
 }: AddShiftsModalProps): JSX.Element => {
+  const [alert, setAlert] = useState('')
   const [sinceHour, setSinceHour] = useState<number>(SINCE_HOUR_OPTIONS[0])
   const [sinceMinute, setSinceMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
@@ -37,6 +37,7 @@ const AddShiftsModal = ({
   const { data: workersData } = useGetCompanyWorkersQuery({
     variables: { companyId: companyId },
   })
+  const [postShift, { error: shiftError }] = useCreateShiftMutation()
 
   const selectedWorkerChange = useCallback(
     (value: string) => {
@@ -50,11 +51,31 @@ const AddShiftsModal = ({
       e.preventDefault()
 
       if (!date) return
+      if (!selectedWorkerId) {
+        setAlert('従業員を選択してください')
+        return
+      }
       const since = date.hour(sinceHour).minute(sinceMinute)
       const till = date.hour(tillHour).minute(tillMinute)
-      addShift(since, till)
+      void postShift({
+        variables: {
+          since: since.toISOString(),
+          till: till.toISOString(),
+          workerId: selectedWorkerId,
+          companyId: companyId,
+        },
+      })
     },
-    [date, sinceHour, sinceMinute, tillHour, tillMinute, addShift]
+    [
+      date,
+      sinceHour,
+      sinceMinute,
+      tillHour,
+      tillMinute,
+      selectedWorkerId,
+      companyId,
+      postShift,
+    ]
   )
 
   useEffect(() => {
@@ -78,7 +99,7 @@ const AddShiftsModal = ({
   return (
     <ModalFormBox
       title="シフト作成"
-      alert={alert}
+      alert={shiftError?.message || alert}
       targetID={targetID}
       submitButtonText="作成"
       onSubmit={onSubmit}
