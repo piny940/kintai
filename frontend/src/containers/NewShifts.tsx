@@ -60,6 +60,8 @@ const NewShifts = (): JSX.Element => {
         />
       </div>
       <NewShiftCalendar
+        showDesiredShifts={showDesiredShifts}
+        showShifts={showShifts}
         addShiftsModalID={ADD_SHIFTS_MODAL_ID}
         onAddButtonClicked={onAddButtonClicked}
         selectedDate={selectedDate}

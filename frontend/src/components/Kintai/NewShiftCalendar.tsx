@@ -10,6 +10,8 @@ import {
 import { useCompanyId } from '@/hooks/calendar'
 
 export type NewShiftCalendarProps = {
+  showShifts: boolean
+  showDesiredShifts: boolean
   addShiftsModalID: string
   onAddButtonClicked: (date: Dayjs) => void
   selectedDate: Dayjs | null
@@ -30,6 +32,8 @@ export type NewShiftCalendarProps = {
 }
 
 const NewShiftCalendar = ({
+  showShifts,
+  showDesiredShifts,
   addShiftsModalID,
   onAddButtonClicked,
   selectedDate,
@@ -52,6 +56,8 @@ const NewShiftCalendar = ({
         setYearMonth={setSelectedMonth}
         renderDate={(month, date) => (
           <NewShiftDate
+            showShifts={showShifts}
+            showDesiredShifts={showDesiredShifts}
             onAddButtonClicked={() => onAddButtonClicked(date)}
             month={month}
             date={date}
