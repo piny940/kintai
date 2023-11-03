@@ -55,14 +55,14 @@ export type DesiredShift = {
 
 export type Employment = {
   __typename?: 'Employment'
-  companyId: Scalars['Int']['output']
+  companyId: Scalars['Uint']['output']
   createdAt: Scalars['Time']['output']
   id: Scalars['Uint']['output']
   kind: EmploymentKind
   status: EmploymentStatus
   updatedAt: Scalars['Time']['output']
   worker: Worker
-  workerId: Scalars['Int']['output']
+  workerId: Scalars['Uint']['output']
 }
 
 export enum EmploymentKind {
@@ -108,6 +108,7 @@ export type Query = {
   companies: Company[]
   company: Company
   companyDesiredShifts: DesiredShift[]
+  companyShifts: Shift[]
   desiredShifts: DesiredShift[]
   me?: Maybe<Worker>
   workStatus: WorkStatus
@@ -123,6 +124,12 @@ export type QueryCompanyDesiredShiftsArgs = {
   toTime?: InputMaybe<Scalars['Time']['input']>
 }
 
+export type QueryCompanyShiftsArgs = {
+  companyId: Scalars['Uint']['input']
+  fromTime?: InputMaybe<Scalars['Time']['input']>
+  toTime?: InputMaybe<Scalars['Time']['input']>
+}
+
 export type QueryDesiredShiftsArgs = {
   companyId: Scalars['Uint']['input']
   fromTime?: InputMaybe<Scalars['Time']['input']>
@@ -131,6 +138,17 @@ export type QueryDesiredShiftsArgs = {
 
 export type QueryWorkStatusArgs = {
   companyId: Scalars['Uint']['input']
+}
+
+export type Shift = {
+  __typename?: 'Shift'
+  createdAt: Scalars['Time']['output']
+  employment: Employment
+  employmentId: Scalars['Uint']['output']
+  id: Scalars['Uint']['output']
+  since: Scalars['Time']['output']
+  till: Scalars['Time']['output']
+  updatedAt: Scalars['Time']['output']
 }
 
 export type Stamp = {
@@ -179,16 +197,7 @@ export type GetCompanyQuery = {
     __typename?: 'Company'
     id: number
     name: string
-    createdAt: string
-    updatedAt: string
-    employment: {
-      __typename?: 'Employment'
-      id: number
-      kind: EmploymentKind
-      status: EmploymentStatus
-      createdAt: string
-      updatedAt: string
-    }
+    employment: { __typename?: 'Employment'; kind: EmploymentKind }
   }
 }
 
@@ -196,13 +205,7 @@ export type GetCompaniesQueryVariables = Exact<Record<string, never>>
 
 export type GetCompaniesQuery = {
   __typename?: 'Query'
-  companies: Array<{
-    __typename?: 'Company'
-    id: number
-    name: string
-    createdAt: string
-    updatedAt: string
-  }>
+  companies: Array<{ __typename?: 'Company'; id: number; name: string }>
 }
 
 export type GetDesiredShiftsQueryVariables = Exact<{
@@ -218,9 +221,6 @@ export type GetDesiredShiftsQuery = {
     id: number
     since: string
     till: string
-    employmentId: number
-    createdAt: string
-    updatedAt: string
   }>
 }
 
@@ -237,23 +237,11 @@ export type GetCompanyDesiredShiftsQuery = {
     id: number
     since: string
     till: string
-    employmentId: number
-    createdAt: string
-    updatedAt: string
     employment: {
       __typename?: 'Employment'
-      id: number
-      kind: EmploymentKind
-      status: EmploymentStatus
-      createdAt: string
-      updatedAt: string
       worker: {
         __typename?: 'Worker'
         id: number
-        status: WorkerStatus
-        email: string
-        createdAt: string
-        updatedAt: string
         name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
       }
     }
@@ -280,15 +268,7 @@ export type LoginMutation = {
   __typename?: 'Mutation'
   login?: {
     __typename?: 'LoginResponse'
-    worker?: {
-      __typename?: 'Worker'
-      id: number
-      status: WorkerStatus
-      email: string
-      createdAt: string
-      updatedAt: string
-      name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
-    } | null
+    worker?: { __typename?: 'Worker'; id: number } | null
   } | null
 }
 
@@ -298,7 +278,7 @@ export type PushStampMutationVariables = Exact<{
 
 export type PushStampMutation = {
   __typename?: 'Mutation'
-  pushStamp: { __typename?: 'Stamp'; id: number; stampedAt: string }
+  pushStamp: { __typename?: 'Stamp'; id: number }
 }
 
 export type GetWorkStatusQueryVariables = Exact<{
@@ -314,15 +294,7 @@ export type GetMeQueryVariables = Exact<Record<string, never>>
 
 export type GetMeQuery = {
   __typename?: 'Query'
-  me?: {
-    __typename?: 'Worker'
-    id: number
-    status: WorkerStatus
-    email: string
-    createdAt: string
-    updatedAt: string
-    name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
-  } | null
+  me?: { __typename?: 'Worker'; id: number } | null
 }
 
 export const GetCompanyDocument = gql`
@@ -331,14 +303,8 @@ export const GetCompanyDocument = gql`
       id
       name
       employment {
-        id
         kind
-        status
-        createdAt
-        updatedAt
       }
-      createdAt
-      updatedAt
     }
   }
 `
@@ -411,8 +377,6 @@ export const GetCompaniesDocument = gql`
     companies {
       id
       name
-      createdAt
-      updatedAt
     }
   }
 `
@@ -487,9 +451,6 @@ export const GetDesiredShiftsDocument = gql`
       id
       since
       till
-      employmentId
-      createdAt
-      updatedAt
     }
   }
 `
@@ -575,27 +536,15 @@ export const GetCompanyDesiredShiftsDocument = gql`
       id
       since
       till
-      employmentId
       employment {
-        id
-        kind
-        status
         worker {
           id
-          status
-          email
           name {
             firstName
             lastName
           }
-          createdAt
-          updatedAt
         }
-        createdAt
-        updatedAt
       }
-      createdAt
-      updatedAt
     }
   }
 `
@@ -724,14 +673,6 @@ export const LoginDocument = gql`
     login(email: $email, password: $password) {
       worker {
         id
-        status
-        email
-        name {
-          firstName
-          lastName
-        }
-        createdAt
-        updatedAt
       }
     }
   }
@@ -781,7 +722,6 @@ export const PushStampDocument = gql`
   mutation pushStamp($companyId: Uint!) {
     pushStamp(companyId: $companyId) {
       id
-      stampedAt
     }
   }
 `
@@ -902,14 +842,6 @@ export const GetMeDocument = gql`
   query getMe {
     me {
       id
-      status
-      email
-      name {
-        firstName
-        lastName
-      }
-      createdAt
-      updatedAt
     }
   }
 `
