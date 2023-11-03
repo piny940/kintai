@@ -14,7 +14,7 @@ import (
 func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
 	worker, err := currentWorker(ctx)
 	if err != nil {
-		return nil, newError(err, "ログインしてください")
+		return nil, nil
 	}
 	return model.NewWorker(worker), nil
 }
