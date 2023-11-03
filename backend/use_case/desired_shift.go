@@ -8,7 +8,7 @@ import (
 
 type IDesiredShiftUseCase interface {
 	Create(employmentId domain.EmploymentID, since time.Time, till time.Time) (*domain.DesiredShift, error)
-	ListCompanyDesiredShifts(workerId domain.WorkerID, companyId domain.CompanyID) ([]*domain.DesiredShift, error)
+	ListCompanyDesiredShifts(workerId domain.WorkerID, companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error)
 }
 
 type desiredShiftUseCase struct {
@@ -28,7 +28,7 @@ func (u *desiredShiftUseCase) Create(employmentId domain.EmploymentID, since tim
 	}
 	return desiredShiftResult, nil
 }
-func (u *desiredShiftUseCase) ListCompanyDesiredShifts(workerId domain.WorkerID, companyId domain.CompanyID) ([]*domain.DesiredShift, error) {
+func (u *desiredShiftUseCase) ListCompanyDesiredShifts(workerId domain.WorkerID, companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
 	employment, err := u.employmentRepo.Find(companyId, workerId)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (u *desiredShiftUseCase) ListCompanyDesiredShifts(workerId domain.WorkerID,
 	if employment.Kind != domain.EmploymentAdmin {
 		return nil, fmt.Errorf("権限がありません")
 	}
-	desiredShifts, err := u.desiredShiftRepo.ListAll(companyId)
+	desiredShifts, err := u.desiredShiftRepo.ListAll(companyId, query)
 	if err != nil {
 		return nil, err
 	}

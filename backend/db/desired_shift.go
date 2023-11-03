@@ -16,24 +16,24 @@ type desiredShiftQuery struct {
 	queryObj
 }
 
-func newDesiredShiftQuery(query domain.DesiredShiftQuery) *desiredShiftQuery {
+func newDesiredShiftQuery(query *domain.DesiredShiftQuery) *desiredShiftQuery {
 	queryObj := queryObj{}
 	if query.ID != nil {
-		queryObj.add("id = ", *query.ID)
+		queryObj.add("id = ", query.ID)
 	}
 	if query.EmploymentID != nil {
-		queryObj.add("employment_id = ", *query.EmploymentID)
+		queryObj.add("employment_id = ", query.EmploymentID)
 	}
 	if query.FromTime != nil {
-		queryObj.add("since >= ", *query.FromTime)
+		queryObj.add("since >= ", query.FromTime)
 	}
 	if query.ToTime != nil {
-		queryObj.add("till <= ", *query.ToTime)
+		queryObj.add("till <= ", query.ToTime)
 	}
 	return &desiredShiftQuery{queryObj: queryObj}
 }
 
-func (r *desiredShiftRepo) List(query domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
+func (r *desiredShiftRepo) List(query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
 	desiredShifts := make([]*domain.DesiredShift, 0)
 	queryObj := newDesiredShiftQuery(query)
 	queryStr := "select * from desired_shifts"
@@ -86,14 +86,19 @@ func (r *desiredShiftRepo) Create(desiredShift *domain.DesiredShift) (*domain.De
 	return &desiredShiftResult, nil
 }
 
-func (r *desiredShiftRepo) ListAll(companyId domain.CompanyID) ([]*domain.DesiredShift, error) {
+func (r *desiredShiftRepo) ListAll(companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
 	desiredShifts := make([]*domain.DesiredShift, 0)
-	rows, err := r.db.Client.Query(
-		`select desired_shifts.* from desired_shifts
+	queryObj := newDesiredShiftQuery(query)
+	queryStr := `select desired_shifts.* from desired_shifts
 			inner join employments
 				on desired_shifts.employment_id = employments.id
-			where employments.company_id = $1`,
-		companyId)
+			where employments.company_id = $1`
+	filter, params := queryObj.toFilter([]interface{}{companyId})
+	if queryObj.exists() {
+		queryStr += " and " + filter
+	}
+
+	rows, err := r.db.Client.Query(queryStr, params...)
 	if err != nil {
 		return nil, err
 	}

@@ -19,8 +19,8 @@ type DesiredShiftQuery struct {
 	ToTime       *time.Time      `json:"to_time"`
 }
 type IDesiredShiftRepo interface {
-	List(query DesiredShiftQuery) ([]*DesiredShift, error)
-	ListAll(companyId CompanyID) ([]*DesiredShift, error)
+	List(query *DesiredShiftQuery) ([]*DesiredShift, error)
+	ListAll(companyId CompanyID, query *DesiredShiftQuery) ([]*DesiredShift, error)
 	Create(desiredShift *DesiredShift) (*DesiredShift, error)
 }
 
