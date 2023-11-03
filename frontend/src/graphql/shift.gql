@@ -14,8 +14,18 @@ query getCompanyShifts($companyId: Uint!, $fromTime: Time!, $toTime: Time!) {
     }
   }
 }
-mutation createShift($since: Time!, $till: Time!, $employmentId: Uint!) {
-  createShift(since: $since, till: $till, employmentId: $employmentId) {
+mutation createShift(
+  $since: Time!
+  $till: Time!
+  $workerId: Uint!
+  $companyId: Uint!
+) {
+  createShift(
+    since: $since
+    till: $till
+    workerId: $workerId
+    companyId: $companyId
+  ) {
     id
   }
 }
