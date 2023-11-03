@@ -96,3 +96,5 @@ models:
     model: kintai_backend/graph/model.Employment
   DesiredShift:
     model: kintai_backend/graph/model.DesiredShift
+  Shift:
+    model: kintai_backend/graph/model.Shift
