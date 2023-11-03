@@ -64,3 +64,24 @@ func (r *shiftRepo) ListAll(companyId domain.CompanyID, query *domain.ShiftQuery
 	}
 	return shifts, nil
 }
+
+func (r *shiftRepo) Create(shift *domain.Shift) (*domain.Shift, error) {
+	var shiftResult domain.Shift
+
+	if err := r.db.Client.QueryRow(
+		"insert into shifts (since, till, employment_id) values ($1, $2, $3) returning *",
+		shift.Since,
+		shift.Till,
+		shift.EmploymentID,
+	).Scan(
+		&shiftResult.ID,
+		&shiftResult.Since,
+		&shiftResult.Till,
+		&shiftResult.EmploymentID,
+		&shiftResult.CreatedAt,
+		&shiftResult.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &shiftResult, nil
+}

@@ -20,4 +20,5 @@ type ShiftQuery struct {
 }
 type IShiftRepo interface {
 	ListAll(companyId CompanyID, shiftQuery *ShiftQuery) ([]*Shift, error)
+	Create(shift *Shift) (*Shift, error)
 }
