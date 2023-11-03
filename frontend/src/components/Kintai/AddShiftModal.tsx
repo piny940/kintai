@@ -10,7 +10,12 @@ export type AddShiftsModalProps = {
   targetID: string
   date: Dayjs | null
   addShift: (since: Dayjs, till: Dayjs) => void
-  selectedDesiredShift: { id: number; since: string; till: string } | null
+  selectedDesiredShift: {
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  } | null
 }
 
 const SINCE_HOUR_OPTIONS = [9, 10, 11, 12, 13, 14, 15, 16, 17]
@@ -58,6 +63,7 @@ const AddShiftsModal = ({
       setSinceMinute(MINUTE_OPTIONS[0])
       setTillHour(TILL_HOUR_OPTIONS[0])
       setTillMinute(MINUTE_OPTIONS[0])
+      setSelectedWorkerId(null)
       return
     }
     const since = dayjs(selectedDesiredShift.since)
@@ -66,6 +72,7 @@ const AddShiftsModal = ({
     setSinceMinute(since.minute())
     setTillHour(till.hour())
     setTillMinute(till.minute())
+    setSelectedWorkerId(selectedDesiredShift.employment.worker.id)
   }, [selectedDesiredShift])
 
   return (
@@ -92,7 +99,7 @@ const AddShiftsModal = ({
                 <option value="">--</option>
                 {workersData?.companyWorkers?.map((worker) => (
                   <option key={worker.id} value={worker.id}>
-                    {worker.name.lastName}
+                    {worker.name.lastName} {worker.name.firstName}
                   </option>
                 ))}
               </select>
