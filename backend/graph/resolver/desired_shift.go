@@ -27,11 +27,7 @@ func (r *mutationResolver) CreateDesiredShift(ctx context.Context, companyID uin
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
-	company, err := GetCompany(ctx, companyID)
-	if err != nil {
-		return nil, newError(err, "company_idが適切ではありません")
-	}
-	employment, err := registry.EmploymentRepo().Find(company.ID, *workerId)
+	employment, err := registry.EmploymentRepo().Find(domain.CompanyID(companyID), *workerId)
 	if err != nil {
 		return nil, newError(err, "会社に属していません")
 	}
@@ -48,15 +44,11 @@ func (r *queryResolver) DesiredShifts(ctx context.Context, companyID uint, fromT
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
-	company, err := GetCompany(ctx, companyID)
-	if err != nil {
-		return nil, newError(err, "company_idが適切ではありません")
-	}
-	employment, err := registry.EmploymentRepo().Find(company.ID, *workerId)
+	employment, err := registry.EmploymentRepo().Find(domain.CompanyID(companyID), *workerId)
 	if err != nil {
 		return nil, newError(err, "会社に属していません")
 	}
-	query := domain.DesiredShiftQuery{
+	query := &domain.DesiredShiftQuery{
 		EmploymentID: &employment.ID,
 		FromTime:     fromTime,
 		ToTime:       toTime,
@@ -74,7 +66,11 @@ func (r *queryResolver) CompanyDesiredShifts(ctx context.Context, companyID uint
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
-	desiredShifts, err := registry.DesiredShiftUseCase().ListCompanyDesiredShifts(*workerId, domain.CompanyID(companyID))
+	query := &domain.DesiredShiftQuery{
+		FromTime: fromTime,
+		ToTime:   toTime,
+	}
+	desiredShifts, err := registry.DesiredShiftUseCase().ListCompanyDesiredShifts(*workerId, domain.CompanyID(companyID), query)
 	if err != nil {
 		return nil, newError(err, "希望シフトの取得に失敗しました")
 	}

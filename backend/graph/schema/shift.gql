@@ -1,0 +1,13 @@
+type Shift {
+  id: Uint!
+  since: Time!
+  till: Time!
+  employmentId: Uint!
+  employment: Employment!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+extend type Query {
+  companyShifts(companyId: Uint!, fromTime: Time, toTime: Time): [Shift!]!
+}

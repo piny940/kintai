@@ -39,7 +39,7 @@ func (c *desiredShiftsController) Index(ctx echo.Context) error {
 	if err == nil {
 		query.ToTime = &toTime
 	}
-	desiredShifts, err := registry.DesiredShiftRepo().List(query)
+	desiredShifts, err := registry.DesiredShiftRepo().List(&query)
 	if err != nil {
 		return Render400(ctx, "希望シフトの取得に失敗しました", err)
 	}
