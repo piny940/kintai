@@ -17,7 +17,7 @@ type StampQuery struct {
 	ToTime       *time.Time
 }
 type IStampRepo interface {
-	List(query StampQuery) ([]*Stamp, error)
+	List(query *StampQuery) ([]*Stamp, error)
 	Create(stamp *Stamp) (*Stamp, error)
 	Count(query *StampQuery) (int, error)
 }

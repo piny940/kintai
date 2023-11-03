@@ -28,13 +28,16 @@ func newStampQuery(query *domain.StampQuery) *stampQuery {
 	return &stampQuery{queryObj: queryObj}
 }
 
-func (r *stampRepo) List(workerId domain.WorkerID, companyId domain.CompanyID) ([]*domain.Stamp, error) {
+func (r *stampRepo) List(query *domain.StampQuery) ([]*domain.Stamp, error) {
 	stamps := make([]*domain.Stamp, 0)
-	rows, err := r.db.Client.Query(
-		"select * from stamps where employment_id in (select id from employments where worker_id = $1 and company_id = $2)",
-		workerId,
-		companyId,
-	)
+
+	queryObj := newStampQuery(query)
+	queryStr := "select * from stamps"
+	filter, params := queryObj.toFilter(nil)
+	if queryObj.exists() {
+		queryStr += " where " + filter
+	}
+	rows, err := r.db.Client.Query(queryStr, params...)
 	if err != nil {
 		return nil, err
 	}
