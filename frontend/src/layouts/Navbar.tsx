@@ -1,7 +1,11 @@
 import { MaterialIcon } from '@/components/Common/MaterialIcon'
 import { ThemeToggler } from '@/components/Common/ThemeToggler'
 import { useTheme } from '@/context/ThemeProvider'
-import { useGetMeQuery, useLogoutMutation } from '@/graphql/types'
+import {
+  GetMeDocument,
+  useGetMeQuery,
+  useLogoutMutation,
+} from '@/graphql/types'
 import { TestID } from '@/resources/TestID'
 import { useApolloClient } from '@apollo/client'
 import Link from 'next/link'
@@ -17,8 +21,8 @@ export const Navbar: React.FC = () => {
 
   const onLogoutClicked = async () => {
     await logout()
-    await client.resetStore()
     void router.push('/accounts/sign_in')
+    void client.refetchQueries({ include: [GetMeDocument] })
   }
 
   const toggleTheme = useCallback(() => {
