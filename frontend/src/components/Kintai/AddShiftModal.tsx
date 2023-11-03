@@ -2,6 +2,8 @@ import { FormEventHandler, memo, useCallback, useEffect, useState } from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
 import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
+import { useCompanyId } from '@/hooks/calendar'
+import { useGetCompanyWorkersQuery } from '@/graphql/types'
 
 export type AddShiftsModalProps = {
   alert: string
@@ -25,6 +27,10 @@ const AddShiftsModal = ({
   const [sinceMinute, setSinceMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
+  const companyId = useCompanyId()
+  const { data: workersData } = useGetCompanyWorkersQuery({
+    variables: { companyId: companyId },
+  })
 
   const onSubmit: FormEventHandler = useCallback(
     (e) => {
@@ -70,7 +76,13 @@ const AddShiftsModal = ({
           <div className="row my-3">
             <div className="col-md-3 fw-bold col-form-label">従業員</div>
             <div className="col-md-9">
-              <select className="form-select"></select>
+              <select className="form-select">
+                {workersData?.companyWorkers?.map((worker) => (
+                  <option key={worker.id} value={worker.id}>
+                    {worker.name.lastName}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="row my-3">
