@@ -8,11 +8,13 @@ export type ShiftItemButtonProps = {
     employment?: { worker: { name: { firstName: string; lastName: string } } }
   }
   className?: string
+  onClick: () => void
 }
 
 const ShiftItemButton = ({
   shift,
   className = '',
+  onClick,
 }: ShiftItemButtonProps): JSX.Element => {
   const renderRange = () => (
     <>
@@ -26,7 +28,10 @@ const ShiftItemButton = ({
   }, [shift?.employment?.worker])
 
   return (
-    <button className={'btn d-block btn-sm rounded p-1 m-1 ' + className}>
+    <button
+      onClick={onClick}
+      className={'btn d-block btn-sm rounded p-1 m-1 ' + className}
+    >
       {workerName ? (
         <>
           {workerName}: {renderRange()}

@@ -1,6 +1,6 @@
-import { FormEventHandler, memo, useCallback, useState } from 'react'
+import { FormEventHandler, memo, useCallback, useEffect, useState } from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
 
 export type AddShiftsModalProps = {
@@ -8,6 +8,7 @@ export type AddShiftsModalProps = {
   targetID: string
   date: Dayjs | null
   addShift: (since: Dayjs, till: Dayjs) => void
+  selectedDesiredShift: { id: number; since: string; till: string } | null
 }
 
 const SINCE_HOUR_OPTIONS = [9, 10, 11, 12, 13, 14, 15, 16, 17]
@@ -18,6 +19,7 @@ const AddShiftsModal = ({
   targetID,
   date,
   addShift,
+  selectedDesiredShift,
 }: AddShiftsModalProps): JSX.Element => {
   const [sinceHour, setSinceHour] = useState<number>(SINCE_HOUR_OPTIONS[0])
   const [sinceMinute, setSinceMinute] = useState<number>(MINUTE_OPTIONS[0])
@@ -35,6 +37,22 @@ const AddShiftsModal = ({
     },
     [date, sinceHour, sinceMinute, tillHour, tillMinute, addShift]
   )
+
+  useEffect(() => {
+    if (!selectedDesiredShift) {
+      setSinceHour(SINCE_HOUR_OPTIONS[0])
+      setSinceMinute(MINUTE_OPTIONS[0])
+      setTillHour(TILL_HOUR_OPTIONS[0])
+      setTillMinute(MINUTE_OPTIONS[0])
+      return
+    }
+    const since = dayjs(selectedDesiredShift.since)
+    const till = dayjs(selectedDesiredShift.till)
+    setSinceHour(since.hour())
+    setSinceMinute(since.minute())
+    setTillHour(till.hour())
+    setTillMinute(till.minute())
+  }, [selectedDesiredShift])
 
   return (
     <ModalFormBox

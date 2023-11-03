@@ -17,6 +17,12 @@ export type NewShiftCalendarProps = {
   addShift: (since: Dayjs, till: Dayjs) => void
   selectedMonth: Dayjs
   setSelectedMonth: (selectedMonth: Dayjs) => void
+  onDesiredShiftItemClicked: (desiredShift: {
+    id: number
+    since: string
+    till: string
+  }) => void
+  selectedDesiredShift: { id: number; since: string; till: string } | null
 }
 
 const NewShiftCalendar = ({
@@ -28,6 +34,8 @@ const NewShiftCalendar = ({
   addShift,
   selectedMonth,
   setSelectedMonth,
+  onDesiredShiftItemClicked,
+  selectedDesiredShift,
 }: NewShiftCalendarProps): JSX.Element => {
   const desiredShiftsMap = useMappedCompanyDesiredShifts(
     companyId,
@@ -47,6 +55,7 @@ const NewShiftCalendar = ({
             date={date}
             desiredShifts={desiredShiftsMap.get(date.date()) || []}
             shifts={shiftsMap.get(date.date()) || []}
+            onDesiredShiftItemClicked={onDesiredShiftItemClicked}
           />
         )}
       />
@@ -55,6 +64,7 @@ const NewShiftCalendar = ({
         addShift={addShift}
         date={selectedDate}
         targetID={addShiftsModalID}
+        selectedDesiredShift={selectedDesiredShift}
       />
     </>
   )

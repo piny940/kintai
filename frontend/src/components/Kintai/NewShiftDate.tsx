@@ -9,6 +9,11 @@ export type NewShiftsDateProps = {
   onAddButtonClicked: () => void
   desiredShifts: Array<{ since: string; till: string; id: number }>
   shifts: Array<{ since: string; till: string; id: number }>
+  onDesiredShiftItemClicked: (desiredShift: {
+    id: number
+    since: string
+    till: string
+  }) => void
 }
 
 const NewShiftsDate = ({
@@ -17,6 +22,7 @@ const NewShiftsDate = ({
   onAddButtonClicked,
   desiredShifts,
   shifts,
+  onDesiredShiftItemClicked,
 }: NewShiftsDateProps): JSX.Element => {
   const textColor = (): string => {
     if (date.month() !== month) {
@@ -49,6 +55,7 @@ const NewShiftsDate = ({
               className="btn-outline-info text-body"
               key={desiredShift.id}
               shift={desiredShift}
+              onClick={() => onDesiredShiftItemClicked(desiredShift)}
             />
           ))}
           {shifts.map((shift) => (

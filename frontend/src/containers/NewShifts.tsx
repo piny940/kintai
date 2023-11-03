@@ -10,12 +10,28 @@ const NewShifts = (): JSX.Element => {
   const companyId = useCompanyId()
   const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
+  const [selectedDesiredShift, setSelectedDesiredShift] = useState<{
+    id: number
+    since: string
+    till: string
+  } | null>(null)
 
   // Graphql
   const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
 
   const onAddButtonClicked = async (date: Dayjs) => {
+    setSelectedDesiredShift(null)
     setSelectedDate(date)
+    const bootstrap = await import('bootstrap')
+    void new bootstrap.Modal('#' + ADD_SHIFTS_MODAL_ID).show()
+  }
+  const onDesiredShiftItemClicked = async (desiredShift: {
+    id: number
+    since: string
+    till: string
+  }) => {
+    setSelectedDesiredShift(desiredShift)
+    setSelectedDate(dayjs(desiredShift.since))
     const bootstrap = await import('bootstrap')
     void new bootstrap.Modal('#' + ADD_SHIFTS_MODAL_ID).show()
   }
@@ -39,6 +55,8 @@ const NewShifts = (): JSX.Element => {
         addShift={() => console.log('add')}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
+        onDesiredShiftItemClicked={onDesiredShiftItemClicked}
+        selectedDesiredShift={selectedDesiredShift}
       />
     </div>
   )
