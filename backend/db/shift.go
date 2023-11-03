@@ -14,7 +14,7 @@ type shiftQuery struct {
 	queryObj
 }
 
-func newShiftQuery(query domain.ShiftQuery) *shiftQuery {
+func newShiftQuery(query *domain.ShiftQuery) *shiftQuery {
 	queryObj := queryObj{}
 	if query.ID != nil {
 		queryObj.add("id = ", *query.ID)
@@ -31,7 +31,7 @@ func newShiftQuery(query domain.ShiftQuery) *shiftQuery {
 	return &shiftQuery{queryObj: queryObj}
 }
 
-func (r *shiftRepo) ListAll(companyId domain.CompanyID, query domain.ShiftQuery) ([]*domain.Shift, error) {
+func (r *shiftRepo) ListAll(companyId domain.CompanyID, query *domain.ShiftQuery) ([]*domain.Shift, error) {
 	var shifts []*domain.Shift
 	queryObj := newShiftQuery(query)
 	queryStr := `select * from shifts

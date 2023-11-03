@@ -19,5 +19,5 @@ type ShiftQuery struct {
 	ToTime       *time.Time      `json:"to_time"`
 }
 type IShiftRepo interface {
-	ListAll(companyId CompanyID, shiftQuery ShiftQuery) ([]*Shift, error)
+	ListAll(companyId CompanyID, shiftQuery *ShiftQuery) ([]*Shift, error)
 }

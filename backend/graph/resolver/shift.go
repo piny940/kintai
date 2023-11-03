@@ -7,12 +7,24 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
+	"kintai_backend/registry"
 )
 
 func (r *queryResolver) CompanyShifts(ctx context.Context, companyID uint) ([]*model.Shift, error) {
-	panic(fmt.Errorf("not implemented: CompanyShifts - companyShifts"))
+	registry := registry.GetRegistry()
+	workerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	query := &domain.ShiftQuery{}
+	shifts, err := registry.ShiftUseCase().ListCompanyShifts(*workerId, domain.CompanyID(companyID), query)
+	if err != nil {
+		return nil, newError(err, "シフト情報の取得に失敗しました")
+	}
+	return model.NewShifts(shifts), nil
 }
 
 func (r *shiftResolver) Employment(ctx context.Context, obj *model.Shift) (*model.Employment, error) {
