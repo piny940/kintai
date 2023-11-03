@@ -6,7 +6,6 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
@@ -28,7 +27,11 @@ func (r *queryResolver) CompanyShifts(ctx context.Context, companyID uint) ([]*m
 }
 
 func (r *shiftResolver) Employment(ctx context.Context, obj *model.Shift) (*model.Employment, error) {
-	panic(fmt.Errorf("not implemented: Employment - employment"))
+	employment, err := r.EmploymentLoader.Load(ctx, obj.EmploymentID)()
+	if err != nil {
+		return nil, newError(err, "所属情報の取得に失敗しました")
+	}
+	return model.NewEmployment(employment), nil
 }
 
 func (r *Resolver) Shift() graph.ShiftResolver { return &shiftResolver{r} }
