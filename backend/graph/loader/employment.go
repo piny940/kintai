@@ -16,18 +16,21 @@ func newEmploymentLoader() IEmploymentLoader {
 
 func getEmployments(ctx context.Context, Ids []uint) []*dataloader.Result[*domain.Employment] {
 	registry := registry.GetRegistry()
+	indexMap := mapIdToIndex(Ids)
+
 	employmentIds := make([]domain.EmploymentID, len(Ids))
 	for i, id := range Ids {
 		employmentIds[i] = domain.EmploymentID(id)
 	}
 	employments, err := registry.EmploymentRepo().FindAllByIds(employmentIds)
 	results := make([]*dataloader.Result[*domain.Employment], len(Ids))
-	for i, employment := range employments {
+	for _, employment := range employments {
+		index := indexMap[uint(employment.ID)]
 		if err != nil {
-			results[i] = &dataloader.Result[*domain.Employment]{Error: err}
+			results[index] = &dataloader.Result[*domain.Employment]{Error: err}
 			continue
 		}
-		results[i] = &dataloader.Result[*domain.Employment]{Data: employment}
+		results[index] = &dataloader.Result[*domain.Employment]{Data: employment}
 	}
 	return results
 }

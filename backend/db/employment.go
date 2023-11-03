@@ -3,7 +3,6 @@ package db
 import (
 	"fmt"
 	"kintai_backend/domain"
-	"strings"
 )
 
 type employmentRepo struct {
@@ -55,14 +54,9 @@ func (r *employmentRepo) FindById(employmentId domain.EmploymentID) (*domain.Emp
 
 func (r *employmentRepo) FindAllByIds(employmentIds []domain.EmploymentID) ([]*domain.Employment, error) {
 	var employments []*domain.Employment
-	args := make([]interface{}, len(employmentIds))
-	strParam := make([]string, len(employmentIds))
-	for i := range employmentIds {
-		args[i] = employmentIds[i]
-		strParam[i] = fmt.Sprintf("$%d", i+1)
-	}
+	strParam, args := arrayParam(employmentIds)
 	rows, err := r.db.Client.Query(
-		fmt.Sprintf("select * from employments where id in (%s)", strings.Join(strParam, ", ")),
+		fmt.Sprintf("select * from employments where id in (%s)", strParam),
 		args...,
 	)
 	if err != nil {

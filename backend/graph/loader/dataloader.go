@@ -11,3 +11,11 @@ func NewLoaders() *Loaders {
 		WorkerLoader:     newWorkerLoader(),
 	}
 }
+
+func mapIdToIndex(ids []uint) map[uint]int {
+	result := make(map[uint]int, len(ids))
+	for i, id := range ids {
+		result[id] = i
+	}
+	return result
+}
