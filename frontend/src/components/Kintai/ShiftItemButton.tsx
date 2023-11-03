@@ -26,7 +26,7 @@ const ShiftItemButton = ({
   }, [shift?.employment?.worker])
 
   return (
-    <button className={'btn d-block small rounded p-1 m-1 ' + className}>
+    <button className={'btn d-block btn-sm rounded p-1 m-1 ' + className}>
       {workerName ? (
         <>
           {workerName}: {renderRange()}

@@ -25,11 +25,11 @@ const NewShifts = (): JSX.Element => {
       <h1>シフト作成- {companyData.company.name}</h1>
       <NewShiftCalendar
         alert={''}
-        addDesiredShiftsModalID={''}
+        addShiftsModalID={''}
         onAddButtonClicked={() => console.log('add')}
         selectedDate={selectedDate}
         companyId={companyId}
-        addDesiredShift={() => console.log('add')}
+        addShift={() => console.log('add')}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
       />

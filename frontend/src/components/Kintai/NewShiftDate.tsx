@@ -1,6 +1,7 @@
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
 import ShiftItemButton from './ShiftItemButton'
+import ShiftItem from './ShiftItem'
 
 export type NewShiftsDateProps = {
   month: number
@@ -51,8 +52,8 @@ const NewShiftsDate = ({
             />
           ))}
           {shifts.map((shift) => (
-            <ShiftItemButton
-              className="btn-info text-body"
+            <ShiftItem
+              className="bg-info text-body"
               key={shift.id}
               shift={shift}
             />
