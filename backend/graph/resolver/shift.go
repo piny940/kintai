@@ -13,15 +13,16 @@ import (
 	"time"
 )
 
-func (r *mutationResolver) CreateShift(ctx context.Context, since time.Time, till time.Time, employmentID uint) (*model.Shift, error) {
+func (r *mutationResolver) CreateShift(ctx context.Context, since time.Time, till time.Time, workerID uint, companyID uint) (*model.Shift, error) {
 	registry := registry.GetRegistry()
-	workerId, err := currentWorkerId(ctx)
+	currentWorkerId, err := currentWorkerId(ctx)
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
 	shift, err := registry.ShiftUseCase().Create(
-		*workerId,
-		domain.EmploymentID(employmentID),
+		*currentWorkerId,
+		domain.WorkerID(workerID),
+		domain.CompanyID(companyID),
 		since,
 		till,
 	)

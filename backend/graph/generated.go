@@ -88,7 +88,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateDesiredShift func(childComplexity int, companyID uint, since time.Time, till time.Time) int
-		CreateShift        func(childComplexity int, since time.Time, till time.Time, employmentID uint) int
+		CreateShift        func(childComplexity int, since time.Time, till time.Time, workerID uint, companyID uint) int
 		Login              func(childComplexity int, email string, password string) int
 		Logout             func(childComplexity int) int
 		PushStamp          func(childComplexity int, companyID uint) int
@@ -152,7 +152,7 @@ type MutationResolver interface {
 	CreateDesiredShift(ctx context.Context, companyID uint, since time.Time, till time.Time) (*model.DesiredShift, error)
 	Login(ctx context.Context, email string, password string) (*model.LoginResponse, error)
 	Logout(ctx context.Context) (bool, error)
-	CreateShift(ctx context.Context, since time.Time, till time.Time, employmentID uint) (*model.Shift, error)
+	CreateShift(ctx context.Context, since time.Time, till time.Time, workerID uint, companyID uint) (*model.Shift, error)
 	PushStamp(ctx context.Context, companyID uint) (*model.Stamp, error)
 }
 type QueryResolver interface {
@@ -364,7 +364,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateShift(childComplexity, args["since"].(time.Time), args["till"].(time.Time), args["employmentId"].(uint)), true
+		return e.complexity.Mutation.CreateShift(childComplexity, args["since"].(time.Time), args["till"].(time.Time), args["workerId"].(uint), args["companyId"].(uint)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -815,14 +815,23 @@ func (ec *executionContext) field_Mutation_createShift_args(ctx context.Context,
 	}
 	args["till"] = arg1
 	var arg2 uint
-	if tmp, ok := rawArgs["employmentId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentId"))
+	if tmp, ok := rawArgs["workerId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("workerId"))
 		arg2, err = ec.unmarshalNUint2uint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["employmentId"] = arg2
+	args["workerId"] = arg2
+	var arg3 uint
+	if tmp, ok := rawArgs["companyId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
+		arg3, err = ec.unmarshalNUint2uint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["companyId"] = arg3
 	return args, nil
 }
 
@@ -2280,7 +2289,7 @@ func (ec *executionContext) _Mutation_createShift(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateShift(rctx, fc.Args["since"].(time.Time), fc.Args["till"].(time.Time), fc.Args["employmentId"].(uint))
+		return ec.resolvers.Mutation().CreateShift(rctx, fc.Args["since"].(time.Time), fc.Args["till"].(time.Time), fc.Args["workerId"].(uint), fc.Args["companyId"].(uint))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
