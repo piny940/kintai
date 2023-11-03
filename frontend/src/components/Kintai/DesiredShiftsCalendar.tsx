@@ -3,7 +3,10 @@ import AddDesiredShiftsModal from './AddDesiredShiftsModal'
 import Calendar from '../Calendar/Calendar'
 import DesiredShiftsDate from './DesiredShiftsDate'
 import { Dayjs } from 'dayjs'
-import { useMappedDesiredShifts } from '@/hooks/desired_shift'
+import {
+  useMappedCompanyShifts,
+  useMappedDesiredShifts,
+} from '@/hooks/desired_shift'
 import { useCompanyId } from '@/hooks/calendar'
 
 export type DesiredShiftsCalendarProps = {
@@ -23,6 +26,7 @@ const DesiredShiftsCalendar = ({
 }: DesiredShiftsCalendarProps): JSX.Element => {
   const companyId = useCompanyId()
   const desiredShiftsMap = useMappedDesiredShifts(companyId, selectedMonth)
+  const shiftsMap = useMappedCompanyShifts(companyId, selectedMonth)
 
   return (
     <>
@@ -35,6 +39,7 @@ const DesiredShiftsCalendar = ({
             date={date}
             onAddButtonClicked={() => onAddButtonClicked(date)}
             desiredShifts={desiredShiftsMap.get(date.date()) || []}
+            shifts={shiftsMap.get(date.date()) || []}
           />
         )}
       />
