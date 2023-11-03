@@ -28,8 +28,8 @@ func (u *desiredShiftUseCase) Create(employmentId domain.EmploymentID, since, ti
 	}
 	return desiredShiftResult, nil
 }
-func (u *desiredShiftUseCase) ListCompanyDesiredShifts(workerId domain.WorkerID, companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
-	employment, err := u.employmentRepo.Find(companyId, workerId)
+func (u *desiredShiftUseCase) ListCompanyDesiredShifts(currentWorkerId domain.WorkerID, companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
+	employment, err := u.employmentRepo.Find(companyId, currentWorkerId)
 	if err != nil {
 		return nil, err
 	}
