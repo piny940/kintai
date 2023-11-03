@@ -6,23 +6,19 @@ import { Dayjs } from 'dayjs'
 import { useMappedDesiredShifts } from '@/hooks/desired_shift'
 
 export type DesiredShiftsCalendarProps = {
-  alert: string
   addDesiredShiftsModalID: string
   onAddButtonClicked: (date: Dayjs) => void
   selectedDate: Dayjs | null
   companyId: number
-  addDesiredShift: (since: Dayjs, till: Dayjs) => void
   selectedMonth: Dayjs
   setSelectedMonth: (selectedMonth: Dayjs) => void
 }
 
 const DesiredShiftsCalendar = ({
-  alert,
   addDesiredShiftsModalID,
   onAddButtonClicked,
   selectedDate,
   companyId,
-  addDesiredShift,
   selectedMonth,
   setSelectedMonth,
 }: DesiredShiftsCalendarProps): JSX.Element => {
@@ -43,10 +39,8 @@ const DesiredShiftsCalendar = ({
         )}
       />
       <AddDesiredShiftsModal
-        addDesiredShift={addDesiredShift}
         date={selectedDate}
         targetID={addDesiredShiftsModalID}
-        alert={alert}
       />
     </>
   )
