@@ -14,11 +14,11 @@ import (
 
 func (r *companyResolver) Employment(ctx context.Context, obj *model.Company) (*model.Employment, error) {
 	registry := registry.GetRegistry()
-	worker, err := currentWorker(ctx)
+	workerId, err := currentWorkerId(ctx)
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
-	employment, err := registry.EmploymentRepo().Find(domain.CompanyID(obj.ID), worker.ID)
+	employment, err := registry.EmploymentRepo().Find(domain.CompanyID(obj.ID), *workerId)
 	if err != nil {
 		return nil, newError(err, "所属情報の取得に失敗しました")
 	}
@@ -35,12 +35,12 @@ func (r *queryResolver) Company(ctx context.Context, id uint) (*model.Company, e
 
 func (r *queryResolver) Companies(ctx context.Context) ([]*model.Company, error) {
 	registry := registry.GetRegistry()
-	worker, err := currentWorker(ctx)
+	workerId, err := currentWorkerId(ctx)
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
 
-	companies, err := registry.CompanyRepo().List(worker.ID)
+	companies, err := registry.CompanyRepo().List(*workerId)
 	if err != nil {
 		return nil, newError(err, "会社情報の取得に失敗しました")
 	}

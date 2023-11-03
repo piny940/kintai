@@ -27,4 +27,5 @@ type Employment struct {
 type IEmploymentRepo interface {
 	Find(companyId CompanyID, workerId WorkerID) (*Employment, error)
 	FindById(employmentId EmploymentID) (*Employment, error)
+	FindAllByIds(employmentIds []EmploymentID) ([]*Employment, error)
 }

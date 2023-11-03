@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"kintai_backend/graph"
+	"kintai_backend/graph/loader"
 	"kintai_backend/graph/resolver"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -14,7 +15,9 @@ func graphqlHandler() echo.HandlerFunc {
 	graphql := handler.NewDefaultServer(
 		graph.NewExecutableSchema(
 			graph.Config{
-				Resolvers: &resolver.Resolver{},
+				Resolvers: &resolver.Resolver{
+					Loaders: loader.NewLoaders(),
+				},
 			},
 		),
 	)
