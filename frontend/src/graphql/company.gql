@@ -3,14 +3,8 @@ query getCompany($id: Uint!) {
     id
     name
     employment {
-      id
       kind
-      status
-      createdAt
-      updatedAt
     }
-    createdAt
-    updatedAt
   }
 }
 
@@ -18,7 +12,5 @@ query getCompanies {
   companies {
     id
     name
-    createdAt
-    updatedAt
   }
 }
