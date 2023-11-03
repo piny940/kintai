@@ -4,9 +4,11 @@ import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
 import { useCompanyId } from '@/hooks/calendar'
 import {
+  GetCompanyShiftsDocument,
   useCreateShiftMutation,
   useGetCompanyWorkersQuery,
 } from '@/graphql/types'
+import { useApolloClient } from '@apollo/client'
 
 export type AddShiftsModalProps = {
   targetID: string
@@ -38,6 +40,7 @@ const AddShiftsModal = ({
     variables: { companyId: companyId },
   })
   const [postShift, { error: shiftError }] = useCreateShiftMutation()
+  const client = useApolloClient()
 
   const selectedWorkerChange = useCallback(
     (value: string) => {
@@ -47,7 +50,7 @@ const AddShiftsModal = ({
   )
 
   const onSubmit: FormEventHandler = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault()
 
       if (!date) return
@@ -55,9 +58,10 @@ const AddShiftsModal = ({
         setAlert('従業員を選択してください')
         return
       }
+      setAlert('')
       const since = date.hour(sinceHour).minute(sinceMinute)
       const till = date.hour(tillHour).minute(tillMinute)
-      void postShift({
+      await postShift({
         variables: {
           since: since.toISOString(),
           till: till.toISOString(),
@@ -65,6 +69,7 @@ const AddShiftsModal = ({
           companyId: companyId,
         },
       })
+      await client.refetchQueries({ include: [GetCompanyShiftsDocument] })
     },
     [
       date,
@@ -73,6 +78,7 @@ const AddShiftsModal = ({
       tillHour,
       tillMinute,
       selectedWorkerId,
+      client,
       companyId,
       postShift,
     ]
