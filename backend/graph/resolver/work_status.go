@@ -6,6 +6,7 @@ package resolver
 
 import (
 	"context"
+	"kintai_backend/domain"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
 )
@@ -16,17 +17,9 @@ func (r *queryResolver) WorkStatus(ctx context.Context, companyID uint) (model.W
 	if err != nil {
 		return "", newError(err, "ログインしてください")
 	}
-	company, err := GetCompany(ctx, companyID)
-	if err != nil {
-		return "", newError(err, "会社IDが正しくありません")
-	}
-	employment, err := registry.EmploymentRepo().Find(company.ID, *workerId)
-	if err != nil {
-		return "", newError(err, "この会社に属していません")
-	}
-	workStatus, err := registry.WorkStatusUseCase().Show(employment.ID)
+	workStatus, err := registry.WorkStatusUseCase().GetWorkStatus(*workerId, domain.CompanyID(companyID))
 	if err != nil {
 		return "", newError(err, "勤怠情報の取得に失敗しました")
 	}
-	return model.NewWorkStatus(workStatus), nil
+	return model.NewWorkStatus(*workStatus), nil
 }

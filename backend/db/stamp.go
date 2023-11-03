@@ -76,5 +76,15 @@ func (r *stampRepo) Create(stamp *domain.Stamp) (*domain.Stamp, error) {
 }
 
 func (r *stampRepo) Count(query *domain.StampQuery) (int, error) {
-
+	queryObj := newStampQuery(query)
+	queryStr := "select count(*) from stamps"
+	filter, params := queryObj.toFilter(nil)
+	if queryObj.exists() {
+		queryStr += " where " + filter
+	}
+	var count int
+	if err := r.db.Client.QueryRow(queryStr, params...).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
 }
