@@ -8,6 +8,7 @@ import (
 
 type IShiftUseCase interface {
 	ListCompanyShifts(workerId domain.WorkerID, companyId domain.CompanyID, query *domain.ShiftQuery) ([]*domain.Shift, error)
+	Create(currentWorkerId domain.WorkerID, employmentId domain.EmploymentID, since, till time.Time) (*domain.Shift, error)
 }
 
 type shiftUseCase struct {

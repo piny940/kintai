@@ -88,7 +88,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateDesiredShift func(childComplexity int, companyID uint, since time.Time, till time.Time) int
-		CreateShift        func(childComplexity int, companyID uint, since time.Time, till time.Time, employmentID uint) int
+		CreateShift        func(childComplexity int, since time.Time, till time.Time, employmentID uint) int
 		Login              func(childComplexity int, email string, password string) int
 		Logout             func(childComplexity int) int
 		PushStamp          func(childComplexity int, companyID uint) int
@@ -151,7 +151,7 @@ type MutationResolver interface {
 	CreateDesiredShift(ctx context.Context, companyID uint, since time.Time, till time.Time) (*model.DesiredShift, error)
 	Login(ctx context.Context, email string, password string) (*model.LoginResponse, error)
 	Logout(ctx context.Context) (bool, error)
-	CreateShift(ctx context.Context, companyID uint, since time.Time, till time.Time, employmentID uint) (*model.Shift, error)
+	CreateShift(ctx context.Context, since time.Time, till time.Time, employmentID uint) (*model.Shift, error)
 	PushStamp(ctx context.Context, companyID uint) (*model.Stamp, error)
 }
 type QueryResolver interface {
@@ -362,7 +362,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateShift(childComplexity, args["companyId"].(uint), args["since"].(time.Time), args["till"].(time.Time), args["employmentId"].(uint)), true
+		return e.complexity.Mutation.CreateShift(childComplexity, args["since"].(time.Time), args["till"].(time.Time), args["employmentId"].(uint)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -782,42 +782,33 @@ func (ec *executionContext) field_Mutation_createDesiredShift_args(ctx context.C
 func (ec *executionContext) field_Mutation_createShift_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 uint
-	if tmp, ok := rawArgs["companyId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
-		arg0, err = ec.unmarshalNUint2uint(ctx, tmp)
+	var arg0 time.Time
+	if tmp, ok := rawArgs["since"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("since"))
+		arg0, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["companyId"] = arg0
+	args["since"] = arg0
 	var arg1 time.Time
-	if tmp, ok := rawArgs["since"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("since"))
+	if tmp, ok := rawArgs["till"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("till"))
 		arg1, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["since"] = arg1
-	var arg2 time.Time
-	if tmp, ok := rawArgs["till"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("till"))
-		arg2, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["till"] = arg2
-	var arg3 uint
+	args["till"] = arg1
+	var arg2 uint
 	if tmp, ok := rawArgs["employmentId"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employmentId"))
-		arg3, err = ec.unmarshalNUint2uint(ctx, tmp)
+		arg2, err = ec.unmarshalNUint2uint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["employmentId"] = arg3
+	args["employmentId"] = arg2
 	return args, nil
 }
 
@@ -2260,7 +2251,7 @@ func (ec *executionContext) _Mutation_createShift(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateShift(rctx, fc.Args["companyId"].(uint), fc.Args["since"].(time.Time), fc.Args["till"].(time.Time), fc.Args["employmentId"].(uint))
+		return ec.resolvers.Mutation().CreateShift(rctx, fc.Args["since"].(time.Time), fc.Args["till"].(time.Time), fc.Args["employmentId"].(uint))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
