@@ -2,7 +2,7 @@ package db
 
 import "fmt"
 
-type queryObj map[string] interface{}
+type queryObj map[string]interface{}
 
 func (q queryObj) add(key string, value interface{}) {
 	q[key] = value

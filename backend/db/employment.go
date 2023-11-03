@@ -1,6 +1,10 @@
 package db
 
-import "kintai_backend/domain"
+import (
+	"fmt"
+	"kintai_backend/domain"
+	"strings"
+)
 
 type employmentRepo struct {
 	db *DB
@@ -51,9 +55,15 @@ func (r *employmentRepo) FindById(employmentId domain.EmploymentID) (*domain.Emp
 
 func (r *employmentRepo) FindAllByIds(employmentIds []domain.EmploymentID) ([]*domain.Employment, error) {
 	var employments []*domain.Employment
+	args := make([]interface{}, len(employmentIds))
+	strParam := make([]string, len(employmentIds))
+	for i := range employmentIds {
+		args[i] = employmentIds[i]
+		strParam[i] = fmt.Sprintf("$%d", i+1)
+	}
 	rows, err := r.db.Client.Query(
-		"select * from employments where id in ($1)",
-		employmentIds,
+		fmt.Sprintf("select * from employments where id in (%s)", strings.Join(strParam, ", ")),
+		args...,
 	)
 	if err != nil {
 		return nil, err

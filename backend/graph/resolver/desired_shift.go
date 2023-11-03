@@ -14,8 +14,7 @@ import (
 )
 
 func (r *desiredShiftResolver) Employment(ctx context.Context, obj *model.DesiredShift) (*model.Employment, error) {
-	registry := registry.GetRegistry()
-	employment, err := registry.EmploymentRepo().FindById(domain.EmploymentID(obj.EmploymentID))
+	employment, err := r.EmploymentLoader.Load(ctx, obj.EmploymentID)()
 	if err != nil {
 		return nil, newError(err, "所属情報の取得に失敗しました")
 	}
