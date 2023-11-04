@@ -6,13 +6,16 @@ type WorkReport {
   workTime: Int!
 }
 
-union Month = Uint
 type MonthWorkReportMap {
-  key: Month!
+  key: Int!
   value: WorkReport!
 }
 type YearReport {
   employmentId: Uint!
   year: Time!
   workReports: [MonthWorkReportMap!]!
+}
+
+extend type Query {
+  getYearReport(workerId: Uint!, companyId: Uint!, year: Time!): YearReport!
 }
