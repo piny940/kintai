@@ -4,18 +4,26 @@ import (
 	"kintai_backend/domain"
 )
 
-func NewYearReport(yearReport *domain.YearReport) *YearReport {
+func NewYearReport(yearReport *domain.YearReport) (*YearReport, error) {
+	reportsMap, err := newMonthWorkReportMap(yearReport.Report)
+	if err != nil {
+		return nil, err
+	}
 	return &YearReport{
 		EmploymentID: uint(yearReport.EmploymentId),
 		Year:         yearReport.Year,
-		WorkReports:  newMonthWorkReportMap(yearReport.Report),
-	}
+		WorkReports:  reportsMap,
+	}, nil
 }
 
-func newMonthWorkReportMap(report domain.MonthWorkReportMap) []*MonthWorkReportMap {
+func newMonthWorkReportMap(report domain.MonthWorkReportMap) ([]*MonthWorkReportMap, error) {
 	result := make([]*MonthWorkReportMap, len(report))
 	for month, workReport := range report {
-		result[month] = &MonthWorkReportMap{Key: int(month), Value: NewWorkReport(workReport)}
+		report, err := NewWorkReport(workReport)
+		if err != nil {
+			return nil, err
+		}
+		result[month-1] = &MonthWorkReportMap{Key: int(month), Value: report}
 	}
-	return result
+	return result, nil
 }

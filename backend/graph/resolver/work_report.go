@@ -22,5 +22,5 @@ func (r *queryResolver) GetYearReport(ctx context.Context, companyID uint, year 
 	if err != nil {
 		return nil, newError(err, "勤務実績の取得に失敗しました")
 	}
-	return model.NewYearReport(report), nil
+	return model.NewYearReport(report)
 }
