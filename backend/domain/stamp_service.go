@@ -35,9 +35,9 @@ func (ss *StampService) GetYearReport(year time.Time) (*YearReport, error) {
 	}
 
 	return &YearReport{
-		employmentId: ss.employmentId,
-		year:         year,
-		report:       report,
+		EmploymentId: ss.employmentId,
+		Year:         year,
+		Report:       report,
 	}, nil
 }
 
