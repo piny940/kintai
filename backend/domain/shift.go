@@ -5,18 +5,18 @@ import "time"
 type ShiftId uint
 
 type Shift struct {
-	ID           ShiftId      `json:"id"`
-	Since        time.Time    `json:"since"`
-	Till         time.Time    `json:"till"`
-	EmploymentID EmploymentID `json:"employment_id"`
-	CreatedAt    time.Time    `json:"created_at"`
-	UpdatedAt    time.Time    `json:"updated_at"`
+	ID           ShiftId
+	Since        time.Time
+	Till         time.Time
+	EmploymentID EmploymentID
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 type ShiftQuery struct {
-	ID           *ShiftId      `json:"id"`
-	EmploymentID *EmploymentID `json:"employment_id"`
-	FromTime     *time.Time    `json:"from_time"`
-	ToTime       *time.Time    `json:"to_time"`
+	ID           *ShiftId
+	EmploymentID *EmploymentID
+	FromTime     *time.Time
+	ToTime       *time.Time
 }
 type IShiftRepo interface {
 	ListAll(companyId CompanyID, shiftQuery *ShiftQuery) ([]*Shift, error)
