@@ -2,6 +2,7 @@ package use_case
 
 import (
 	"kintai_backend/domain"
+	"time"
 )
 
 type IWorkReportUseCase interface {
@@ -16,6 +17,6 @@ func NewWorkReportUseCase(employmentRepo domain.IEmploymentRepo, stampRepo domai
 	return &workReportUseCase{employmentRepo: employmentRepo, stampRepo: stampRepo}
 }
 
-func GetYearReport(employmentId domain.EmploymentID, year int) (domain.YearReport, error) {
+func GetYearReport(employmentId domain.EmploymentID, year time.Time) (domain.YearReport, error) {
 	return domain.YearReport{}, nil
 }
