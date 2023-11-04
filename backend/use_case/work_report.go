@@ -15,3 +15,7 @@ type workReportUseCase struct {
 func NewWorkReportUseCase(employmentRepo domain.IEmploymentRepo, stampRepo domain.IStampRepo) IWorkReportUseCase {
 	return &workReportUseCase{employmentRepo: employmentRepo, stampRepo: stampRepo}
 }
+
+func GetYearReport(employmentId domain.EmploymentID, year int) (domain.YearReport, error) {
+	return domain.YearReport{}, nil
+}

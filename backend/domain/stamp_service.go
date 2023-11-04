@@ -28,36 +28,20 @@ func NewStampService(employmentId EmploymentID, since, until time.Time, stampRep
 	}, nil
 }
 
-func (ss *StampService) GetWorkTime(fromTime, toTime time.Time) (time.Duration, error) {
-	if fromTime.After(toTime) {
-		return 0, errInvalidTimeRange{}
-	}
-	duration := time.Duration(0)
-	stamps := ss.filterStamps(fromTime, toTime)
-
-	workStatusAtStart, err := GetWorkStatus(ss.fromTime, ss.employmentId, ss.stampRepo)
-	if err != nil {
-		return 0, err
-	}
-	startIdx := 0
-	if *workStatusAtStart == WorkStatusWorking {
-		startIdx = 1
-		duration += stamps[0].StampedAt.Sub(ss.fromTime)
+func (ss *StampService) GetYearReport(year time.Time) (*YearReport, error) {
+	report := make(map[time.Month]*WorkReport)
+	for month := time.Month(1); month <= 12; month++ {
+		fromTime := time.Date(year.Year(), month, 1, 0, 0, 0, 0, time.UTC)
+		toTime := fromTime.AddDate(0, 1, 0)
+		stamps := ss.filterStamps(fromTime, toTime)
+		report[month] = NewWorkReport(ss.employmentId, fromTime, toTime, stamps, ss.stampRepo)
 	}
 
-	for i := startIdx; i+1 < len(stamps); i += 2 {
-		duration += stamps[i+1].StampedAt.Sub(stamps[i].StampedAt)
-	}
-
-	workStatusAtEnd, err := GetWorkStatus(ss.toTime, ss.employmentId, ss.stampRepo)
-	if err != nil {
-		return 0, err
-	}
-	if *workStatusAtEnd == WorkStatusWorking {
-		duration += ss.toTime.Sub(stamps[len(stamps)-1].StampedAt)
-	}
-
-	return duration, nil
+	return &YearReport{
+		employmentId: ss.employmentId,
+		year:         year,
+		report:       report,
+	}, nil
 }
 
 func (ss *StampService) filterStamps(fromTime, toTime time.Time) []*Stamp {
