@@ -69,9 +69,3 @@ func (ss *StampService) filterStamps(fromTime, toTime time.Time) []*Stamp {
 	}
 	return stamps
 }
-
-type errInvalidTimeRange struct{}
-
-func (e errInvalidTimeRange) Error() string {
-	return "invalid time range"
-}
