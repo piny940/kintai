@@ -1,7 +1,4 @@
 type WorkReport {
-  employmentId: Uint!
-  fromTime: Time!
-  toTime: Time!
   stamps: [Stamp!]!
   workTime: Int!
 }
@@ -17,5 +14,5 @@ type YearReport {
 }
 
 extend type Query {
-  getYearReport(workerId: Uint!, companyId: Uint!, year: Time!): YearReport!
+  getYearReport(companyId: Uint!, year: Time!): YearReport!
 }

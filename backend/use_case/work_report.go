@@ -6,6 +6,7 @@ import (
 )
 
 type IWorkReportUseCase interface {
+	GetYearReport(year time.Time, workerId domain.WorkerID, companyId domain.CompanyID) (*domain.YearReport, error)
 }
 
 type workReportUseCase struct {

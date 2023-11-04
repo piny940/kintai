@@ -106,7 +106,7 @@ type ComplexityRoot struct {
 		CompanyShifts        func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
 		CompanyWorkers       func(childComplexity int, companyID uint) int
 		DesiredShifts        func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
-		GetYearReport        func(childComplexity int, workerID uint, companyID uint, year time.Time) int
+		GetYearReport        func(childComplexity int, companyID uint, year time.Time) int
 		Me                   func(childComplexity int) int
 		WorkStatus           func(childComplexity int, companyID uint) int
 	}
@@ -130,11 +130,8 @@ type ComplexityRoot struct {
 	}
 
 	WorkReport struct {
-		EmploymentID func(childComplexity int) int
-		FromTime     func(childComplexity int) int
-		Stamps       func(childComplexity int) int
-		ToTime       func(childComplexity int) int
-		WorkTime     func(childComplexity int) int
+		Stamps   func(childComplexity int) int
+		WorkTime func(childComplexity int) int
 	}
 
 	Worker struct {
@@ -181,7 +178,7 @@ type QueryResolver interface {
 	DesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error)
 	CompanyDesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error)
 	CompanyShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.Shift, error)
-	GetYearReport(ctx context.Context, workerID uint, companyID uint, year time.Time) (*model.YearReport, error)
+	GetYearReport(ctx context.Context, companyID uint, year time.Time) (*model.YearReport, error)
 	WorkStatus(ctx context.Context, companyID uint) (model.WorkStatus, error)
 	Me(ctx context.Context) (*model.Worker, error)
 	CompanyWorkers(ctx context.Context, companyID uint) ([]*model.Worker, error)
@@ -509,7 +506,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetYearReport(childComplexity, args["workerId"].(uint), args["companyId"].(uint), args["year"].(time.Time)), true
+		return e.complexity.Query.GetYearReport(childComplexity, args["companyId"].(uint), args["year"].(time.Time)), true
 
 	case "Query.me":
 		if e.complexity.Query.Me == nil {
@@ -614,33 +611,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Stamp.UpdatedAt(childComplexity), true
 
-	case "WorkReport.employmentId":
-		if e.complexity.WorkReport.EmploymentID == nil {
-			break
-		}
-
-		return e.complexity.WorkReport.EmploymentID(childComplexity), true
-
-	case "WorkReport.fromTime":
-		if e.complexity.WorkReport.FromTime == nil {
-			break
-		}
-
-		return e.complexity.WorkReport.FromTime(childComplexity), true
-
 	case "WorkReport.stamps":
 		if e.complexity.WorkReport.Stamps == nil {
 			break
 		}
 
 		return e.complexity.WorkReport.Stamps(childComplexity), true
-
-	case "WorkReport.toTime":
-		if e.complexity.WorkReport.ToTime == nil {
-			break
-		}
-
-		return e.complexity.WorkReport.ToTime(childComplexity), true
 
 	case "WorkReport.workTime":
 		if e.complexity.WorkReport.WorkTime == nil {
@@ -1127,32 +1103,23 @@ func (ec *executionContext) field_Query_getYearReport_args(ctx context.Context, 
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uint
-	if tmp, ok := rawArgs["workerId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("workerId"))
+	if tmp, ok := rawArgs["companyId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
 		arg0, err = ec.unmarshalNUint2uint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["workerId"] = arg0
-	var arg1 uint
-	if tmp, ok := rawArgs["companyId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
-		arg1, err = ec.unmarshalNUint2uint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["companyId"] = arg1
-	var arg2 time.Time
+	args["companyId"] = arg0
+	var arg1 time.Time
 	if tmp, ok := rawArgs["year"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("year"))
-		arg2, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+		arg1, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["year"] = arg2
+	args["year"] = arg1
 	return args, nil
 }
 
@@ -2325,12 +2292,6 @@ func (ec *executionContext) fieldContext_MonthWorkReportMap_value(ctx context.Co
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "employmentId":
-				return ec.fieldContext_WorkReport_employmentId(ctx, field)
-			case "fromTime":
-				return ec.fieldContext_WorkReport_fromTime(ctx, field)
-			case "toTime":
-				return ec.fieldContext_WorkReport_toTime(ctx, field)
 			case "stamps":
 				return ec.fieldContext_WorkReport_stamps(ctx, field)
 			case "workTime":
@@ -3005,7 +2966,7 @@ func (ec *executionContext) _Query_getYearReport(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetYearReport(rctx, fc.Args["workerId"].(uint), fc.Args["companyId"].(uint), fc.Args["year"].(time.Time))
+		return ec.resolvers.Query().GetYearReport(rctx, fc.Args["companyId"].(uint), fc.Args["year"].(time.Time))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3902,138 +3863,6 @@ func (ec *executionContext) _Stamp_updatedAt(ctx context.Context, field graphql.
 func (ec *executionContext) fieldContext_Stamp_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Stamp",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _WorkReport_employmentId(ctx context.Context, field graphql.CollectedField, obj *model.WorkReport) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_WorkReport_employmentId(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.EmploymentID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(uint)
-	fc.Result = res
-	return ec.marshalNUint2uint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_WorkReport_employmentId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "WorkReport",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Uint does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _WorkReport_fromTime(ctx context.Context, field graphql.CollectedField, obj *model.WorkReport) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_WorkReport_fromTime(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.FromTime, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_WorkReport_fromTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "WorkReport",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _WorkReport_toTime(ctx context.Context, field graphql.CollectedField, obj *model.WorkReport) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_WorkReport_toTime(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ToTime, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_WorkReport_toTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "WorkReport",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -7331,21 +7160,6 @@ func (ec *executionContext) _WorkReport(ctx context.Context, sel ast.SelectionSe
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("WorkReport")
-		case "employmentId":
-			out.Values[i] = ec._WorkReport_employmentId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "fromTime":
-			out.Values[i] = ec._WorkReport_fromTime(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "toTime":
-			out.Values[i] = ec._WorkReport_toTime(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "stamps":
 			out.Values[i] = ec._WorkReport_stamps(ctx, field, obj)
 			if out.Values[i] == graphql.Null {

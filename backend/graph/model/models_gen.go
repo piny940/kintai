@@ -27,11 +27,8 @@ type Stamp struct {
 }
 
 type WorkReport struct {
-	EmploymentID uint      `json:"employmentId"`
-	FromTime     time.Time `json:"fromTime"`
-	ToTime       time.Time `json:"toTime"`
-	Stamps       []*Stamp  `json:"stamps"`
-	WorkTime     int       `json:"workTime"`
+	Stamps   []*Stamp `json:"stamps"`
+	WorkTime int      `json:"workTime"`
 }
 
 type Worker struct {

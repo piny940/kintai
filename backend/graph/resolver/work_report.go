@@ -6,11 +6,21 @@ package resolver
 
 import (
 	"context"
-	"fmt"
+	"kintai_backend/domain"
 	"kintai_backend/graph/model"
+	"kintai_backend/registry"
 	"time"
 )
 
-func (r *queryResolver) GetYearReport(ctx context.Context, workerID uint, companyID uint, year time.Time) (*model.YearReport, error) {
-	panic(fmt.Errorf("not implemented: GetYearReport - getYearReport"))
+func (r *queryResolver) GetYearReport(ctx context.Context, companyID uint, year time.Time) (*model.YearReport, error) {
+	registry := registry.GetRegistry()
+	workerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	report, err := registry.WorkReportUseCase().GetYearReport(year, *workerId, domain.CompanyID(companyID))
+	if err != nil {
+		return nil, newError(err, "勤務実績の取得に失敗しました")
+	}
+	return model.NewYearReport(report), nil
 }

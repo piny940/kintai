@@ -51,3 +51,6 @@ func (wr *WorkReport) GetWorkTime() (time.Duration, error) {
 
 	return duration, nil
 }
+func (wr *WorkReport) GetStamps() []*Stamp {
+	return wr.stamps
+}
