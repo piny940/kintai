@@ -13,12 +13,22 @@ type LoginResponse struct {
 	Worker *Worker `json:"worker,omitempty"`
 }
 
+type MonthWorkReportMap struct {
+	Key   int         `json:"key"`
+	Value *WorkReport `json:"value"`
+}
+
 type Stamp struct {
 	ID           uint      `json:"id"`
 	StampedAt    time.Time `json:"stampedAt"`
 	EmploymentID uint      `json:"employmentID"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
+}
+
+type WorkReport struct {
+	Stamps   []*Stamp `json:"stamps"`
+	WorkTime int      `json:"workTime"`
 }
 
 type Worker struct {
@@ -34,6 +44,12 @@ type Worker struct {
 type WorkerName struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
+}
+
+type YearReport struct {
+	EmploymentID uint                  `json:"employmentId"`
+	Year         time.Time             `json:"year"`
+	WorkReports  []*MonthWorkReportMap `json:"workReports"`
 }
 
 type EmploymentKind string

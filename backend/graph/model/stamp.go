@@ -11,3 +11,10 @@ func NewStamp(stamp *domain.Stamp) *Stamp {
 		UpdatedAt:    stamp.UpdatedAt,
 	}
 }
+func NewStamps(stamps []*domain.Stamp) []*Stamp {
+	result := make([]*Stamp, len(stamps))
+	for i, stamp := range stamps {
+		result[i] = NewStamp(stamp)
+	}
+	return result
+}

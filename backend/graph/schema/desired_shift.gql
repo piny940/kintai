@@ -1,5 +1,3 @@
-scalar Time
-
 type DesiredShift {
   id: Uint!
   since: Time!
