@@ -1,5 +1,7 @@
 package domain
 
+import "time"
+
 type WorkStatus int
 
 const (
@@ -7,9 +9,10 @@ const (
 	WorkStatusLeft
 )
 
-func GetWorkStatus(employmentId EmploymentID, stampRepo IStampRepo) (*WorkStatus, error) {
+func GetWorkStatus(at time.Time, employmentId EmploymentID, stampRepo IStampRepo) (*WorkStatus, error) {
 	count, err := stampRepo.Count(&StampQuery{
 		EmploymentId: &employmentId,
+		ToTime:       &at,
 	})
 	if err != nil {
 		return nil, err

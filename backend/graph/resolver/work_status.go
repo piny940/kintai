@@ -17,7 +17,7 @@ func (r *queryResolver) WorkStatus(ctx context.Context, companyID uint) (model.W
 	if err != nil {
 		return "", newError(err, "ログインしてください")
 	}
-	workStatus, err := registry.WorkStatusUseCase().GetWorkStatus(*workerId, domain.CompanyID(companyID))
+	workStatus, err := registry.WorkStatusUseCase().GetCurrentWorkStatus(*workerId, domain.CompanyID(companyID))
 	if err != nil {
 		return "", newError(err, "勤怠情報の取得に失敗しました")
 	}
