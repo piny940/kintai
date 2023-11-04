@@ -9,11 +9,11 @@ type StampService struct {
 	stampRepo    IStampRepo
 }
 
-func NewStampService(employmentId EmploymentID, stampRepo IStampRepo) (*StampService, error) {
+func NewStampService(employmentId EmploymentID, stampRepo IStampRepo) *StampService {
 	return &StampService{
 		employmentId: employmentId,
 		stampRepo:    stampRepo,
-	}, nil
+	}
 }
 
 func (ss *StampService) GetYearReport(year time.Time) (*YearReport, error) {

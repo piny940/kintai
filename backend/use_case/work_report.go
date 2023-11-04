@@ -17,6 +17,11 @@ func NewWorkReportUseCase(employmentRepo domain.IEmploymentRepo, stampRepo domai
 	return &workReportUseCase{employmentRepo: employmentRepo, stampRepo: stampRepo}
 }
 
-func GetYearReport(employmentId domain.EmploymentID, year time.Time) (domain.YearReport, error) {
-	return domain.YearReport{}, nil
+func (wu workReportUseCase) GetYearReport(year time.Time, workerId domain.WorkerID, companyId domain.CompanyID) (*domain.YearReport, error) {
+	employment, err := wu.employmentRepo.Find(companyId, workerId)
+	if err != nil {
+		return nil, err
+	}
+	service := domain.NewStampService(employment.ID, wu.stampRepo)
+	return service.GetYearReport(year)
 }
