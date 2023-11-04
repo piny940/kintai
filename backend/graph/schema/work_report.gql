@@ -1,0 +1,18 @@
+type WorkReport {
+  employmentId: Uint!
+  fromTime: Time!
+  toTime: Time!
+  stamps: [Stamp!]!
+  workTime: Int!
+}
+
+union Month = Uint
+type MonthWorkReportMap {
+  key: Month!
+  value: WorkReport!
+}
+type YearReport {
+  employmentId: Uint!
+  year: Time!
+  workReports: [MonthWorkReportMap!]!
+}

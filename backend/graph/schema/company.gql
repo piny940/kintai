@@ -1,5 +1,3 @@
-scalar Uint
-
 type Company {
   id: Uint!
   name: String!
