@@ -6,6 +6,7 @@ package resolver
 
 import (
 	"context"
+	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
@@ -30,6 +31,14 @@ func (r *mutationResolver) CreateShift(ctx context.Context, since time.Time, til
 		return nil, newError(err, "シフトの作成に失敗しました")
 	}
 	return model.NewShift(shift), nil
+}
+
+func (r *mutationResolver) UpdateShift(ctx context.Context, id uint, since *time.Time, till *time.Time, workerID *uint, companyID *uint) (*model.Shift, error) {
+	panic(fmt.Errorf("not implemented: UpdateShift - updateShift"))
+}
+
+func (r *mutationResolver) DeleteShift(ctx context.Context, id uint) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteShift - deleteShift"))
 }
 
 func (r *queryResolver) CompanyShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.Shift, error) {
