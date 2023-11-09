@@ -177,7 +177,7 @@ type MutationResolver interface {
 	Logout(ctx context.Context) (bool, error)
 	CreateShift(ctx context.Context, since time.Time, till time.Time, workerID uint, companyID uint) (*model.Shift, error)
 	UpdateShift(ctx context.Context, id uint, since time.Time, till time.Time, workerID uint) (*model.Shift, error)
-	DeleteShift(ctx context.Context, id uint) (bool, error)
+	DeleteShift(ctx context.Context, id uint) (*model.Shift, error)
 	PushStamp(ctx context.Context, companyID uint) (*model.Stamp, error)
 }
 type QueryResolver interface {
@@ -2945,9 +2945,9 @@ func (ec *executionContext) _Mutation_deleteShift(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*model.Shift)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNShift2ᚖkintai_backendᚋgraphᚋmodelᚐShift(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteShift(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2957,7 +2957,23 @@ func (ec *executionContext) fieldContext_Mutation_deleteShift(ctx context.Contex
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Shift_id(ctx, field)
+			case "since":
+				return ec.fieldContext_Shift_since(ctx, field)
+			case "till":
+				return ec.fieldContext_Shift_till(ctx, field)
+			case "employmentId":
+				return ec.fieldContext_Shift_employmentId(ctx, field)
+			case "employment":
+				return ec.fieldContext_Shift_employment(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Shift_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Shift_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Shift", field.Name)
 		},
 	}
 	defer func() {

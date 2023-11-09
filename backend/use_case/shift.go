@@ -22,6 +22,10 @@ type IShiftUseCase interface {
 		till time.Time,
 		workerId domain.WorkerID,
 	) (*domain.Shift, error)
+	Destroy(
+		currentWorkerId domain.WorkerID,
+		shiftId domain.ShiftId,
+	) (*domain.Shift, error)
 }
 
 type shiftUseCase struct {

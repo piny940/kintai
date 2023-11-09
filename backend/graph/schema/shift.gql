@@ -19,5 +19,5 @@ extend type Mutation {
     companyId: Uint!
   ): Shift!
   updateShift(id: Uint!, since: Time!, till: Time!, workerId: Uint!): Shift!
-  deleteShift(id: Uint!): Boolean!
+  deleteShift(id: Uint!): Shift!
 }
