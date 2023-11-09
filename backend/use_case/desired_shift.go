@@ -42,3 +42,20 @@ func (u *desiredShiftUseCase) ListCompanyDesiredShifts(currentWorkerId domain.Wo
 	}
 	return desiredShifts, nil
 }
+func (u *desiredShiftUseCase) Destroy(currentWorkerId domain.WorkerID, desiredShiftId domain.DesiredShiftID) error {
+	desiredShift, err := u.desiredShiftRepo.Show(desiredShiftId)
+	if err != nil {
+		return err
+	}
+	employment, err := u.employmentRepo.FindById(desiredShift.EmploymentID)
+	if err != nil {
+		return err
+	}
+	if employment.WorkerID != currentWorkerId {
+		return fmt.Errorf("権限がありません")
+	}
+	if err := u.desiredShiftRepo.Destroy(desiredShiftId); err != nil {
+		return err
+	}
+	return nil
+}

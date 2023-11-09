@@ -137,7 +137,7 @@ func (r *desiredShiftRepo) Show(desiredShiftId domain.DesiredShiftID) (*domain.D
 	return &desiredShift, nil
 }
 
-func (r *desiredShiftRepo) Destroy(desiredShiftId *domain.DesiredShiftID) error {
+func (r *desiredShiftRepo) Destroy(desiredShiftId domain.DesiredShiftID) error {
 	_, err := r.db.Client.Exec("delete from desired_shifts where id = $1", desiredShiftId)
 	return err
 }
