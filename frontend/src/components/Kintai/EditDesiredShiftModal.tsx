@@ -15,6 +15,7 @@ import {
   useUpdateDesiredShiftMutation,
 } from '@/graphql/types'
 import { useApolloClient } from '@apollo/client'
+import { set } from 'react-hook-form'
 
 export type EditDesiredShiftsModalProps = {
   targetID: string
@@ -81,8 +82,14 @@ const EditDesiredShiftsModal = ({
   )
   const onDestroyButtonClicked = useCallback(async () => {
     if (!desiredShift) return
-    await destroyDesiredShift({ variables: { id: desiredShift.id } })
-    await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
+    try {
+      await destroyDesiredShift({ variables: { id: desiredShift.id } })
+      await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
+      closeButtonRef.current?.click()
+      setAlert('')
+    } catch (error: any) {
+      setAlert(error.message)
+    }
   }, [desiredShift, destroyDesiredShift, client])
 
   useEffect(() => {
@@ -106,7 +113,6 @@ const EditDesiredShiftsModal = ({
       anotherButton={
         <button
           className="btn btn-danger col-12 col-lg-6 my-2 offset-lg-3 d-block"
-          data-bs-dismiss="modal"
           onClick={onDestroyButtonClicked}
           type="button"
         >
