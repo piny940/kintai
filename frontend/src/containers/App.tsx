@@ -12,7 +12,9 @@ import {
 } from '@/graphql/types'
 import { workStatusLabels } from '@/resources/enums'
 import { useApolloClient } from '@apollo/client'
+import { fromStorage, toStorage } from '@/utils/storage'
 
+const COMPANY_ID_KEY = 'company-id'
 export const App: React.FC = () => {
   const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
     null
@@ -28,6 +30,12 @@ export const App: React.FC = () => {
     [selectedCompanyId, companyData?.company]
   )
 
+  const _selectCompany = (id: number | null) => {
+    setSelectedCompanyId(id)
+    if (!id) return
+    toStorage(COMPANY_ID_KEY, id.toString())
+  }
+
   const _pushStamp = useCallback(async () => {
     if (!company) return
 
@@ -42,13 +50,19 @@ export const App: React.FC = () => {
     void loadWorkStatus({ variables: { companyId: selectedCompanyId } })
   }, [selectedCompanyId, loadCompany, loadWorkStatus])
 
+  useEffect(() => {
+    const id = fromStorage(COMPANY_ID_KEY)
+    if (!id) return
+    setSelectedCompanyId(Number(id))
+  }, [])
+
   return (
     <div id="app" data-testid={TestID.APP}>
       <h1>勤怠プラス+</h1>
       <div className="container">
         {companiesData?.companies && (
           <CompanySelect
-            setSelectedCompanyId={setSelectedCompanyId}
+            setSelectedCompanyId={_selectCompany}
             selectedCompanyId={selectedCompanyId}
             companies={companiesData.companies}
           />
