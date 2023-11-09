@@ -124,7 +124,7 @@ func (r *shiftRepo) Update(shift *domain.Shift) (*domain.Shift, error) {
 	return &shiftResult, nil
 }
 
-func (r *shiftRepo) Destroy(shiftId domain.ShiftId) (*domain.Shift, error) {
+func (r *shiftRepo) Delete(shiftId domain.ShiftId) (*domain.Shift, error) {
 	var shift domain.Shift
 
 	if err := r.db.Client.QueryRow("delete from shifts where id = $1 returning *", shiftId).Scan(

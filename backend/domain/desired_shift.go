@@ -26,7 +26,7 @@ type IDesiredShiftRepo interface {
 	FindById(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 	Create(desiredShift *DesiredShift) (*DesiredShift, error)
 	Update(desiredShift *DesiredShift) (*DesiredShift, error)
-	Destroy(desiredShiftId DesiredShiftID) (*DesiredShift, error)
+	Delete(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 }
 
 func NewDesiredShift(since time.Time, till time.Time, employmentID EmploymentID) *DesiredShift {

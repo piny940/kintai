@@ -57,7 +57,7 @@ func (r *mutationResolver) DeleteShift(ctx context.Context, id uint) (*model.Shi
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
-	shift, err := registry.ShiftUseCase().Destroy(
+	shift, err := registry.ShiftUseCase().Delete(
 		*currentWorkerId,
 		domain.ShiftId(id),
 	)

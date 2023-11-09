@@ -22,7 +22,7 @@ type IShiftUseCase interface {
 		till time.Time,
 		workerId domain.WorkerID,
 	) (*domain.Shift, error)
-	Destroy(
+	Delete(
 		currentWorkerId domain.WorkerID,
 		shiftId domain.ShiftId,
 	) (*domain.Shift, error)
@@ -112,7 +112,7 @@ func (u *shiftUseCase) Update(
 	return shiftResult, nil
 }
 
-func (u *shiftUseCase) Destroy(
+func (u *shiftUseCase) Delete(
 	currentWorkerId domain.WorkerID,
 	shiftId domain.ShiftId,
 ) (*domain.Shift, error) {
@@ -132,7 +132,7 @@ func (u *shiftUseCase) Destroy(
 		return nil, fmt.Errorf("権限がありません")
 	}
 
-	shiftResult, err := u.shiftRepo.Destroy(shiftId)
+	shiftResult, err := u.shiftRepo.Delete(shiftId)
 	if err != nil {
 		return nil, err
 	}

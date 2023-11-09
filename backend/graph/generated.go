@@ -92,15 +92,15 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateDesiredShift  func(childComplexity int, companyID uint, since time.Time, till time.Time) int
-		CreateShift         func(childComplexity int, since time.Time, till time.Time, workerID uint, companyID uint) int
-		DeleteShift         func(childComplexity int, id uint) int
-		DestroyDesiredShift func(childComplexity int, id uint) int
-		Login               func(childComplexity int, email string, password string) int
-		Logout              func(childComplexity int) int
-		PushStamp           func(childComplexity int, companyID uint) int
-		UpdateDesiredShift  func(childComplexity int, id uint, since time.Time, till time.Time) int
-		UpdateShift         func(childComplexity int, id uint, since time.Time, till time.Time, workerID uint) int
+		CreateDesiredShift func(childComplexity int, companyID uint, since time.Time, till time.Time) int
+		CreateShift        func(childComplexity int, since time.Time, till time.Time, workerID uint, companyID uint) int
+		DeleteDesiredShift func(childComplexity int, id uint) int
+		DeleteShift        func(childComplexity int, id uint) int
+		Login              func(childComplexity int, email string, password string) int
+		Logout             func(childComplexity int) int
+		PushStamp          func(childComplexity int, companyID uint) int
+		UpdateDesiredShift func(childComplexity int, id uint, since time.Time, till time.Time) int
+		UpdateShift        func(childComplexity int, id uint, since time.Time, till time.Time, workerID uint) int
 	}
 
 	Query struct {
@@ -172,7 +172,7 @@ type EmploymentResolver interface {
 type MutationResolver interface {
 	CreateDesiredShift(ctx context.Context, companyID uint, since time.Time, till time.Time) (*model.DesiredShift, error)
 	UpdateDesiredShift(ctx context.Context, id uint, since time.Time, till time.Time) (*model.DesiredShift, error)
-	DestroyDesiredShift(ctx context.Context, id uint) (*model.DesiredShift, error)
+	DeleteDesiredShift(ctx context.Context, id uint) (*model.DesiredShift, error)
 	Login(ctx context.Context, email string, password string) (*model.LoginResponse, error)
 	Logout(ctx context.Context) (bool, error)
 	CreateShift(ctx context.Context, since time.Time, till time.Time, workerID uint, companyID uint) (*model.Shift, error)
@@ -406,6 +406,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateShift(childComplexity, args["since"].(time.Time), args["till"].(time.Time), args["workerId"].(uint), args["companyId"].(uint)), true
 
+	case "Mutation.deleteDesiredShift":
+		if e.complexity.Mutation.DeleteDesiredShift == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteDesiredShift_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteDesiredShift(childComplexity, args["id"].(uint)), true
+
 	case "Mutation.deleteShift":
 		if e.complexity.Mutation.DeleteShift == nil {
 			break
@@ -417,18 +429,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteShift(childComplexity, args["id"].(uint)), true
-
-	case "Mutation.destroyDesiredShift":
-		if e.complexity.Mutation.DestroyDesiredShift == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_destroyDesiredShift_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.DestroyDesiredShift(childComplexity, args["id"].(uint)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -972,7 +972,7 @@ func (ec *executionContext) field_Mutation_createShift_args(ctx context.Context,
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteShift_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deleteDesiredShift_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uint
@@ -987,7 +987,7 @@ func (ec *executionContext) field_Mutation_deleteShift_args(ctx context.Context,
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_destroyDesiredShift_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deleteShift_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uint
@@ -2606,8 +2606,8 @@ func (ec *executionContext) fieldContext_Mutation_updateDesiredShift(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_destroyDesiredShift(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_destroyDesiredShift(ctx, field)
+func (ec *executionContext) _Mutation_deleteDesiredShift(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteDesiredShift(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2620,7 +2620,7 @@ func (ec *executionContext) _Mutation_destroyDesiredShift(ctx context.Context, f
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DestroyDesiredShift(rctx, fc.Args["id"].(uint))
+		return ec.resolvers.Mutation().DeleteDesiredShift(rctx, fc.Args["id"].(uint))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2637,7 +2637,7 @@ func (ec *executionContext) _Mutation_destroyDesiredShift(ctx context.Context, f
 	return ec.marshalNDesiredShift2ᚖkintai_backendᚋgraphᚋmodelᚐDesiredShift(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_destroyDesiredShift(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteDesiredShift(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -2670,7 +2670,7 @@ func (ec *executionContext) fieldContext_Mutation_destroyDesiredShift(ctx contex
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_destroyDesiredShift_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteDesiredShift_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -7149,9 +7149,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "destroyDesiredShift":
+		case "deleteDesiredShift":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_destroyDesiredShift(ctx, field)
+				return ec._Mutation_deleteDesiredShift(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
