@@ -1,7 +1,6 @@
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
 import ShiftItemButton from './ShiftItemButton'
-import ShiftItem from './ShiftItem'
 
 export type NewShiftsDateProps = {
   month: number
@@ -14,16 +13,27 @@ export type NewShiftsDateProps = {
     till: string
     id: number
     employment: {
-      worker: { id: number; name: { firstName: string; lastName: string } }
+      worker: {
+        id: number
+        name: { firstName: string; lastName: string }
+      }
     }
   }>
   shifts: Array<{
     since: string
     till: string
     id: number
-    employment: { worker: { name: { firstName: string; lastName: string } } }
+    employment: {
+      worker: { id: number; name: { firstName: string; lastName: string } }
+    }
   }>
   onDesiredShiftItemClicked: (desiredShift: {
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  }) => void
+  onShiftItemClicked: (shift: {
     id: number
     since: string
     till: string
@@ -40,6 +50,7 @@ const NewShiftsDate = ({
   desiredShifts,
   shifts,
   onDesiredShiftItemClicked,
+  onShiftItemClicked,
 }: NewShiftsDateProps): JSX.Element => {
   const textColor = (): string => {
     if (date.month() !== month) {
@@ -78,10 +89,11 @@ const NewShiftsDate = ({
             ))}
           {showShifts &&
             shifts.map((shift) => (
-              <ShiftItem
+              <ShiftItemButton
                 className="bg-info text-body"
                 key={shift.id}
                 shift={shift}
+                onClick={() => onShiftItemClicked(shift)}
               />
             ))}
         </div>

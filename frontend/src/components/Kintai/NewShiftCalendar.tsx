@@ -1,13 +1,14 @@
 import { Dayjs } from 'dayjs'
 import Calendar from '../Calendar/Calendar'
 import NewShiftDate from './NewShiftDate'
-import { memo } from 'react'
+import { memo, useCallback, useState } from 'react'
 import AddShiftModal from './AddShiftModal'
 import {
   useMappedCompanyDesiredShifts,
   useMappedCompanyShifts,
 } from '@/hooks/desired_shift'
 import { useCompanyId } from '@/hooks/calendar'
+import EditShiftModal from './EditShiftModal'
 
 export type NewShiftCalendarProps = {
   showShifts: boolean
@@ -31,6 +32,7 @@ export type NewShiftCalendarProps = {
   } | null
 }
 
+const EDIT_SHIFT_MODAL_ID = 'edit-shift-modal'
 const NewShiftCalendar = ({
   showShifts,
   showDesiredShifts,
@@ -47,7 +49,27 @@ const NewShiftCalendar = ({
     companyId,
     selectedMonth
   )
+  const [selectedShift, setSelectedShift] = useState<{
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  } | null>(null)
   const shiftsMap = useMappedCompanyShifts(companyId, selectedMonth)
+
+  const onShiftItemClicked = useCallback(
+    async (shift: {
+      id: number
+      since: string
+      till: string
+      employment: { worker: { id: number } }
+    }) => {
+      setSelectedShift(shift)
+      const bootstrap = await import('bootstrap')
+      void new bootstrap.Modal('#' + EDIT_SHIFT_MODAL_ID).show()
+    },
+    []
+  )
 
   return (
     <>
@@ -64,6 +86,7 @@ const NewShiftCalendar = ({
             desiredShifts={desiredShiftsMap.get(date.date()) || []}
             shifts={shiftsMap.get(date.date()) || []}
             onDesiredShiftItemClicked={onDesiredShiftItemClicked}
+            onShiftItemClicked={onShiftItemClicked}
           />
         )}
       />
@@ -72,6 +95,7 @@ const NewShiftCalendar = ({
         targetID={addShiftsModalID}
         selectedDesiredShift={selectedDesiredShift}
       />
+      <EditShiftModal targetID={EDIT_SHIFT_MODAL_ID} shift={selectedShift} />
     </>
   )
 }
