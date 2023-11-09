@@ -4,10 +4,9 @@ import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
 import {
   GetDesiredShiftsDocument,
-  useCreateDesiredShiftMutation,
+  useUpdateDesiredShiftMutation,
 } from '@/graphql/types'
 import { useApolloClient } from '@apollo/client'
-import { useCompanyId } from '@/hooks/calendar'
 
 export type EditDesiredShiftsModalProps = {
   targetID: string
@@ -26,18 +25,16 @@ const EditDesiredShiftsModal = ({
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
 
-  const companyId = useCompanyId()
-  const [createDesiredShift, { error: desiredShiftError }] =
-    useCreateDesiredShiftMutation()
+  const [updateDesiredShift, { error: desiredShiftError }] =
+    useUpdateDesiredShiftMutation()
   const client = useApolloClient()
 
-  const postDesiredShift = useCallback(
-    async (since: Dayjs, till: Dayjs) => {
-      if (!companyId) return
+  const _updateDesiredShift = useCallback(
+    async (id: number, since: Dayjs, till: Dayjs) => {
       try {
-        await createDesiredShift({
+        await updateDesiredShift({
           variables: {
-            companyId,
+            id,
             since: since.toISOString(),
             till: till.toISOString(),
           },
@@ -45,12 +42,29 @@ const EditDesiredShiftsModal = ({
         await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
       } catch {}
     },
-    [companyId, createDesiredShift, client]
+    [updateDesiredShift, client]
   )
 
-  const onSubmit: FormEventHandler = useCallback((e) => {
-    e.preventDefault()
-  }, [])
+  const onSubmit: FormEventHandler = useCallback(
+    (e) => {
+      e.preventDefault()
+
+      if (!desiredShift) return
+      const since = dayjs(desiredShift.since)
+        .hour(sinceHour)
+        .minute(sinceMinute)
+      const till = dayjs(desiredShift.till).hour(tillHour).minute(tillMinute)
+      void _updateDesiredShift(desiredShift.id, since, till)
+    },
+    [
+      desiredShift,
+      _updateDesiredShift,
+      sinceHour,
+      sinceMinute,
+      tillHour,
+      tillMinute,
+    ]
+  )
 
   return (
     <ModalFormBox
