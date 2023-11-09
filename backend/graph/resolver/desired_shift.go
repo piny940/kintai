@@ -6,7 +6,6 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/graph"
 	"kintai_backend/graph/model"
@@ -40,7 +39,16 @@ func (r *mutationResolver) CreateDesiredShift(ctx context.Context, companyID uin
 }
 
 func (r *mutationResolver) UpdateDesiredShift(ctx context.Context, id uint, since time.Time, till time.Time) (*model.DesiredShift, error) {
-	panic(fmt.Errorf("not implemented: UpdateDesiredShift - updateDesiredShift"))
+	registry := registry.GetRegistry()
+	workerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	desiredShift, err := registry.DesiredShiftUseCase().Update(*workerId, domain.DesiredShiftID(id), since, till)
+	if err != nil {
+		return nil, newError(err, "希望シフトの更新に失敗しました")
+	}
+	return model.NewDesiredShift(desiredShift), nil
 }
 
 func (r *mutationResolver) DestroyDesiredShift(ctx context.Context, id uint) (*model.DesiredShift, error) {
