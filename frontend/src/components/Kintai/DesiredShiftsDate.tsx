@@ -1,11 +1,17 @@
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
 import ShiftItem from './ShiftItem'
+import ShiftItemButton from './ShiftItemButton'
 
 export type DesiredShiftsDateProps = {
   month: number
   date: Dayjs
   onAddButtonClicked: () => void
+  onDesiredShiftItemClicked: (desiredShift: {
+    id: number
+    since: string
+    till: string
+  }) => void
   desiredShifts: Array<{ id: number; since: string; till: string }>
   shifts: Array<{
     since: string
@@ -19,6 +25,7 @@ const DesiredShiftsDate = ({
   date,
   month,
   onAddButtonClicked,
+  onDesiredShiftItemClicked,
   desiredShifts,
   shifts,
 }: DesiredShiftsDateProps): JSX.Element => {
@@ -50,7 +57,11 @@ const DesiredShiftsDate = ({
         <ul className="list-unstyled">
           {desiredShifts.map((desiredShift) => (
             <li key={desiredShift.id}>
-              <ShiftItem className="bg-info" shift={desiredShift} />
+              <ShiftItemButton
+                onClick={() => onDesiredShiftItemClicked(desiredShift)}
+                className="bg-info"
+                shift={desiredShift}
+              />
             </li>
           ))}
           {shifts.map((shift) => (

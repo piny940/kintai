@@ -1,43 +1,40 @@
-import { FormEventHandler, memo, useCallback, useState } from 'react'
+import { FormEventHandler, memo, useCallback, useEffect, useState } from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
 import {
   GetDesiredShiftsDocument,
-  useCreateDesiredShiftMutation,
+  useUpdateDesiredShiftMutation,
 } from '@/graphql/types'
 import { useApolloClient } from '@apollo/client'
-import { useCompanyId } from '@/hooks/calendar'
 
-export type AddDesiredShiftsModalProps = {
+export type EditDesiredShiftsModalProps = {
   targetID: string
-  date: Dayjs | null
+  desiredShift: { id: number; since: string; till: string } | null
 }
 
 const SINCE_HOUR_OPTIONS = [9, 10, 11, 12, 13, 14, 15, 16, 17]
 const TILL_HOUR_OPTIONS = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 const MINUTE_OPTIONS = [0, 15, 30, 45]
-const AddDesiredShiftsModal = ({
+const EditDesiredShiftsModal = ({
   targetID,
-  date,
-}: AddDesiredShiftsModalProps): JSX.Element => {
+  desiredShift,
+}: EditDesiredShiftsModalProps): JSX.Element => {
   const [sinceHour, setSinceHour] = useState<number>(SINCE_HOUR_OPTIONS[0])
   const [sinceMinute, setSinceMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
 
-  const companyId = useCompanyId()
-  const [createDesiredShift, { error: desiredShiftError }] =
-    useCreateDesiredShiftMutation()
+  const [updateDesiredShift, { error: desiredShiftError }] =
+    useUpdateDesiredShiftMutation()
   const client = useApolloClient()
 
-  const postDesiredShift = useCallback(
-    async (since: Dayjs, till: Dayjs) => {
-      if (!companyId) return
+  const _updateDesiredShift = useCallback(
+    async (id: number, since: Dayjs, till: Dayjs) => {
       try {
-        await createDesiredShift({
+        await updateDesiredShift({
           variables: {
-            companyId,
+            id,
             since: since.toISOString(),
             till: till.toISOString(),
           },
@@ -45,33 +42,51 @@ const AddDesiredShiftsModal = ({
         await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
       } catch {}
     },
-    [companyId, createDesiredShift, client]
+    [updateDesiredShift, client]
   )
 
   const onSubmit: FormEventHandler = useCallback(
     (e) => {
       e.preventDefault()
 
-      if (!date) return
-      const since = date.hour(sinceHour).minute(sinceMinute)
-      const till = date.hour(tillHour).minute(tillMinute)
-      void postDesiredShift(since, till)
+      if (!desiredShift) return
+      const since = dayjs(desiredShift.since)
+        .hour(sinceHour)
+        .minute(sinceMinute)
+      const till = dayjs(desiredShift.till).hour(tillHour).minute(tillMinute)
+      void _updateDesiredShift(desiredShift.id, since, till)
     },
-    [date, sinceHour, sinceMinute, tillHour, tillMinute, postDesiredShift]
+    [
+      desiredShift,
+      _updateDesiredShift,
+      sinceHour,
+      sinceMinute,
+      tillHour,
+      tillMinute,
+    ]
   )
+
+  useEffect(() => {
+    if (!desiredShift) return
+    setSinceHour(dayjs(desiredShift.since).hour())
+    setSinceMinute(dayjs(desiredShift.since).minute())
+    setTillHour(dayjs(desiredShift.till).hour())
+    setTillMinute(dayjs(desiredShift.till).minute())
+  }, [desiredShift])
 
   return (
     <ModalFormBox
-      title="希望シフト作成"
+      title="希望シフト編集"
       alert={desiredShiftError?.message || ''}
       targetID={targetID}
-      submitButtonText="作成"
+      submitButtonText="更新"
       onSubmit={onSubmit}
     >
-      {date && (
+      {desiredShift && (
         <div className="mx-3">
           <h4>
-            {date.month() + 1}月{date.date()}日
+            {dayjs(desiredShift.since).month() + 1}月
+            {dayjs(desiredShift.since).date()}日
           </h4>
           <div className="row my-3">
             <div className="col-md-3 fw-bold col-form-label">開始時間</div>
@@ -143,4 +158,4 @@ const AddDesiredShiftsModal = ({
   )
 }
 
-export default memo(AddDesiredShiftsModal)
+export default memo(EditDesiredShiftsModal)
