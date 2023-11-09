@@ -71,7 +71,7 @@ func (u *desiredShiftUseCase) Update(
 	desiredShiftId domain.DesiredShiftID,
 	since, till time.Time,
 ) (*domain.DesiredShift, error) {
-	desiredShift, err := u.desiredShiftRepo.Show(desiredShiftId)
+	desiredShift, err := u.desiredShiftRepo.FindById(desiredShiftId)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func (u *desiredShiftUseCase) Destroy(
 	currentWorkerId domain.WorkerID,
 	desiredShiftId domain.DesiredShiftID,
 ) (*domain.DesiredShift, error) {
-	desiredShift, err := u.desiredShiftRepo.Show(desiredShiftId)
+	desiredShift, err := u.desiredShiftRepo.FindById(desiredShiftId)
 	if err != nil {
 		return nil, err
 	}
