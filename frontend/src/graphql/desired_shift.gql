@@ -39,3 +39,8 @@ mutation updateDesiredShift($id: Uint!, $since: Time!, $till: Time!) {
     id
   }
 }
+mutation destroyDesiredShift($id: Uint!) {
+  destroyDesiredShift(id: $id) {
+    id
+  }
+}
