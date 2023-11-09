@@ -15,7 +15,6 @@ import {
   useUpdateDesiredShiftMutation,
 } from '@/graphql/types'
 import { useApolloClient } from '@apollo/client'
-import { set } from 'react-hook-form'
 
 export type EditDesiredShiftsModalProps = {
   targetID: string
