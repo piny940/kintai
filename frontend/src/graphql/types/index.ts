@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 import * as Apollo from '@apollo/client'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
-export type Exact<T extends Record<string, unknown>> = {
+export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
 }
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
@@ -12,7 +12,7 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
 export type MakeEmpty<
-  T extends Record<string, unknown>,
+  T extends { [key: string]: unknown },
   K extends keyof T
 > = { [_ in K]?: never }
 export type Incremental<T> =
@@ -144,12 +144,12 @@ export type MutationUpdateShiftArgs = {
 
 export type Query = {
   __typename?: 'Query'
-  companies: Company[]
+  companies: Array<Company>
   company: Company
-  companyDesiredShifts: DesiredShift[]
-  companyShifts: Shift[]
-  companyWorkers: Worker[]
-  desiredShifts: DesiredShift[]
+  companyDesiredShifts: Array<DesiredShift>
+  companyShifts: Array<Shift>
+  companyWorkers: Array<Worker>
+  desiredShifts: Array<DesiredShift>
   getYearReport: YearReport
   me?: Maybe<Worker>
   workStatus: WorkStatus
@@ -212,7 +212,7 @@ export type Stamp = {
 
 export type WorkReport = {
   __typename?: 'WorkReport'
-  stamps: Stamp[]
+  stamps: Array<Stamp>
   workTime: Scalars['Int']['output']
 }
 
@@ -246,7 +246,7 @@ export enum WorkerStatus {
 export type YearReport = {
   __typename?: 'YearReport'
   employmentId: Scalars['Uint']['output']
-  workReports: MonthWorkReportMap[]
+  workReports: Array<MonthWorkReportMap>
   year: Scalars['Time']['output']
 }
 
@@ -264,7 +264,7 @@ export type GetCompanyQuery = {
   }
 }
 
-export type GetCompaniesQueryVariables = Exact<Record<string, never>>
+export type GetCompaniesQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetCompaniesQuery = {
   __typename?: 'Query'
@@ -355,7 +355,7 @@ export type LoginMutation = {
   } | null
 }
 
-export type LogoutMutationVariables = Exact<Record<string, never>>
+export type LogoutMutationVariables = Exact<{ [key: string]: never }>
 
 export type LogoutMutation = { __typename?: 'Mutation'; logout: boolean }
 
@@ -395,6 +395,27 @@ export type CreateShiftMutation = {
   createShift: { __typename?: 'Shift'; id: number }
 }
 
+export type UpdateShiftMutationVariables = Exact<{
+  id: Scalars['Uint']['input']
+  since: Scalars['Time']['input']
+  till: Scalars['Time']['input']
+  workerId: Scalars['Uint']['input']
+}>
+
+export type UpdateShiftMutation = {
+  __typename?: 'Mutation'
+  updateShift: { __typename?: 'Shift'; id: number }
+}
+
+export type DeleteShiftMutationVariables = Exact<{
+  id: Scalars['Uint']['input']
+}>
+
+export type DeleteShiftMutation = {
+  __typename?: 'Mutation'
+  deleteShift: { __typename?: 'Shift'; id: number }
+}
+
 export type PushStampMutationVariables = Exact<{
   companyId: Scalars['Uint']['input']
 }>
@@ -413,7 +434,7 @@ export type GetWorkStatusQuery = {
   workStatus: WorkStatus
 }
 
-export type GetMeQueryVariables = Exact<Record<string, never>>
+export type GetMeQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetMeQuery = {
   __typename?: 'Query'
@@ -1148,6 +1169,114 @@ export type CreateShiftMutationResult =
 export type CreateShiftMutationOptions = Apollo.BaseMutationOptions<
   CreateShiftMutation,
   CreateShiftMutationVariables
+>
+export const UpdateShiftDocument = gql`
+  mutation updateShift(
+    $id: Uint!
+    $since: Time!
+    $till: Time!
+    $workerId: Uint!
+  ) {
+    updateShift(id: $id, since: $since, till: $till, workerId: $workerId) {
+      id
+    }
+  }
+`
+export type UpdateShiftMutationFn = Apollo.MutationFunction<
+  UpdateShiftMutation,
+  UpdateShiftMutationVariables
+>
+
+/**
+ * __useUpdateShiftMutation__
+ *
+ * To run a mutation, you first call `useUpdateShiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShiftMutation, { data, loading, error }] = useUpdateShiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      since: // value for 'since'
+ *      till: // value for 'till'
+ *      workerId: // value for 'workerId'
+ *   },
+ * });
+ */
+export function useUpdateShiftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateShiftMutation,
+    UpdateShiftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<UpdateShiftMutation, UpdateShiftMutationVariables>(
+    UpdateShiftDocument,
+    options
+  )
+}
+export type UpdateShiftMutationHookResult = ReturnType<
+  typeof useUpdateShiftMutation
+>
+export type UpdateShiftMutationResult =
+  Apollo.MutationResult<UpdateShiftMutation>
+export type UpdateShiftMutationOptions = Apollo.BaseMutationOptions<
+  UpdateShiftMutation,
+  UpdateShiftMutationVariables
+>
+export const DeleteShiftDocument = gql`
+  mutation deleteShift($id: Uint!) {
+    deleteShift(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteShiftMutationFn = Apollo.MutationFunction<
+  DeleteShiftMutation,
+  DeleteShiftMutationVariables
+>
+
+/**
+ * __useDeleteShiftMutation__
+ *
+ * To run a mutation, you first call `useDeleteShiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteShiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteShiftMutation, { data, loading, error }] = useDeleteShiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteShiftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteShiftMutation,
+    DeleteShiftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<DeleteShiftMutation, DeleteShiftMutationVariables>(
+    DeleteShiftDocument,
+    options
+  )
+}
+export type DeleteShiftMutationHookResult = ReturnType<
+  typeof useDeleteShiftMutation
+>
+export type DeleteShiftMutationResult =
+  Apollo.MutationResult<DeleteShiftMutation>
+export type DeleteShiftMutationOptions = Apollo.BaseMutationOptions<
+  DeleteShiftMutation,
+  DeleteShiftMutationVariables
 >
 export const PushStampDocument = gql`
   mutation pushStamp($companyId: Uint!) {
