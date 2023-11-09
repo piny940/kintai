@@ -11,7 +11,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
 import {
   GetDesiredShiftsDocument,
-  useDestroyDesiredShiftMutation,
+  useDeleteDesiredShiftMutation,
   useUpdateDesiredShiftMutation,
 } from '@/graphql/types'
 import { useApolloClient } from '@apollo/client'
@@ -36,7 +36,7 @@ const EditDesiredShiftsModal = ({
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   const [updateDesiredShift] = useUpdateDesiredShiftMutation()
-  const [destroyDesiredShift] = useDestroyDesiredShiftMutation()
+  const [deleteDesiredShift] = useDeleteDesiredShiftMutation()
   const client = useApolloClient()
 
   const _updateDesiredShift = useCallback(
@@ -79,17 +79,17 @@ const EditDesiredShiftsModal = ({
       tillMinute,
     ]
   )
-  const onDestroyButtonClicked = useCallback(async () => {
+  const onDeleteButtonClicked = useCallback(async () => {
     if (!desiredShift) return
     try {
-      await destroyDesiredShift({ variables: { id: desiredShift.id } })
+      await deleteDesiredShift({ variables: { id: desiredShift.id } })
       await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
       closeButtonRef.current?.click()
       setAlert('')
     } catch (error: any) {
       setAlert(error.message)
     }
-  }, [desiredShift, destroyDesiredShift, client])
+  }, [desiredShift, deleteDesiredShift, client])
 
   useEffect(() => {
     setAlert('')
@@ -112,7 +112,7 @@ const EditDesiredShiftsModal = ({
       anotherButton={
         <button
           className="btn btn-danger col-12 col-lg-6 my-2 offset-lg-3 d-block"
-          onClick={onDestroyButtonClicked}
+          onClick={onDeleteButtonClicked}
           type="button"
         >
           削除

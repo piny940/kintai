@@ -15,6 +15,17 @@ type IShiftUseCase interface {
 		since,
 		till time.Time,
 	) (*domain.Shift, error)
+	Update(
+		currentWorkerId domain.WorkerID,
+		shiftId domain.ShiftId,
+		since,
+		till time.Time,
+		workerId domain.WorkerID,
+	) (*domain.Shift, error)
+	Delete(
+		currentWorkerId domain.WorkerID,
+		shiftId domain.ShiftId,
+	) (*domain.Shift, error)
 }
 
 type shiftUseCase struct {
@@ -59,6 +70,69 @@ func (u *shiftUseCase) Create(
 
 	shift := domain.NewShift(since, till, employment.ID)
 	shiftResult, err := u.shiftRepo.Create(shift)
+	if err != nil {
+		return nil, err
+	}
+	return shiftResult, nil
+}
+
+func (u *shiftUseCase) Update(
+	currentWorkerId domain.WorkerID,
+	shiftId domain.ShiftId,
+	since,
+	till time.Time,
+	workerId domain.WorkerID,
+) (*domain.Shift, error) {
+	shift, err := u.shiftRepo.FindById(shiftId)
+	if err != nil {
+		return nil, err
+	}
+	employment, err := u.employmentRepo.FindById(shift.EmploymentID)
+	if err != nil {
+		return nil, err
+	}
+	currentWorkerEmployment, err := u.employmentRepo.Find(employment.CompanyID, currentWorkerId)
+	if err != nil {
+		return nil, err
+	}
+	if currentWorkerEmployment.Kind != domain.EmploymentAdmin {
+		return nil, fmt.Errorf("権限がありません")
+	}
+	newEmployment, err := u.employmentRepo.Find(employment.CompanyID, workerId)
+	if err != nil {
+		return nil, err
+	}
+	shift.Since = since
+	shift.Till = till
+	shift.EmploymentID = newEmployment.ID
+	shiftResult, err := u.shiftRepo.Update(shift)
+	if err != nil {
+		return nil, err
+	}
+	return shiftResult, nil
+}
+
+func (u *shiftUseCase) Delete(
+	currentWorkerId domain.WorkerID,
+	shiftId domain.ShiftId,
+) (*domain.Shift, error) {
+	shift, err := u.shiftRepo.FindById(shiftId)
+	if err != nil {
+		return nil, err
+	}
+	employment, err := u.employmentRepo.FindById(shift.EmploymentID)
+	if err != nil {
+		return nil, err
+	}
+	currentWorkerEmployment, err := u.employmentRepo.Find(employment.CompanyID, currentWorkerId)
+	if err != nil {
+		return nil, err
+	}
+	if currentWorkerEmployment.Kind != domain.EmploymentAdmin {
+		return nil, fmt.Errorf("権限がありません")
+	}
+
+	shiftResult, err := u.shiftRepo.Delete(shiftId)
 	if err != nil {
 		return nil, err
 	}

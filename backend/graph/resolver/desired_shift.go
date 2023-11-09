@@ -51,13 +51,13 @@ func (r *mutationResolver) UpdateDesiredShift(ctx context.Context, id uint, sinc
 	return model.NewDesiredShift(desiredShift), nil
 }
 
-func (r *mutationResolver) DestroyDesiredShift(ctx context.Context, id uint) (*model.DesiredShift, error) {
+func (r *mutationResolver) DeleteDesiredShift(ctx context.Context, id uint) (*model.DesiredShift, error) {
 	workerId, err := currentWorkerId(ctx)
 	if err != nil {
 		return nil, newError(err, "ログインしてください")
 	}
 	registry := registry.GetRegistry()
-	desiredShift, err := registry.DesiredShiftUseCase().Destroy(*workerId, domain.DesiredShiftID(id))
+	desiredShift, err := registry.DesiredShiftUseCase().Delete(*workerId, domain.DesiredShiftID(id))
 	if err != nil {
 		return nil, newError(err, "希望シフトの削除に失敗しました")
 	}

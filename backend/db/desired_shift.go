@@ -122,7 +122,7 @@ func (r *desiredShiftRepo) ListAll(companyId domain.CompanyID, query *domain.Des
 	return desiredShifts, nil
 }
 
-func (r *desiredShiftRepo) Show(desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
+func (r *desiredShiftRepo) FindById(desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
 	var desiredShift domain.DesiredShift
 	if err := r.db.Client.QueryRow("select * from desired_shifts where id = $1", desiredShiftId).Scan(
 		&desiredShift.ID,
@@ -158,7 +158,7 @@ func (r *desiredShiftRepo) Update(desiredShift *domain.DesiredShift) (*domain.De
 	return &desiredShiftResult, nil
 }
 
-func (r *desiredShiftRepo) Destroy(desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
+func (r *desiredShiftRepo) Delete(desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
 	var desiredShift domain.DesiredShift
 	if err := r.db.Client.QueryRow("delete from desired_shifts where id = $1 returning *", desiredShiftId).Scan(
 		&desiredShift.ID,

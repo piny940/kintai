@@ -21,7 +21,7 @@ type IDesiredShiftUseCase interface {
 		desiredShiftId domain.DesiredShiftID,
 		since, till time.Time,
 	) (*domain.DesiredShift, error)
-	Destroy(
+	Delete(
 		currentWorkerId domain.WorkerID,
 		desiredShiftId domain.DesiredShiftID,
 	) (*domain.DesiredShift, error)
@@ -71,7 +71,7 @@ func (u *desiredShiftUseCase) Update(
 	desiredShiftId domain.DesiredShiftID,
 	since, till time.Time,
 ) (*domain.DesiredShift, error) {
-	desiredShift, err := u.desiredShiftRepo.Show(desiredShiftId)
+	desiredShift, err := u.desiredShiftRepo.FindById(desiredShiftId)
 	if err != nil {
 		return nil, err
 	}
@@ -91,11 +91,11 @@ func (u *desiredShiftUseCase) Update(
 	return desiredShift, nil
 }
 
-func (u *desiredShiftUseCase) Destroy(
+func (u *desiredShiftUseCase) Delete(
 	currentWorkerId domain.WorkerID,
 	desiredShiftId domain.DesiredShiftID,
 ) (*domain.DesiredShift, error) {
-	desiredShift, err := u.desiredShiftRepo.Show(desiredShiftId)
+	desiredShift, err := u.desiredShiftRepo.FindById(desiredShiftId)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +106,7 @@ func (u *desiredShiftUseCase) Destroy(
 	if employment.WorkerID != currentWorkerId {
 		return nil, fmt.Errorf("権限がありません")
 	}
-	desiredShift, err = u.desiredShiftRepo.Destroy(desiredShiftId)
+	desiredShift, err = u.desiredShiftRepo.Delete(desiredShiftId)
 	if err != nil {
 		return nil, err
 	}

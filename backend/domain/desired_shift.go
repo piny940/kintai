@@ -23,10 +23,10 @@ type DesiredShiftQuery struct {
 type IDesiredShiftRepo interface {
 	List(query *DesiredShiftQuery) ([]*DesiredShift, error)
 	ListAll(companyId CompanyID, query *DesiredShiftQuery) ([]*DesiredShift, error)
-	Show(desiredShiftId DesiredShiftID) (*DesiredShift, error)
+	FindById(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 	Create(desiredShift *DesiredShift) (*DesiredShift, error)
 	Update(desiredShift *DesiredShift) (*DesiredShift, error)
-	Destroy(desiredShiftId DesiredShiftID) (*DesiredShift, error)
+	Delete(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 }
 
 func NewDesiredShift(since time.Time, till time.Time, employmentID EmploymentID) *DesiredShift {

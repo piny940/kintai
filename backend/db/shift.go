@@ -65,6 +65,22 @@ func (r *shiftRepo) ListAll(companyId domain.CompanyID, query *domain.ShiftQuery
 	return shifts, nil
 }
 
+func (r *shiftRepo) FindById(shiftId domain.ShiftId) (*domain.Shift, error) {
+	var shift domain.Shift
+
+	if err := r.db.Client.QueryRow("select * from shifts where id = $1", shiftId).Scan(
+		&shift.ID,
+		&shift.Since,
+		&shift.Till,
+		&shift.EmploymentID,
+		&shift.CreatedAt,
+		&shift.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &shift, nil
+}
+
 func (r *shiftRepo) Create(shift *domain.Shift) (*domain.Shift, error) {
 	var shiftResult domain.Shift
 
@@ -84,4 +100,42 @@ func (r *shiftRepo) Create(shift *domain.Shift) (*domain.Shift, error) {
 		return nil, err
 	}
 	return &shiftResult, nil
+}
+
+func (r *shiftRepo) Update(shift *domain.Shift) (*domain.Shift, error) {
+	var shiftResult domain.Shift
+
+	if err := r.db.Client.QueryRow(
+		"update shifts set since = $1, till = $2, employment_id = $3 where id = $4 returning *",
+		shift.Since,
+		shift.Till,
+		shift.EmploymentID,
+		shift.ID,
+	).Scan(
+		&shiftResult.ID,
+		&shiftResult.Since,
+		&shiftResult.Till,
+		&shiftResult.EmploymentID,
+		&shiftResult.CreatedAt,
+		&shiftResult.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &shiftResult, nil
+}
+
+func (r *shiftRepo) Delete(shiftId domain.ShiftId) (*domain.Shift, error) {
+	var shift domain.Shift
+
+	if err := r.db.Client.QueryRow("delete from shifts where id = $1 returning *", shiftId).Scan(
+		&shift.ID,
+		&shift.Since,
+		&shift.Till,
+		&shift.EmploymentID,
+		&shift.CreatedAt,
+		&shift.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &shift, nil
 }
