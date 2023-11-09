@@ -71,7 +71,7 @@ const AddDesiredShiftsModal = ({
       {date && (
         <div className="mx-3">
           <h4>
-            {date.month()}月{date.date()}日
+            {date.month() + 1}月{date.date()}日
           </h4>
           <div className="row my-3">
             <div className="col-md-3 fw-bold col-form-label">開始時間</div>

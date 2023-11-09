@@ -54,16 +54,16 @@ const EditDesiredShiftsModal = ({
 
   return (
     <ModalFormBox
-      title="希望シフト作成"
+      title="希望シフト編集"
       alert={desiredShiftError?.message || ''}
       targetID={targetID}
-      submitButtonText="作成"
+      submitButtonText="更新"
       onSubmit={onSubmit}
     >
       {desiredShift && (
         <div className="mx-3">
           <h4>
-            {dayjs(desiredShift.since).month()}月
+            {dayjs(desiredShift.since).month() + 1}月
             {dayjs(desiredShift.since).date()}日
           </h4>
           <div className="row my-3">
