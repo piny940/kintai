@@ -89,6 +89,7 @@ const AddShiftsModal = ({
   )
 
   useEffect(() => {
+    setAlert('')
     if (!selectedDesiredShift) {
       setSinceHour(SINCE_HOUR_OPTIONS[0])
       setSinceMinute(MINUTE_OPTIONS[0])
@@ -104,7 +105,7 @@ const AddShiftsModal = ({
     setTillHour(till.hour())
     setTillMinute(till.minute())
     setSelectedWorkerId(selectedDesiredShift.employment.worker.id)
-  }, [selectedDesiredShift])
+  }, [selectedDesiredShift, date])
 
   return (
     <ModalFormBox
