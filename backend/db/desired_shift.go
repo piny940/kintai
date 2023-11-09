@@ -121,3 +121,33 @@ func (r *desiredShiftRepo) ListAll(companyId domain.CompanyID, query *domain.Des
 
 	return desiredShifts, nil
 }
+
+func (r *desiredShiftRepo) Show(desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
+	var desiredShift domain.DesiredShift
+	if err := r.db.Client.QueryRow("select * from desired_shifts where id = $1", desiredShiftId).Scan(
+		&desiredShift.ID,
+		&desiredShift.Since,
+		&desiredShift.Till,
+		&desiredShift.EmploymentID,
+		&desiredShift.CreatedAt,
+		&desiredShift.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &desiredShift, nil
+}
+
+func (r *desiredShiftRepo) Destroy(desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
+	var desiredShift domain.DesiredShift
+	if err := r.db.Client.QueryRow("delete from desired_shifts where id = $1 returning *", desiredShiftId).Scan(
+		&desiredShift.ID,
+		&desiredShift.Since,
+		&desiredShift.Till,
+		&desiredShift.EmploymentID,
+		&desiredShift.CreatedAt,
+		&desiredShift.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &desiredShift, nil
+}
