@@ -64,3 +64,30 @@ func (u *shiftUseCase) Create(
 	}
 	return shiftResult, nil
 }
+
+func (u *shiftUseCase) Update(
+	currentWorkerId domain.WorkerID,
+	shiftId domain.ShiftId,
+	since,
+	till time.Time,
+) (*domain.Shift, error) {
+	shift, err := u.shiftRepo.FindById(shiftId)
+	if err != nil {
+		return nil, err
+	}
+	employment, err := u.employmentRepo.Find(shift.Employment.CompanyID, currentWorkerId)
+	if err != nil {
+		return nil, err
+	}
+	if employment.Kind != domain.EmploymentAdmin {
+		return nil, fmt.Errorf("権限がありません")
+	}
+
+	shift.Since = since
+	shift.Till = till
+	shiftResult, err := u.shiftRepo.Update(shift)
+	if err != nil {
+		return nil, err
+	}
+	return shiftResult, nil
+}
