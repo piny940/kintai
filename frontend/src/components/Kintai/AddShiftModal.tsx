@@ -1,4 +1,11 @@
-import { FormEventHandler, memo, useCallback, useEffect, useState } from 'react'
+import {
+  FormEventHandler,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
 import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
@@ -35,11 +42,12 @@ const AddShiftsModal = ({
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [selectedWorkerId, setSelectedWorkerId] = useState<number | null>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
   const companyId = useCompanyId()
   const { data: workersData } = useGetCompanyWorkersQuery({
     variables: { companyId: companyId },
   })
-  const [postShift, { error: shiftError }] = useCreateShiftMutation()
+  const [postShift] = useCreateShiftMutation()
   const client = useApolloClient()
 
   const selectedWorkerChange = useCallback(
@@ -61,15 +69,21 @@ const AddShiftsModal = ({
       setAlert('')
       const since = date.hour(sinceHour).minute(sinceMinute)
       const till = date.hour(tillHour).minute(tillMinute)
-      await postShift({
-        variables: {
-          since: since.toISOString(),
-          till: till.toISOString(),
-          workerId: selectedWorkerId,
-          companyId: companyId,
-        },
-      })
-      await client.refetchQueries({ include: [GetCompanyShiftsDocument] })
+      try {
+        await postShift({
+          variables: {
+            since: since.toISOString(),
+            till: till.toISOString(),
+            workerId: selectedWorkerId,
+            companyId: companyId,
+          },
+        })
+        await client.refetchQueries({ include: [GetCompanyShiftsDocument] })
+        closeButtonRef.current?.click()
+        setAlert('')
+      } catch (error: any) {
+        setAlert(error.message)
+      }
     },
     [
       date,
@@ -85,6 +99,7 @@ const AddShiftsModal = ({
   )
 
   useEffect(() => {
+    setAlert('')
     if (!selectedDesiredShift) {
       setSinceHour(SINCE_HOUR_OPTIONS[0])
       setSinceMinute(MINUTE_OPTIONS[0])
@@ -100,15 +115,16 @@ const AddShiftsModal = ({
     setTillHour(till.hour())
     setTillMinute(till.minute())
     setSelectedWorkerId(selectedDesiredShift.employment.worker.id)
-  }, [selectedDesiredShift])
+  }, [selectedDesiredShift, date])
 
   return (
     <ModalFormBox
       title="シフト作成"
-      alert={shiftError?.message || alert}
+      alert={alert}
       targetID={targetID}
       submitButtonText="作成"
       onSubmit={onSubmit}
+      closeButtonRef={closeButtonRef}
     >
       {date && (
         <div className="mx-3">
