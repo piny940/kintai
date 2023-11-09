@@ -9,6 +9,7 @@ import (
 type IDesiredShiftUseCase interface {
 	Create(employmentId domain.EmploymentID, since time.Time, till time.Time) (*domain.DesiredShift, error)
 	ListCompanyDesiredShifts(workerId domain.WorkerID, companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error)
+	Destroy(currentWorkerId domain.WorkerID, desiredShiftId domain.DesiredShiftID) error
 }
 
 type desiredShiftUseCase struct {
