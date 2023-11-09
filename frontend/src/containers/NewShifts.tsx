@@ -2,7 +2,6 @@ import NewShiftCalendar from '@/components/Kintai/NewShiftCalendar'
 import ShiftsDisplayToggler from '@/components/Kintai/ShiftsDisplayToggler'
 import { useGetCompanyLazyQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
-import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
 import { memo, useEffect, useState } from 'react'
 
@@ -10,7 +9,6 @@ const NewShifts = (): JSX.Element => {
   const companyId = useCompanyId()
   const [showDesiredShifts, setShowDesiredShifts] = useState<boolean>(true)
   const [showShifts, setShowShifts] = useState<boolean>(true)
-  const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
   const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
 
   useEffect(() => {
@@ -36,8 +34,6 @@ const NewShifts = (): JSX.Element => {
       <NewShiftCalendar
         showDesiredShifts={showDesiredShifts}
         showShifts={showShifts}
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
       />
     </div>
   )

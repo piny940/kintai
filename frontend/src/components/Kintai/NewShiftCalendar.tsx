@@ -13,8 +13,6 @@ import EditShiftModal from './EditShiftModal'
 export type NewShiftCalendarProps = {
   showShifts: boolean
   showDesiredShifts: boolean
-  selectedMonth: Dayjs
-  setSelectedMonth: (selectedMonth: Dayjs) => void
 }
 
 const ADD_SHIFTS_MODAL_ID = 'add-shifts-modal'
@@ -22,11 +20,10 @@ const EDIT_SHIFT_MODAL_ID = 'edit-shift-modal'
 const NewShiftCalendar = ({
   showShifts,
   showDesiredShifts,
-  selectedMonth,
-  setSelectedMonth,
 }: NewShiftCalendarProps): JSX.Element => {
   const companyId = useCompanyId()
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
+  const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs(Date.now()))
   const [selectedDesiredShift, setSelectedDesiredShift] = useState<{
     id: number
     since: string
