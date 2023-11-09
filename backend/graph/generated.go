@@ -100,7 +100,7 @@ type ComplexityRoot struct {
 		Logout              func(childComplexity int) int
 		PushStamp           func(childComplexity int, companyID uint) int
 		UpdateDesiredShift  func(childComplexity int, id uint, since time.Time, till time.Time) int
-		UpdateShift         func(childComplexity int, id uint, since *time.Time, till *time.Time, workerID *uint, companyID *uint) int
+		UpdateShift         func(childComplexity int, id uint, since time.Time, till time.Time, workerID uint) int
 	}
 
 	Query struct {
@@ -176,7 +176,7 @@ type MutationResolver interface {
 	Login(ctx context.Context, email string, password string) (*model.LoginResponse, error)
 	Logout(ctx context.Context) (bool, error)
 	CreateShift(ctx context.Context, since time.Time, till time.Time, workerID uint, companyID uint) (*model.Shift, error)
-	UpdateShift(ctx context.Context, id uint, since *time.Time, till *time.Time, workerID *uint, companyID *uint) (*model.Shift, error)
+	UpdateShift(ctx context.Context, id uint, since time.Time, till time.Time, workerID uint) (*model.Shift, error)
 	DeleteShift(ctx context.Context, id uint) (bool, error)
 	PushStamp(ctx context.Context, companyID uint) (*model.Stamp, error)
 }
@@ -483,7 +483,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateShift(childComplexity, args["id"].(uint), args["since"].(*time.Time), args["till"].(*time.Time), args["workerId"].(*uint), args["companyId"].(*uint)), true
+		return e.complexity.Mutation.UpdateShift(childComplexity, args["id"].(uint), args["since"].(time.Time), args["till"].(time.Time), args["workerId"].(uint)), true
 
 	case "Query.companies":
 		if e.complexity.Query.Companies == nil {
@@ -1086,42 +1086,33 @@ func (ec *executionContext) field_Mutation_updateShift_args(ctx context.Context,
 		}
 	}
 	args["id"] = arg0
-	var arg1 *time.Time
+	var arg1 time.Time
 	if tmp, ok := rawArgs["since"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("since"))
-		arg1, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+		arg1, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["since"] = arg1
-	var arg2 *time.Time
+	var arg2 time.Time
 	if tmp, ok := rawArgs["till"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("till"))
-		arg2, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+		arg2, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["till"] = arg2
-	var arg3 *uint
+	var arg3 uint
 	if tmp, ok := rawArgs["workerId"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("workerId"))
-		arg3, err = ec.unmarshalOUint2ᚖuint(ctx, tmp)
+		arg3, err = ec.unmarshalNUint2uint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["workerId"] = arg3
-	var arg4 *uint
-	if tmp, ok := rawArgs["companyId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
-		arg4, err = ec.unmarshalOUint2ᚖuint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["companyId"] = arg4
 	return args, nil
 }
 
@@ -2871,7 +2862,7 @@ func (ec *executionContext) _Mutation_updateShift(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateShift(rctx, fc.Args["id"].(uint), fc.Args["since"].(*time.Time), fc.Args["till"].(*time.Time), fc.Args["workerId"].(*uint), fc.Args["companyId"].(*uint))
+		return ec.resolvers.Mutation().UpdateShift(rctx, fc.Args["id"].(uint), fc.Args["since"].(time.Time), fc.Args["till"].(time.Time), fc.Args["workerId"].(uint))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8987,22 +8978,6 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 		return graphql.Null
 	}
 	res := graphql.MarshalTime(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOUint2ᚖuint(ctx context.Context, v interface{}) (*uint, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalUint(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOUint2ᚖuint(ctx context.Context, sel ast.SelectionSet, v *uint) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalUint(*v)
 	return res
 }
 

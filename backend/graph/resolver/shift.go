@@ -33,7 +33,7 @@ func (r *mutationResolver) CreateShift(ctx context.Context, since time.Time, til
 	return model.NewShift(shift), nil
 }
 
-func (r *mutationResolver) UpdateShift(ctx context.Context, id uint, since *time.Time, till *time.Time, workerID *uint, companyID *uint) (*model.Shift, error) {
+func (r *mutationResolver) UpdateShift(ctx context.Context, id uint, since time.Time, till time.Time, workerID uint) (*model.Shift, error) {
 	panic(fmt.Errorf("not implemented: UpdateShift - updateShift"))
 }
 
