@@ -1,4 +1,11 @@
-import { FormEventHandler, memo, useCallback, useEffect, useState } from 'react'
+import {
+  FormEventHandler,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
 import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
@@ -35,6 +42,7 @@ const AddShiftsModal = ({
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [selectedWorkerId, setSelectedWorkerId] = useState<number | null>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
   const companyId = useCompanyId()
   const { data: workersData } = useGetCompanyWorkersQuery({
     variables: { companyId: companyId },
@@ -71,6 +79,8 @@ const AddShiftsModal = ({
           },
         })
         await client.refetchQueries({ include: [GetCompanyShiftsDocument] })
+        closeButtonRef.current?.click()
+        setAlert('')
       } catch (error: any) {
         setAlert(error.message)
       }
@@ -114,6 +124,7 @@ const AddShiftsModal = ({
       targetID={targetID}
       submitButtonText="作成"
       onSubmit={onSubmit}
+      closeButtonRef={closeButtonRef}
     >
       {date && (
         <div className="mx-3">
