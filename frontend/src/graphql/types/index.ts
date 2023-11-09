@@ -80,13 +80,21 @@ export type LoginResponse = {
   worker?: Maybe<Worker>
 }
 
+export type MonthWorkReportMap = {
+  __typename?: 'MonthWorkReportMap'
+  key: Scalars['Int']['output']
+  value: WorkReport
+}
+
 export type Mutation = {
   __typename?: 'Mutation'
   createDesiredShift: DesiredShift
   createShift: Shift
+  destroyDesiredShift: DesiredShift
   login?: Maybe<LoginResponse>
   logout: Scalars['Boolean']['output']
   pushStamp: Stamp
+  updateDesiredShift: DesiredShift
 }
 
 export type MutationCreateDesiredShiftArgs = {
@@ -102,6 +110,10 @@ export type MutationCreateShiftArgs = {
   workerId: Scalars['Uint']['input']
 }
 
+export type MutationDestroyDesiredShiftArgs = {
+  id: Scalars['Uint']['input']
+}
+
 export type MutationLoginArgs = {
   email: Scalars['String']['input']
   password: Scalars['String']['input']
@@ -109,6 +121,12 @@ export type MutationLoginArgs = {
 
 export type MutationPushStampArgs = {
   companyId: Scalars['Uint']['input']
+}
+
+export type MutationUpdateDesiredShiftArgs = {
+  id: Scalars['Uint']['input']
+  since: Scalars['Time']['input']
+  till: Scalars['Time']['input']
 }
 
 export type Query = {
@@ -119,6 +137,7 @@ export type Query = {
   companyShifts: Shift[]
   companyWorkers: Worker[]
   desiredShifts: DesiredShift[]
+  getYearReport: YearReport
   me?: Maybe<Worker>
   workStatus: WorkStatus
 }
@@ -149,6 +168,11 @@ export type QueryDesiredShiftsArgs = {
   toTime?: InputMaybe<Scalars['Time']['input']>
 }
 
+export type QueryGetYearReportArgs = {
+  companyId: Scalars['Uint']['input']
+  year: Scalars['Time']['input']
+}
+
 export type QueryWorkStatusArgs = {
   companyId: Scalars['Uint']['input']
 }
@@ -171,6 +195,12 @@ export type Stamp = {
   id: Scalars['Uint']['output']
   stampedAt: Scalars['Time']['output']
   updatedAt: Scalars['Time']['output']
+}
+
+export type WorkReport = {
+  __typename?: 'WorkReport'
+  stamps: Stamp[]
+  workTime: Scalars['Int']['output']
 }
 
 export enum WorkStatus {
@@ -198,6 +228,13 @@ export type WorkerName = {
 export enum WorkerStatus {
   Active = 'ACTIVE',
   Inactive = 'INACTIVE',
+}
+
+export type YearReport = {
+  __typename?: 'YearReport'
+  employmentId: Scalars['Uint']['output']
+  workReports: MonthWorkReportMap[]
+  year: Scalars['Time']['output']
 }
 
 export type GetCompanyQueryVariables = Exact<{
@@ -270,6 +307,17 @@ export type CreateDesiredShiftMutationVariables = Exact<{
 export type CreateDesiredShiftMutation = {
   __typename?: 'Mutation'
   createDesiredShift: { __typename?: 'DesiredShift'; id: number }
+}
+
+export type UpdateDesiredShiftMutationVariables = Exact<{
+  id: Scalars['Uint']['input']
+  since: Scalars['Time']['input']
+  till: Scalars['Time']['input']
+}>
+
+export type UpdateDesiredShiftMutation = {
+  __typename?: 'Mutation'
+  updateDesiredShift: { __typename?: 'DesiredShift'; id: number }
 }
 
 export type LoginMutationVariables = Exact<{
@@ -733,6 +781,58 @@ export type CreateDesiredShiftMutationResult =
 export type CreateDesiredShiftMutationOptions = Apollo.BaseMutationOptions<
   CreateDesiredShiftMutation,
   CreateDesiredShiftMutationVariables
+>
+export const UpdateDesiredShiftDocument = gql`
+  mutation updateDesiredShift($id: Uint!, $since: Time!, $till: Time!) {
+    updateDesiredShift(id: $id, since: $since, till: $till) {
+      id
+    }
+  }
+`
+export type UpdateDesiredShiftMutationFn = Apollo.MutationFunction<
+  UpdateDesiredShiftMutation,
+  UpdateDesiredShiftMutationVariables
+>
+
+/**
+ * __useUpdateDesiredShiftMutation__
+ *
+ * To run a mutation, you first call `useUpdateDesiredShiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDesiredShiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDesiredShiftMutation, { data, loading, error }] = useUpdateDesiredShiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      since: // value for 'since'
+ *      till: // value for 'till'
+ *   },
+ * });
+ */
+export function useUpdateDesiredShiftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateDesiredShiftMutation,
+    UpdateDesiredShiftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<
+    UpdateDesiredShiftMutation,
+    UpdateDesiredShiftMutationVariables
+  >(UpdateDesiredShiftDocument, options)
+}
+export type UpdateDesiredShiftMutationHookResult = ReturnType<
+  typeof useUpdateDesiredShiftMutation
+>
+export type UpdateDesiredShiftMutationResult =
+  Apollo.MutationResult<UpdateDesiredShiftMutation>
+export type UpdateDesiredShiftMutationOptions = Apollo.BaseMutationOptions<
+  UpdateDesiredShiftMutation,
+  UpdateDesiredShiftMutationVariables
 >
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
