@@ -137,6 +137,27 @@ func (r *desiredShiftRepo) Show(desiredShiftId domain.DesiredShiftID) (*domain.D
 	return &desiredShift, nil
 }
 
+func (r *desiredShiftRepo) Update(desiredShift *domain.DesiredShift) (*domain.DesiredShift, error) {
+	var desiredShiftResult domain.DesiredShift
+	if err := r.db.Client.QueryRow(
+		"update desired_shifts set since = $1, till = $2, employment_id = $3 where id = $4 returning *",
+		desiredShift.Since,
+		desiredShift.Till,
+		desiredShift.EmploymentID,
+		desiredShift.ID,
+	).Scan(
+		&desiredShiftResult.ID,
+		&desiredShiftResult.Since,
+		&desiredShiftResult.Till,
+		&desiredShiftResult.EmploymentID,
+		&desiredShiftResult.CreatedAt,
+		&desiredShiftResult.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &desiredShiftResult, nil
+}
+
 func (r *desiredShiftRepo) Destroy(desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
 	var desiredShift domain.DesiredShift
 	if err := r.db.Client.QueryRow("delete from desired_shifts where id = $1 returning *", desiredShiftId).Scan(
