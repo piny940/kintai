@@ -15,6 +15,12 @@ type IShiftUseCase interface {
 		since,
 		till time.Time,
 	) (*domain.Shift, error)
+	Update(
+		currentWorkerId domain.WorkerID,
+		shiftId domain.ShiftId,
+		since,
+		till time.Time,
+	) (*domain.Shift, error)
 }
 
 type shiftUseCase struct {
@@ -75,11 +81,15 @@ func (u *shiftUseCase) Update(
 	if err != nil {
 		return nil, err
 	}
-	employment, err := u.employmentRepo.Find(shift.Employment.CompanyID, currentWorkerId)
+	employment, err := u.employmentRepo.FindById(shift.EmploymentID)
 	if err != nil {
 		return nil, err
 	}
-	if employment.Kind != domain.EmploymentAdmin {
+	currentWorkerEmployment, err := u.employmentRepo.Find(employment.CompanyID, currentWorkerId)
+	if err != nil {
+		return nil, err
+	}
+	if currentWorkerEmployment.Kind != domain.EmploymentAdmin {
 		return nil, fmt.Errorf("権限がありません")
 	}
 
