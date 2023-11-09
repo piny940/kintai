@@ -101,3 +101,30 @@ func (u *shiftUseCase) Update(
 	}
 	return shiftResult, nil
 }
+
+func (u *shiftUseCase) Destroy(
+	currentWorkerId domain.WorkerID,
+	shiftId domain.ShiftId,
+) (*domain.Shift, error) {
+	shift, err := u.shiftRepo.FindById(shiftId)
+	if err != nil {
+		return nil, err
+	}
+	employment, err := u.employmentRepo.FindById(shift.EmploymentID)
+	if err != nil {
+		return nil, err
+	}
+	currentWorkerEmployment, err := u.employmentRepo.Find(employment.CompanyID, currentWorkerId)
+	if err != nil {
+		return nil, err
+	}
+	if currentWorkerEmployment.Kind != domain.EmploymentAdmin {
+		return nil, fmt.Errorf("権限がありません")
+	}
+
+	shiftResult, err := u.shiftRepo.Destroy(shiftId)
+	if err != nil {
+		return nil, err
+	}
+	return shiftResult, nil
+}
