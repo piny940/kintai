@@ -22,5 +22,6 @@ extend type Query {
 }
 extend type Mutation {
   createDesiredShift(companyId: Uint!, since: Time!, till: Time!): DesiredShift!
+  updateDesiredShift(id: Uint!, since: Time!, till: Time!): DesiredShift!
   destroyDesiredShift(id: Uint!): DesiredShift!
 }
