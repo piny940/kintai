@@ -39,7 +39,7 @@ const AddShiftsModal = ({
   const { data: workersData } = useGetCompanyWorkersQuery({
     variables: { companyId: companyId },
   })
-  const [postShift, { error: shiftError }] = useCreateShiftMutation()
+  const [postShift] = useCreateShiftMutation()
   const client = useApolloClient()
 
   const selectedWorkerChange = useCallback(
@@ -61,15 +61,19 @@ const AddShiftsModal = ({
       setAlert('')
       const since = date.hour(sinceHour).minute(sinceMinute)
       const till = date.hour(tillHour).minute(tillMinute)
-      await postShift({
-        variables: {
-          since: since.toISOString(),
-          till: till.toISOString(),
-          workerId: selectedWorkerId,
-          companyId: companyId,
-        },
-      })
-      await client.refetchQueries({ include: [GetCompanyShiftsDocument] })
+      try {
+        await postShift({
+          variables: {
+            since: since.toISOString(),
+            till: till.toISOString(),
+            workerId: selectedWorkerId,
+            companyId: companyId,
+          },
+        })
+        await client.refetchQueries({ include: [GetCompanyShiftsDocument] })
+      } catch (error: any) {
+        setAlert(error.message)
+      }
     },
     [
       date,
@@ -105,7 +109,7 @@ const AddShiftsModal = ({
   return (
     <ModalFormBox
       title="シフト作成"
-      alert={shiftError?.message || alert}
+      alert={alert}
       targetID={targetID}
       submitButtonText="作成"
       onSubmit={onSubmit}
