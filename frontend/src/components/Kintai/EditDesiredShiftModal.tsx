@@ -1,4 +1,4 @@
-import { FormEventHandler, memo, useCallback, useState } from 'react'
+import { FormEventHandler, memo, useCallback, useEffect, useState } from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
 import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
@@ -65,6 +65,14 @@ const EditDesiredShiftsModal = ({
       tillMinute,
     ]
   )
+
+  useEffect(() => {
+    if (!desiredShift) return
+    setSinceHour(dayjs(desiredShift.since).hour())
+    setSinceMinute(dayjs(desiredShift.since).minute())
+    setTillHour(dayjs(desiredShift.till).hour())
+    setTillMinute(dayjs(desiredShift.till).minute())
+  }, [desiredShift])
 
   return (
     <ModalFormBox
