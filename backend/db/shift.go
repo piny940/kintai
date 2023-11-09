@@ -85,3 +85,41 @@ func (r *shiftRepo) Create(shift *domain.Shift) (*domain.Shift, error) {
 	}
 	return &shiftResult, nil
 }
+
+func (r *shiftRepo) Update(shift *domain.Shift) (*domain.Shift, error) {
+	var shiftResult domain.Shift
+
+	if err := r.db.Client.QueryRow(
+		"update shifts set since = $1, till = $2, employment_id = $3 where id = $4 returning *",
+		shift.Since,
+		shift.Till,
+		shift.EmploymentID,
+		shift.ID,
+	).Scan(
+		&shiftResult.ID,
+		&shiftResult.Since,
+		&shiftResult.Till,
+		&shiftResult.EmploymentID,
+		&shiftResult.CreatedAt,
+		&shiftResult.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &shiftResult, nil
+}
+
+func (r *shiftRepo) Destroy(shiftId domain.ShiftId) (*domain.Shift, error) {
+	var shift domain.Shift
+
+	if err := r.db.Client.QueryRow("delete from shifts where id = $1 returning *", shiftId).Scan(
+		&shift.ID,
+		&shift.Since,
+		&shift.Till,
+		&shift.EmploymentID,
+		&shift.CreatedAt,
+		&shift.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &shift, nil
+}
