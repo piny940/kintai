@@ -20,7 +20,12 @@ import { useCompanyId } from '@/hooks/calendar'
 
 export type EditShiftsModalProps = {
   targetID: string
-  shift: { id: number; since: string; till: string } | null
+  shift: {
+    id: number
+    since: string
+    till: string
+    employment: { worker: { id: number } }
+  } | null
 }
 
 const SINCE_HOUR_OPTIONS = [9, 10, 11, 12, 13, 14, 15, 16, 17]
@@ -106,6 +111,7 @@ const EditShiftsModal = ({
     setSinceMinute(dayjs(shift.since).minute())
     setTillHour(dayjs(shift.till).hour())
     setTillMinute(dayjs(shift.till).minute())
+    setWorkerId(shift.employment.worker.id)
   }, [shift])
 
   return (
