@@ -23,7 +23,7 @@ const ShiftItem = ({ shift, className = '' }: ShiftItemProps): JSX.Element => {
   }, [shift?.employment?.worker])
 
   return (
-    <div className={'small rounded p-1 m-1 ' + className}>
+    <div className={'small rounded p-1 m-1 w-100 text-start ' + className}>
       {workerName ? (
         <>
           {workerName}: {renderRange()}

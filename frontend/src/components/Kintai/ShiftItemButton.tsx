@@ -30,7 +30,9 @@ const ShiftItemButton = ({
   return (
     <button
       onClick={onClick}
-      className={'btn d-block btn-sm rounded p-1 m-1 ' + className}
+      className={
+        'btn d-block btn-sm rounded p-1 m-1 w-100 text-start ' + className
+      }
     >
       {workerName ? (
         <>
