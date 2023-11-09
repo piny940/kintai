@@ -20,6 +20,7 @@ type IShiftUseCase interface {
 		shiftId domain.ShiftId,
 		since,
 		till time.Time,
+		workerId domain.WorkerID,
 	) (*domain.Shift, error)
 }
 
@@ -76,6 +77,7 @@ func (u *shiftUseCase) Update(
 	shiftId domain.ShiftId,
 	since,
 	till time.Time,
+	workerId domain.WorkerID,
 ) (*domain.Shift, error) {
 	shift, err := u.shiftRepo.FindById(shiftId)
 	if err != nil {
@@ -92,9 +94,13 @@ func (u *shiftUseCase) Update(
 	if currentWorkerEmployment.Kind != domain.EmploymentAdmin {
 		return nil, fmt.Errorf("権限がありません")
 	}
-
+	newEmployment, err := u.employmentRepo.Find(employment.CompanyID, workerId)
+	if err != nil {
+		return nil, err
+	}
 	shift.Since = since
 	shift.Till = till
+	shift.EmploymentID = newEmployment.ID
 	shiftResult, err := u.shiftRepo.Update(shift)
 	if err != nil {
 		return nil, err

@@ -34,7 +34,22 @@ func (r *mutationResolver) CreateShift(ctx context.Context, since time.Time, til
 }
 
 func (r *mutationResolver) UpdateShift(ctx context.Context, id uint, since time.Time, till time.Time, workerID uint) (*model.Shift, error) {
-	panic(fmt.Errorf("not implemented: UpdateShift - updateShift"))
+	registry := registry.GetRegistry()
+	currentWorkerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	shift, err := registry.ShiftUseCase().Update(
+		*currentWorkerId,
+		domain.ShiftId(id),
+		since,
+		till,
+		domain.WorkerID(workerID),
+	)
+	if err != nil {
+		return nil, newError(err, "シフトの更新に失敗しました")
+	}
+	return model.NewShift(shift), nil
 }
 
 func (r *mutationResolver) DeleteShift(ctx context.Context, id uint) (bool, error) {
