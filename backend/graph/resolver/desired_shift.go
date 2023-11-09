@@ -44,10 +44,11 @@ func (r *mutationResolver) DestroyDesiredShift(ctx context.Context, id uint) (*m
 		return nil, newError(err, "ログインしてください")
 	}
 	registry := registry.GetRegistry()
-	if err := registry.DesiredShiftUseCase().Destroy(*workerId, domain.DesiredShiftID(id)); err != nil {
+	desiredShift, err := registry.DesiredShiftUseCase().Destroy(*workerId, domain.DesiredShiftID(id))
+	if err != nil {
 		return nil, newError(err, "希望シフトの削除に失敗しました")
 	}
-	return &model.DesiredShift{ID: id}, nil
+	return model.NewDesiredShift(desiredShift), nil
 }
 
 func (r *queryResolver) DesiredShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.DesiredShift, error) {

@@ -25,7 +25,7 @@ type IDesiredShiftRepo interface {
 	ListAll(companyId CompanyID, query *DesiredShiftQuery) ([]*DesiredShift, error)
 	Show(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 	Create(desiredShift *DesiredShift) (*DesiredShift, error)
-	Destroy(desiredShiftId DesiredShiftID) error
+	Destroy(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 }
 
 func NewDesiredShift(since time.Time, till time.Time, employmentID EmploymentID) *DesiredShift {

@@ -9,7 +9,7 @@ import (
 type IDesiredShiftUseCase interface {
 	Create(employmentId domain.EmploymentID, since time.Time, till time.Time) (*domain.DesiredShift, error)
 	ListCompanyDesiredShifts(workerId domain.WorkerID, companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error)
-	Destroy(currentWorkerId domain.WorkerID, desiredShiftId domain.DesiredShiftID) error
+	Destroy(currentWorkerId domain.WorkerID, desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error)
 }
 
 type desiredShiftUseCase struct {
@@ -43,20 +43,21 @@ func (u *desiredShiftUseCase) ListCompanyDesiredShifts(currentWorkerId domain.Wo
 	}
 	return desiredShifts, nil
 }
-func (u *desiredShiftUseCase) Destroy(currentWorkerId domain.WorkerID, desiredShiftId domain.DesiredShiftID) error {
+func (u *desiredShiftUseCase) Destroy(currentWorkerId domain.WorkerID, desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
 	desiredShift, err := u.desiredShiftRepo.Show(desiredShiftId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	employment, err := u.employmentRepo.FindById(desiredShift.EmploymentID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if employment.WorkerID != currentWorkerId {
-		return fmt.Errorf("権限がありません")
+		return nil, fmt.Errorf("権限がありません")
 	}
-	if err := u.desiredShiftRepo.Destroy(desiredShiftId); err != nil {
-		return err
+	desiredShift, err = u.desiredShiftRepo.Destroy(desiredShiftId)
+	if err != nil {
+		return nil, err
 	}
-	return nil
+	return desiredShift, nil
 }
