@@ -1,4 +1,11 @@
-import { FormEventHandler, memo, useCallback, useEffect, useState } from 'react'
+import {
+  FormEventHandler,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
 import dayjs, { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
@@ -25,9 +32,10 @@ const EditDesiredShiftsModal = ({
   const [sinceMinute, setSinceMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
+  const [alert, setAlert] = useState('')
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
-  const [updateDesiredShift, { error: desiredShiftError }] =
-    useUpdateDesiredShiftMutation()
+  const [updateDesiredShift] = useUpdateDesiredShiftMutation()
   const [destroyDesiredShift] = useDestroyDesiredShiftMutation()
   const client = useApolloClient()
 
@@ -42,7 +50,11 @@ const EditDesiredShiftsModal = ({
           },
         })
         await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
-      } catch {}
+        closeButtonRef.current?.click()
+        setAlert('')
+      } catch (error: any) {
+        setAlert(error.message)
+      }
     },
     [updateDesiredShift, client]
   )
@@ -74,6 +86,8 @@ const EditDesiredShiftsModal = ({
   }, [desiredShift, destroyDesiredShift, client])
 
   useEffect(() => {
+    setAlert('')
+
     if (!desiredShift) return
     setSinceHour(dayjs(desiredShift.since).hour())
     setSinceMinute(dayjs(desiredShift.since).minute())
@@ -84,10 +98,11 @@ const EditDesiredShiftsModal = ({
   return (
     <ModalFormBox
       title="希望シフト編集"
-      alert={desiredShiftError?.message || ''}
+      alert={alert}
       targetID={targetID}
       submitButtonText="更新"
       onSubmit={onSubmit}
+      closeButtonRef={closeButtonRef}
       anotherButton={
         <button
           className="btn btn-danger col-12 col-lg-6 my-2 offset-lg-3 d-block"
