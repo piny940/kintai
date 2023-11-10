@@ -16,6 +16,11 @@ type IWorkReportUseCase interface {
 		workerId domain.WorkerID,
 		companyId domain.CompanyID,
 	) (*domain.MonthReport, error)
+	GetDateReport(
+		date time.Time,
+		workerId domain.WorkerID,
+		companyId domain.CompanyID,
+	) (*domain.WorkReport, error)
 }
 
 type workReportUseCase struct {
