@@ -90,6 +90,12 @@ export const App: React.FC = () => {
               <div className="list-group mt-5">
                 <Link
                   className="list-group-item"
+                  href={`/companies/${company.id}/work_reports`}
+                >
+                  勤務実績
+                </Link>
+                <Link
+                  className="list-group-item"
                   href={`/companies/${company.id}/desired_shifts`}
                 >
                   希望シフト
