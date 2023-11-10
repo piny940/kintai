@@ -1,8 +1,9 @@
 import { useGetYearReportQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
-import { secondToTime } from '@/utils/helpers'
+import { secondToTime, toDigit } from '@/utils/helpers'
 import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
+import Link from 'next/link'
 import { memo, useMemo } from 'react'
 
 export type YearReportProps = {
@@ -39,7 +40,15 @@ const YearReport = ({ year }: YearReportProps): JSX.Element => {
       <tbody>
         {months.map((month) => (
           <tr key={month.toISOString()}>
-            <td>{month.month() + 1}月</td>
+            <td>
+              <Link
+                href={`/companies/${companyId}/work_reports/${month.year()}${toDigit(
+                  month.month() + 1
+                )}`}
+              >
+                {month.month() + 1}月
+              </Link>
+            </td>
             <td>
               {secondToTime(
                 yearReportData.yearReport.workReports.find(

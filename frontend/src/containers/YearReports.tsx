@@ -14,10 +14,11 @@ const YEAR_LIST = (() => {
 })()
 const YearReports = (): JSX.Element => {
   const companyId = useCompanyId()
+  const [year, setYear] = useState<number>(new Date().getFullYear())
+
   const { data: companyData, error } = useGetCompanyQuery({
     variables: { id: companyId },
   })
-  const [year, setYear] = useState<number>(new Date().getFullYear())
 
   if (error) return <Error statusCode={404} />
   if (!companyData?.company) return <>loading...</>
