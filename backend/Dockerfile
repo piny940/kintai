@@ -1,17 +1,24 @@
-# syntax=docker/dockerfile:1
-
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/engine/reference/builder/
-
-################################################################################
-# Create a stage for building the application.
 ARG GO_VERSION=1.21.1
-FROM golang:${GO_VERSION}
+FROM golang:${GO_VERSION} AS build
 WORKDIR /app
 
-# Expose the port that the application listens on.
-EXPOSE 8080
+COPY go.mod go.sum ./
+RUN go mod download
 
-# What the container should run when it is started.
-ENTRYPOINT [ "go", "run", "main.go", "-e", "production" ]
+COPY . .
+
+RUN go build -o main /app/main.go
+
+FROM alpine:latest AS final
+
+WORKDIR /app
+
+# 依存関係への参照: https://blog.kozakana.net/2019/09/go-binary-not-found/
+RUN mkdir /lib64 \
+  && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
+
+COPY --from=build /app/main .
+COPY --from=build /app/config ./config
+COPY --from=build /app/.env ./.env
+
+CMD [ "/app/main", "-e", "production" ]
