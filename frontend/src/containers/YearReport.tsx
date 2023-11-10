@@ -46,7 +46,7 @@ const YearReport = ({ year }: YearReportProps): JSX.Element => {
                   month.month()
                 )}`}
               >
-                {month.month() + 1}月
+                {month.year()}-{toDigit(month.month() + 1)}
               </Link>
             </td>
             <td>
