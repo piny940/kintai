@@ -120,6 +120,7 @@ type ComplexityRoot struct {
 		CompanyDesiredShifts func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
 		CompanyShifts        func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
 		CompanyWorkers       func(childComplexity int, companyID uint) int
+		DateReport           func(childComplexity int, companyID uint, date time.Time) int
 		DesiredShifts        func(childComplexity int, companyID uint, fromTime *time.Time, toTime *time.Time) int
 		Me                   func(childComplexity int) int
 		MonthReport          func(childComplexity int, companyID uint, month time.Time) int
@@ -200,6 +201,7 @@ type QueryResolver interface {
 	CompanyShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.Shift, error)
 	YearReport(ctx context.Context, companyID uint, year time.Time) (*model.YearReport, error)
 	MonthReport(ctx context.Context, companyID uint, month time.Time) (*model.MonthReport, error)
+	DateReport(ctx context.Context, companyID uint, date time.Time) (*model.WorkReport, error)
 	WorkStatus(ctx context.Context, companyID uint) (model.WorkStatus, error)
 	Me(ctx context.Context) (*model.Worker, error)
 	CompanyWorkers(ctx context.Context, companyID uint) ([]*model.Worker, error)
@@ -587,6 +589,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.CompanyWorkers(childComplexity, args["companyId"].(uint)), true
+
+	case "Query.dateReport":
+		if e.complexity.Query.DateReport == nil {
+			break
+		}
+
+		args, err := ec.field_Query_dateReport_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.DateReport(childComplexity, args["companyId"].(uint), args["date"].(time.Time)), true
 
 	case "Query.desiredShifts":
 		if e.complexity.Query.DesiredShifts == nil {
@@ -1284,6 +1298,30 @@ func (ec *executionContext) field_Query_company_args(ctx context.Context, rawArg
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_dateReport_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uint
+	if tmp, ok := rawArgs["companyId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyId"))
+		arg0, err = ec.unmarshalNUint2uint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["companyId"] = arg0
+	var arg1 time.Time
+	if tmp, ok := rawArgs["date"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+		arg1, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["date"] = arg1
 	return args, nil
 }
 
@@ -3833,6 +3871,67 @@ func (ec *executionContext) fieldContext_Query_monthReport(ctx context.Context, 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_monthReport_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_dateReport(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_dateReport(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().DateReport(rctx, fc.Args["companyId"].(uint), fc.Args["date"].(time.Time))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.WorkReport)
+	fc.Result = res
+	return ec.marshalNWorkReport2ᚖkintai_backendᚋgraphᚋmodelᚐWorkReport(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_dateReport(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "stamps":
+				return ec.fieldContext_WorkReport_stamps(ctx, field)
+			case "workTime":
+				return ec.fieldContext_WorkReport_workTime(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type WorkReport", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_dateReport_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -7863,6 +7962,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "dateReport":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_dateReport(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "workStatus":
 			field := field
 
@@ -9127,6 +9248,10 @@ func (ec *executionContext) marshalNUint2ᚖuint(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNWorkReport2kintai_backendᚋgraphᚋmodelᚐWorkReport(ctx context.Context, sel ast.SelectionSet, v model.WorkReport) graphql.Marshaler {
+	return ec._WorkReport(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNWorkReport2ᚖkintai_backendᚋgraphᚋmodelᚐWorkReport(ctx context.Context, sel ast.SelectionSet, v *model.WorkReport) graphql.Marshaler {

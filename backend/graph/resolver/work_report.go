@@ -6,6 +6,7 @@ package resolver
 
 import (
 	"context"
+	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
@@ -36,4 +37,8 @@ func (r *queryResolver) MonthReport(ctx context.Context, companyID uint, month t
 		return nil, newError(err, "勤務実績の取得に失敗しました")
 	}
 	return model.NewMonthReport(report)
+}
+
+func (r *queryResolver) DateReport(ctx context.Context, companyID uint, date time.Time) (*model.WorkReport, error) {
+	panic(fmt.Errorf("not implemented: DateReport - dateReport"))
 }
