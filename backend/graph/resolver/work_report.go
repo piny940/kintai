@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func (r *queryResolver) GetYearReport(ctx context.Context, companyID uint, year time.Time) (*model.YearReport, error) {
+func (r *queryResolver) YearReport(ctx context.Context, companyID uint, year time.Time) (*model.YearReport, error) {
 	registry := registry.GetRegistry()
 	workerId, err := currentWorkerId(ctx)
 	if err != nil {
