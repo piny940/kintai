@@ -33,7 +33,7 @@ func (r *registry) WorkerRepo() domain.IWorkerRepo {
 }
 
 func (r *registry) WorkerUseCase() use_case.IWorkerUseCase {
-	return use_case.NewWorkerUseCase(r.WorkerRepo())
+	return use_case.NewWorkerUseCase(r.WorkerRepo(), r.EmploymentRepo())
 }
 
 func (r *registry) StampRepo() domain.IStampRepo {
@@ -52,21 +52,24 @@ func (r *registry) CompanyRepo() domain.ICompanyRepo {
 	return db.NewCompanyRepo(r.db)
 }
 
-func (r *registry) WorkReportRepo() domain.IWorkReportRepo {
-	return db.NewWorkReportRepo(r.db)
+func (r *registry) WorkStatusUseCase() use_case.IWorkStatusUseCase {
+	return use_case.NewWorkStatusUseCase(r.EmploymentRepo(), r.StampRepo())
 }
 
 func (r *registry) WorkReportUseCase() use_case.IWorkReportUseCase {
-	return use_case.NewWorkReportUseCase(r.WorkReportRepo(), r.EmploymentRepo())
-}
-
-func (r *registry) WorkStatusUseCase() use_case.IWorkStatusUseCase {
-	return use_case.NewWorkStatusUseCase(r.WorkReportRepo())
+	return use_case.NewWorkReportUseCase(r.EmploymentRepo(), r.StampRepo())
 }
 
 func (r *registry) DesiredShiftRepo() domain.IDesiredShiftRepo {
 	return db.NewDesiredShiftRepo(r.db)
 }
 func (r *registry) DesiredShiftUseCase() use_case.IDesiredShiftUseCase {
-	return use_case.NewDesiredShiftUseCase(r.DesiredShiftRepo())
+	return use_case.NewDesiredShiftUseCase(r.DesiredShiftRepo(), r.EmploymentRepo())
+}
+
+func (r *registry) ShiftRepo() domain.IShiftRepo {
+	return db.NewShiftRepo(r.db)
+}
+func (r *registry) ShiftUseCase() use_case.IShiftUseCase {
+	return use_case.NewShiftUseCase(r.ShiftRepo(), r.EmploymentRepo())
 }

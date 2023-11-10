@@ -1,0 +1,16 @@
+query getCompany($id: Uint!) {
+  company(id: $id) {
+    id
+    name
+    employment {
+      kind
+    }
+  }
+}
+
+query getCompanies {
+  companies {
+    id
+    name
+  }
+}

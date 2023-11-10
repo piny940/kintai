@@ -1,0 +1,13 @@
+type Company {
+  id: Uint!
+  name: String!
+  employmentId: Uint!
+  employment: Employment!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+extend type Query {
+  company(id: Uint!): Company!
+  companies: [Company!]!
+}

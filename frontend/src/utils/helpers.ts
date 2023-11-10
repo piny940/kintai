@@ -10,3 +10,8 @@ export const toDayjs = (date: string) => {
   console.log(date)
   return dayjs(date)
 }
+export const secondToTime = (second: number) => {
+  const hour = Math.floor(second / 3600)
+  const minute = Math.floor((second % 3600) / 60)
+  return `${toDigit(hour)}時間${toDigit(minute)}分`
+}

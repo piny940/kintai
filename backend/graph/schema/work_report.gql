@@ -1,0 +1,30 @@
+type WorkReport {
+  stamps: [Stamp!]!
+  workTime: Int!
+}
+
+type MonthWorkReportMap {
+  key: Int!
+  value: WorkReport!
+}
+type YearReport {
+  employmentId: Uint!
+  year: Time!
+  workReports: [MonthWorkReportMap!]!
+}
+
+type DateWorkReportMap {
+  key: Int!
+  value: WorkReport!
+}
+type MonthReport {
+  employmentId: Uint!
+  month: Time!
+  workReports: [DateWorkReportMap!]!
+}
+
+extend type Query {
+  yearReport(companyId: Uint!, year: Time!): YearReport!
+  monthReport(companyId: Uint!, month: Time!): MonthReport!
+  dateReport(companyId: Uint!, date: Time!): WorkReport!
+}

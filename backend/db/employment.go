@@ -1,6 +1,9 @@
 package db
 
-import "kintai_backend/domain"
+import (
+	"fmt"
+	"kintai_backend/domain"
+)
 
 type employmentRepo struct {
 	db *DB
@@ -20,12 +23,60 @@ func (r *employmentRepo) Find(companyId domain.CompanyID, workerId domain.Worker
 		&employment.ID,
 		&employment.Kind,
 		&employment.Status,
-		&employment.CompanyID,
 		&employment.WorkerID,
+		&employment.CompanyID,
 		&employment.CreatedAt,
 		&employment.UpdatedAt,
 	); err != nil {
 		return nil, err
 	}
 	return &employment, nil
+}
+
+func (r *employmentRepo) FindById(employmentId domain.EmploymentID) (*domain.Employment, error) {
+	var employment domain.Employment
+	if err := r.db.Client.QueryRow(
+		"select * from employments where id = $1",
+		employmentId,
+	).Scan(
+		&employment.ID,
+		&employment.Kind,
+		&employment.Status,
+		&employment.WorkerID,
+		&employment.CompanyID,
+		&employment.CreatedAt,
+		&employment.UpdatedAt,
+	); err != nil {
+		return nil, err
+	}
+	return &employment, nil
+}
+
+func (r *employmentRepo) FindAllByIds(employmentIds []domain.EmploymentID) ([]*domain.Employment, error) {
+	var employments []*domain.Employment
+	strParam, args := arrayParam(employmentIds)
+	rows, err := r.db.Client.Query(
+		fmt.Sprintf("select * from employments where id in (%s)", strParam),
+		args...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var employment domain.Employment
+		if err := rows.Scan(
+			&employment.ID,
+			&employment.Kind,
+			&employment.Status,
+			&employment.WorkerID,
+			&employment.CompanyID,
+			&employment.CreatedAt,
+			&employment.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		employments = append(employments, &employment)
+	}
+	return employments, nil
 }

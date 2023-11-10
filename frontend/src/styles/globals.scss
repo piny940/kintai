@@ -8,21 +8,18 @@ html {
 
 ::-webkit-full-page-media,
 :future,
-:root body {
-  --vh100: 100svh;
-}
 body {
   --vh100: 100vh;
   min-height: 100vh;
-  min-height: var(--vh100);
+  min-height: 100dvh;
   max-width: 100%;
   font-family: 'Aria', 'Noto Sans JP', sans-serif;
 }
 .fw-bold {
   font-family: var(--bs-body-font-family);
 }
-.root {
-  min-height: var(--vh100);
+#root {
+  min-height: 100dvh;
 }
 main {
   max-width: 1320px;
@@ -31,7 +28,7 @@ main {
   margin-top: 1rem;
 }
 
-a {
+a.unstyled {
   color: inherit;
   text-decoration: none;
 

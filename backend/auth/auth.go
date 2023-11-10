@@ -22,6 +22,12 @@ var sessionsOptions = &sessions.Options{
 	MaxAge:   86400 * 7,
 }
 
+type authorizationError struct{}
+
+func (e authorizationError) Error() string {
+	return "ログインしてください"
+}
+
 func setSession(c echo.Context, key string, value interface{}) error {
 	session, _ := store.Get(c.Request(), SESSION_NAME)
 	session.Options = sessionsOptions
@@ -41,16 +47,26 @@ func Login(c echo.Context, worker *domain.Worker) {
 func Logout(c echo.Context) {
 	setSession(c, "worker_id", nil)
 }
-
-func CurrentWorker(c echo.Context) (*domain.Worker, error) {
-	registry := registry.GetRegistry()
+func CurrentWorkerId(c echo.Context) (*domain.WorkerID, error) {
 	workerId, err := getSession(c, "worker_id")
 	if err != nil || workerId == nil {
-		return nil, err
+		return nil, authorizationError{}
 	}
-	worker, err := registry.WorkerRepo().FindById(domain.WorkerID(workerId.(uint)))
+	domainWorkerId := domain.WorkerID(workerId.(uint))
+	return &domainWorkerId, nil
+}
+func CurrentWorker(c echo.Context) (*domain.Worker, error) {
+	registry := registry.GetRegistry()
+	workerId, err := CurrentWorkerId(c)
 	if err != nil {
-		return nil, err
+		return nil, authorizationError{}
+	}
+	worker, err := registry.WorkerRepo().FindById(*workerId)
+	if err != nil {
+		return nil, authorizationError{}
+	}
+	if worker == nil {
+		return nil, authorizationError{}
 	}
 	return worker, nil
 }

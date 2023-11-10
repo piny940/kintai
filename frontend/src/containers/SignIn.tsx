@@ -1,34 +1,25 @@
-import { useWorkerInfo } from '@/context/WorkerInfoProvider'
-import { postData } from '@/utils/api'
+import { useLoginMutation } from '@/graphql/types'
+import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { FormEventHandler, memo, useState } from 'react'
 
 const SignIn = (): JSX.Element => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [message, setMessage] = useState('')
-  const { setWorker } = useWorkerInfo()
+  const client = useApolloClient()
   const router = useRouter()
-
-  const login = async () => {
-    const [response, json] = await postData({
-      url: '/session',
-      data: {
-        email,
-        password,
-      },
-    })
-    if (!response.ok) {
-      setMessage(json.message)
-      return
-    }
-    setWorker(json.worker)
-    void router.push('/')
-  }
+  const [login, { error }] = useLoginMutation()
 
   const submit: FormEventHandler = async (e) => {
     e.preventDefault()
-    await login()
+
+    try {
+      await login({
+        variables: { email, password },
+      })
+      await client.resetStore()
+      void router.push('/')
+    } catch {}
   }
 
   return (
@@ -62,9 +53,14 @@ const SignIn = (): JSX.Element => {
             />
           </div>
         </label>
-        <div className="row mb-2">
-          <div className="col-md-9 offset-md-3 text-danger">{message}</div>
-        </div>
+
+        {error && (
+          <div className="row mb-2">
+            <div className="col-md-9 offset-md-3 text-danger">
+              {error.message}
+            </div>
+          </div>
+        )}
         <div className="row my-2">
           <button
             type="submit"

@@ -6,24 +6,22 @@ import (
 )
 
 type IWorkStatusUseCase interface {
-	Show(employmentId domain.EmploymentID) (domain.WorkStatus, error)
+	GetCurrentWorkStatus(workerId domain.WorkerID, companyId domain.CompanyID) (*domain.WorkStatus, error)
 }
 
 type workStatusUseCase struct {
-	workReportRepo domain.IWorkReportRepo
+	employmentRepo domain.IEmploymentRepo
+	stampRepo      domain.IStampRepo
 }
 
-func NewWorkStatusUseCase(workReportRepo domain.IWorkReportRepo) IWorkStatusUseCase {
-	return &workStatusUseCase{workReportRepo: workReportRepo}
+func NewWorkStatusUseCase(employmentRepo domain.IEmploymentRepo, stampRepo domain.IStampRepo) IWorkStatusUseCase {
+	return &workStatusUseCase{employmentRepo: employmentRepo, stampRepo: stampRepo}
 }
 
-func (u *workStatusUseCase) Show(employmentId domain.EmploymentID) (domain.WorkStatus, error) {
-	now := time.Now()
-	since := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
-	until := time.Date(now.Year(), now.Month()+1, 1, 0, 0, 0, 0, now.Location())
-	workReport, err := u.workReportRepo.Show(employmentId, since, until)
+func (uc *workStatusUseCase) GetCurrentWorkStatus(workerId domain.WorkerID, companyId domain.CompanyID) (*domain.WorkStatus, error) {
+	employment, err := uc.employmentRepo.Find(companyId, workerId)
 	if err != nil {
-		return domain.WorkStatusLeft, err
+		return nil, err
 	}
-	return workReport.GetWorkStatus(), nil
+	return domain.GetWorkStatus(time.Now(), employment.ID, uc.stampRepo)
 }

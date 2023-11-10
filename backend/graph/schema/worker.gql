@@ -1,0 +1,21 @@
+enum WorkerStatus {
+  ACTIVE
+  INACTIVE
+}
+type WorkerName {
+  firstName: String!
+  lastName: String!
+}
+type Worker {
+  id: Uint!
+  status: WorkerStatus!
+  email: String!
+  name: WorkerName!
+  workStatus: WorkStatus
+  createdAt: Time!
+  updatedAt: Time!
+}
+extend type Query {
+  me: Worker
+  companyWorkers(companyId: Uint!): [Worker!]!
+}

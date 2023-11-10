@@ -6,17 +6,38 @@ type stampRepo struct {
 	db *DB
 }
 
-func NewStampRepo(db *DB) *stampRepo {
+func NewStampRepo(db *DB) domain.IStampRepo {
 	return &stampRepo{db: db}
 }
 
-func (r *stampRepo) List(workerId domain.WorkerID, companyId domain.CompanyID) ([]*domain.Stamp, error) {
+type stampQuery struct {
+	queryObj
+}
+
+func newStampQuery(query *domain.StampQuery) *stampQuery {
+	queryObj := queryObj{}
+	if query.EmploymentId != nil {
+		queryObj.add("employment_id = ", query.EmploymentId)
+	}
+	if query.FromTime != nil {
+		queryObj.add("stamped_at >= ", query.FromTime)
+	}
+	if query.ToTime != nil {
+		queryObj.add("stamped_at < ", query.ToTime)
+	}
+	return &stampQuery{queryObj: queryObj}
+}
+
+func (r *stampRepo) List(query *domain.StampQuery) ([]*domain.Stamp, error) {
 	stamps := make([]*domain.Stamp, 0)
-	rows, err := r.db.Client.Query(
-		"select * from stamps where employment_id in (select id from employments where worker_id = $1 and company_id = $2)",
-		workerId,
-		companyId,
-	)
+
+	queryObj := newStampQuery(query)
+	queryStr := "select * from stamps"
+	filter, params := queryObj.toFilter(nil)
+	if queryObj.exists() {
+		queryStr += " where " + filter
+	}
+	rows, err := r.db.Client.Query(queryStr, params...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,4 +76,18 @@ func (r *stampRepo) Create(stamp *domain.Stamp) (*domain.Stamp, error) {
 		return nil, err
 	}
 	return &stampResult, nil
+}
+
+func (r *stampRepo) Count(query *domain.StampQuery) (int, error) {
+	queryObj := newStampQuery(query)
+	queryStr := "select count(*) from stamps"
+	filter, params := queryObj.toFilter(nil)
+	if queryObj.exists() {
+		queryStr += " where " + filter
+	}
+	var count int
+	if err := r.db.Client.QueryRow(queryStr, params...).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
 }

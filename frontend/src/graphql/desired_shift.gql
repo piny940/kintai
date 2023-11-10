@@ -1,0 +1,46 @@
+query getDesiredShifts($companyId: Uint!, $fromTime: Time!, $toTime: Time!) {
+  desiredShifts(companyId: $companyId, fromTime: $fromTime, toTime: $toTime) {
+    id
+    since
+    till
+  }
+}
+query getCompanyDesiredShifts(
+  $companyId: Uint!
+  $fromTime: Time!
+  $toTime: Time!
+) {
+  companyDesiredShifts(
+    companyId: $companyId
+    fromTime: $fromTime
+    toTime: $toTime
+  ) {
+    id
+    since
+    till
+    employment {
+      worker {
+        id
+        name {
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+}
+mutation createDesiredShift($companyId: Uint!, $since: Time!, $till: Time!) {
+  createDesiredShift(companyId: $companyId, since: $since, till: $till) {
+    id
+  }
+}
+mutation updateDesiredShift($id: Uint!, $since: Time!, $till: Time!) {
+  updateDesiredShift(id: $id, since: $since, till: $till) {
+    id
+  }
+}
+mutation deleteDesiredShift($id: Uint!) {
+  deleteDesiredShift(id: $id) {
+    id
+  }
+}

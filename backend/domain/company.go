@@ -6,10 +6,10 @@ type CompanyID uint
 type CompanyName string
 
 type Company struct {
-	ID        CompanyID   `json:"id"`
-	Name      CompanyName `json:"name"`
-	CreatedAt time.Time   `json:"created_at"`
-	UpdatedAt time.Time   `json:"updated_at"`
+	ID        CompanyID
+	Name      CompanyName
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 type ICompanyRepo interface {
 	FindById(WorkerID, CompanyID) (*Company, error)

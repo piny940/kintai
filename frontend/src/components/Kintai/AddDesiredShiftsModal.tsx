@@ -1,28 +1,64 @@
-import { FormEventHandler, memo, useCallback, useState } from 'react'
+import {
+  FormEventHandler,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
 import { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
+import {
+  GetDesiredShiftsDocument,
+  useCreateDesiredShiftMutation,
+} from '@/graphql/types'
+import { useApolloClient } from '@apollo/client'
+import { useCompanyId } from '@/hooks/calendar'
 
 export type AddDesiredShiftsModalProps = {
-  alert: string
   targetID: string
   date: Dayjs | null
-  addDesiredShift: (since: Dayjs, till: Dayjs) => void
 }
 
 const SINCE_HOUR_OPTIONS = [9, 10, 11, 12, 13, 14, 15, 16, 17]
 const TILL_HOUR_OPTIONS = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 const MINUTE_OPTIONS = [0, 15, 30, 45]
 const AddDesiredShiftsModal = ({
-  alert,
   targetID,
   date,
-  addDesiredShift,
 }: AddDesiredShiftsModalProps): JSX.Element => {
   const [sinceHour, setSinceHour] = useState<number>(SINCE_HOUR_OPTIONS[0])
   const [sinceMinute, setSinceMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
+  const [alert, setAlert] = useState('')
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  const companyId = useCompanyId()
+  const [createDesiredShift] = useCreateDesiredShiftMutation()
+  const client = useApolloClient()
+
+  const postDesiredShift = useCallback(
+    async (since: Dayjs, till: Dayjs) => {
+      if (!companyId) return
+      try {
+        await createDesiredShift({
+          variables: {
+            companyId,
+            since: since.toISOString(),
+            till: till.toISOString(),
+          },
+        })
+        await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
+        closeButtonRef.current?.click()
+        setAlert('')
+      } catch (error: any) {
+        setAlert(error.message)
+      }
+    },
+    [companyId, createDesiredShift, client]
+  )
 
   const onSubmit: FormEventHandler = useCallback(
     (e) => {
@@ -31,10 +67,14 @@ const AddDesiredShiftsModal = ({
       if (!date) return
       const since = date.hour(sinceHour).minute(sinceMinute)
       const till = date.hour(tillHour).minute(tillMinute)
-      addDesiredShift(since, till)
+      void postDesiredShift(since, till)
     },
-    [date]
+    [date, sinceHour, sinceMinute, tillHour, tillMinute, postDesiredShift]
   )
+
+  useEffect(() => {
+    setAlert('')
+  }, [date])
 
   return (
     <ModalFormBox
@@ -43,11 +83,12 @@ const AddDesiredShiftsModal = ({
       targetID={targetID}
       submitButtonText="作成"
       onSubmit={onSubmit}
+      closeButtonRef={closeButtonRef}
     >
       {date && (
         <div className="mx-3">
           <h4>
-            {date.month()}月{date.date()}日
+            {date.month() + 1}月{date.date()}日
           </h4>
           <div className="row my-3">
             <div className="col-md-3 fw-bold col-form-label">開始時間</div>

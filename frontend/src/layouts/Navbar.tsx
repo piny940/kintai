@@ -1,30 +1,33 @@
 import { MaterialIcon } from '@/components/Common/MaterialIcon'
 import { ThemeToggler } from '@/components/Common/ThemeToggler'
 import { useTheme } from '@/context/ThemeProvider'
-import { useWorkerInfo } from '@/context/WorkerInfoProvider'
+import {
+  GetMeDocument,
+  useGetMeQuery,
+  useLogoutMutation,
+} from '@/graphql/types'
 import { TestID } from '@/resources/TestID'
-import { fetchApi } from '@/utils/api'
+import { useApolloClient } from '@apollo/client'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
 export const Navbar: React.FC = () => {
   const { theme, setTheme } = useTheme()
-  const { worker, setWorker } = useWorkerInfo()
+  const { data } = useGetMeQuery()
+  const logout = useLogoutMutation()[0]
+  const client = useApolloClient()
   const router = useRouter()
+
+  const onLogoutClicked = async () => {
+    await logout()
+    void router.push('/accounts/sign_in')
+    void client.refetchQueries({ include: [GetMeDocument] })
+  }
 
   const toggleTheme = useCallback(() => {
     setTheme(theme === 'light' ? 'dark' : 'light')
-  }, [theme])
-
-  const logout = useCallback(async () => {
-    await fetchApi({
-      url: '/session',
-      method: 'DELETE',
-    })
-    setWorker(null)
-    void router.push('/')
-  }, [setWorker])
+  }, [theme, setTheme])
 
   return (
     <nav
@@ -37,7 +40,7 @@ export const Navbar: React.FC = () => {
       <div className="container-fluid px-5">
         <Link
           href="/"
-          className="title fw-bold d-flex align-items-center text-body"
+          className="unstyled title fw-bold d-flex align-items-center text-body"
         >
           <span className="ms-2">勤怠プラス+</span>
         </Link>
@@ -53,10 +56,10 @@ export const Navbar: React.FC = () => {
         <div className="collapse navbar-collapse" id="navbar-collapse-target">
           <div className="d-flex justify-content-end navbar-nav w-100 mx-3">
             <ul className="navbar-nav">
-              {worker && (
+              {data?.me && (
                 <li className="nav-item">
                   <div className="nav-link">
-                    <button role="button" onClick={logout}>
+                    <button role="button" onClick={onLogoutClicked}>
                       ログアウト
                     </button>
                   </div>

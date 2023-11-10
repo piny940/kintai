@@ -1,0 +1,10 @@
+type Stamp {
+  id: Uint!
+  stampedAt: Time!
+  employmentID: Uint!
+  createdAt: Time!
+  updatedAt: Time!
+}
+extend type Mutation {
+  pushStamp(companyId: Uint!): Stamp!
+}

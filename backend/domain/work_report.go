@@ -1,35 +1,53 @@
 package domain
 
-import "time"
-
-type WorkStatus int
-
-const (
-	WorkStatusWorking WorkStatus = iota
-	WorkStatusLeft
+import (
+	"time"
 )
 
 type WorkReport struct {
-	EmploymentId EmploymentID `json:"employment_id"`
-	Stamps       []*Stamp     `json:"stamps"`
-	Since        time.Time    `json:"since"`
-	Until        time.Time    `json:"until"`
-}
-type IWorkReportRepo interface {
-	Show(employmentId EmploymentID, since time.Time, until time.Time) (*WorkReport, error)
+	employmentId EmploymentID
+	fromTime     time.Time
+	toTime       time.Time
+	stamps       []*Stamp
+	stampRepo    IStampRepo
 }
 
-func (wr *WorkReport) Total() time.Duration {
-	total := time.Duration(0)
-	for idx := 0; idx < len(wr.Stamps)-1; idx += 2 {
-		total += wr.Stamps[idx+1].StampedAt.Sub(wr.Stamps[idx].StampedAt)
+func NewWorkReport(employmentId EmploymentID, fromTime, toTime time.Time, stamps []*Stamp, stampRepo IStampRepo) *WorkReport {
+	return &WorkReport{
+		employmentId: employmentId,
+		fromTime:     fromTime,
+		toTime:       toTime,
+		stamps:       stamps,
+		stampRepo:    stampRepo,
 	}
-	return total
 }
+func (wr *WorkReport) GetWorkTime() (time.Duration, error) {
+	duration := time.Duration(0)
 
-func (wr *WorkReport) GetWorkStatus() WorkStatus {
-	if len(wr.Stamps)%2 == 0 {
-		return WorkStatusLeft
+	workStatusAtStart, err := GetWorkStatus(wr.fromTime, wr.employmentId, wr.stampRepo)
+	if err != nil {
+		return 0, err
 	}
-	return WorkStatusWorking
+	startIdx := 0
+	if *workStatusAtStart == WorkStatusWorking {
+		startIdx = 1
+		duration += wr.stamps[0].StampedAt.Sub(wr.fromTime)
+	}
+
+	for i := startIdx; i+1 < len(wr.stamps); i += 2 {
+		duration += wr.stamps[i+1].StampedAt.Sub(wr.stamps[i].StampedAt)
+	}
+
+	workStatusAtEnd, err := GetWorkStatus(wr.toTime, wr.employmentId, wr.stampRepo)
+	if err != nil {
+		return 0, err
+	}
+	if *workStatusAtEnd == WorkStatusWorking {
+		duration += wr.toTime.Sub(wr.stamps[len(wr.stamps)-1].StampedAt)
+	}
+
+	return duration, nil
+}
+func (wr *WorkReport) GetStamps() []*Stamp {
+	return wr.stamps
 }

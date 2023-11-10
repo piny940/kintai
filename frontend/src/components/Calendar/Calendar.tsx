@@ -1,30 +1,58 @@
 import WeekDays from './WeekDays'
 import { memo } from 'react'
 import Month from './Month'
-import { useCalendar } from '@/utils/hooks'
+import { useCalendar } from '@/hooks/calendar'
 import { Dayjs } from 'dayjs'
 
 export type CalendarProps = {
+  yearMonth: Dayjs
+  setYearMonth: (yearMonth: Dayjs) => void
   renderDate?: (month: number, date: Dayjs) => JSX.Element
 }
 
-const Calendar = ({ renderDate }: CalendarProps): JSX.Element => {
-  const { year, month, datesMatrix } = useCalendar(new Date())
+const Calendar = ({
+  renderDate,
+  yearMonth,
+  setYearMonth,
+}: CalendarProps): JSX.Element => {
+  const { year, month, datesMatrix, goNextMonth, goPrevMonth } = useCalendar({
+    yearMonth,
+    setYearMonth,
+  })
 
   return (
-    <table className="table table-striped">
-      <thead className="flex flex-1">
-        <WeekDays />
-      </thead>
-      <tbody>
-        <Month
-          renderDate={renderDate}
-          year={year}
-          month={month}
-          datesMatrix={datesMatrix}
-        />
-      </tbody>
-    </table>
+    <div className="calendar">
+      <div className="d-flex justify-content-around mb-2">
+        <button
+          className="btn btn-outline-secondary btn-sm"
+          onClick={goPrevMonth}
+        >
+          &lt; 前月
+        </button>
+        <span className="h3 m-0">
+          {year}年{month + 1}月
+        </span>
+        <button
+          className="btn btn-outline-secondary btn-sm"
+          onClick={goNextMonth}
+        >
+          &gt; 翌月
+        </button>
+      </div>
+      <table className="table table-striped">
+        <thead className="flex flex-1">
+          <WeekDays />
+        </thead>
+        <tbody>
+          <Month
+            renderDate={renderDate}
+            year={year}
+            month={month}
+            datesMatrix={datesMatrix}
+          />
+        </tbody>
+      </table>
+    </div>
   )
 }
 export default memo(Calendar)

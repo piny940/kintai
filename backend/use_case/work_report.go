@@ -6,32 +6,65 @@ import (
 )
 
 type IWorkReportUseCase interface {
-	List(since time.Time, until time.Time, employmentId domain.EmploymentID) ([]*domain.WorkReport, error)
+	GetYearReport(
+		year time.Time,
+		workerId domain.WorkerID,
+		companyId domain.CompanyID,
+	) (*domain.YearReport, error)
+	GetMonthReport(
+		month time.Time,
+		workerId domain.WorkerID,
+		companyId domain.CompanyID,
+	) (*domain.MonthReport, error)
+	GetDateReport(
+		date time.Time,
+		workerId domain.WorkerID,
+		companyId domain.CompanyID,
+	) (*domain.WorkReport, error)
 }
 
 type workReportUseCase struct {
-	workReportRepo domain.IWorkReportRepo
 	employmentRepo domain.IEmploymentRepo
+	stampRepo      domain.IStampRepo
 }
 
-func NewWorkReportUseCase(workReportRepo domain.IWorkReportRepo, employmentRepo domain.IEmploymentRepo) *workReportUseCase {
-	return &workReportUseCase{workReportRepo: workReportRepo, employmentRepo: employmentRepo}
+func NewWorkReportUseCase(employmentRepo domain.IEmploymentRepo, stampRepo domain.IStampRepo) IWorkReportUseCase {
+	return &workReportUseCase{employmentRepo: employmentRepo, stampRepo: stampRepo}
 }
 
-func (u *workReportUseCase) List(since time.Time, until time.Time, employmentId domain.EmploymentID) ([]*domain.WorkReport, error) {
-	workReports := make([]*domain.WorkReport, 0)
-
-	for year := since.Year(); year <= until.Year(); year++ {
-		for month := since.Month(); month <= until.Month(); month++ {
-			since := time.Date(year, month, 1, 0, 0, 0, 0, time.Local)
-			until := time.Date(year, month+1, 1, 0, 0, 0, 0, time.Local)
-			workReport, err := u.workReportRepo.Show(employmentId, since, until)
-			if err != nil {
-				return nil, err
-			}
-			workReports = append(workReports, workReport)
-		}
+func (wu workReportUseCase) GetYearReport(
+	year time.Time,
+	workerId domain.WorkerID,
+	companyId domain.CompanyID,
+) (*domain.YearReport, error) {
+	employment, err := wu.employmentRepo.Find(companyId, workerId)
+	if err != nil {
+		return nil, err
 	}
-
-	return workReports, nil
+	service := domain.NewStampService(employment.ID, wu.stampRepo)
+	return service.GetYearReport(year)
+}
+func (wu workReportUseCase) GetMonthReport(
+	month time.Time,
+	workerId domain.WorkerID,
+	companyId domain.CompanyID,
+) (*domain.MonthReport, error) {
+	employment, err := wu.employmentRepo.Find(companyId, workerId)
+	if err != nil {
+		return nil, err
+	}
+	service := domain.NewStampService(employment.ID, wu.stampRepo)
+	return service.GetMonthReport(month)
+}
+func (wu workReportUseCase) GetDateReport(
+	date time.Time,
+	workerId domain.WorkerID,
+	companyId domain.CompanyID,
+) (*domain.WorkReport, error) {
+	employment, err := wu.employmentRepo.Find(companyId, workerId)
+	if err != nil {
+		return nil, err
+	}
+	service := domain.NewStampService(employment.ID, wu.stampRepo)
+	return service.GetDateReport(date)
 }

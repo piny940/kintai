@@ -1,0 +1,5 @@
+mutation pushStamp($companyId: Uint!) {
+  pushStamp(companyId: $companyId) {
+    id
+  }
+}

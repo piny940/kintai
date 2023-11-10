@@ -1,0 +1,33 @@
+query getYearReport($companyId: Uint!, $year: Time!) {
+  yearReport(companyId: $companyId, year: $year) {
+    employmentId
+    year
+    workReports {
+      key
+      value {
+        workTime
+      }
+    }
+  }
+}
+query getMonthReport($companyId: Uint!, $month: Time!) {
+  monthReport(companyId: $companyId, month: $month) {
+    employmentId
+    month
+    workReports {
+      key
+      value {
+        workTime
+      }
+    }
+  }
+}
+query getDateReport($companyId: Uint!, $date: Time!) {
+  dateReport(companyId: $companyId, date: $date) {
+    workTime
+    stamps {
+      id
+      stampedAt
+    }
+  }
+}

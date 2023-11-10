@@ -1,8 +1,8 @@
 package domain
 
 type WorkerName struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
+	FirstName string
+	LastName  string
 }
 
 func NewWorkerName(firstName string, lastName string) *WorkerName {

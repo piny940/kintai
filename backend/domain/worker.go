@@ -14,18 +14,19 @@ const (
 )
 
 type Worker struct {
-	ID        WorkerID       `json:"id"`
-	Email     WorkerEmail    `json:"email"`
-	Password  WorkerPassword `json:"-"`
-	Status    WorkerStatus   `json:"status"`
-	Name      WorkerName     `json:"name"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
+	ID        WorkerID
+	Email     WorkerEmail
+	Password  WorkerPassword
+	Status    WorkerStatus
+	Name      WorkerName
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 type IWorkerRepo interface {
 	FindByEmail(email WorkerEmail) (*Worker, error)
 	FindById(id WorkerID) (*Worker, error)
-	List() ([]*Worker, error)
+	FindAllByIds(ids []WorkerID) ([]*Worker, error)
+	List(companyId CompanyID) ([]*Worker, error)
 	Create(worker *Worker) (*Worker, error)
 }
 

@@ -1,26 +1,36 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type DesiredShiftID int
 
 type DesiredShift struct {
-	ID           DesiredShiftID `json:"id"`
-	Since        time.Time      `json:"since"`
-	Till         time.Time      `json:"till"`
-	EmploymentID EmploymentID   `json:"employment_id"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    time.Time      `json:"updated_at"`
+	ID           DesiredShiftID
+	TimeRange    *TimeRange
+	EmploymentID EmploymentID
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+type DesiredShiftQuery struct {
+	ID           *DesiredShiftID
+	EmploymentID *EmploymentID
+	FromTime     *time.Time
+	ToTime       *time.Time
 }
 type IDesiredShiftRepo interface {
-	List(employmentId EmploymentID) ([]*DesiredShift, error)
+	List(query *DesiredShiftQuery) ([]*DesiredShift, error)
+	ListAll(companyId CompanyID, query *DesiredShiftQuery) ([]*DesiredShift, error)
+	FindById(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 	Create(desiredShift *DesiredShift) (*DesiredShift, error)
+	Update(desiredShift *DesiredShift) (*DesiredShift, error)
+	Delete(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 }
 
-func NewDesiredShift(since time.Time, till time.Time, employmentID EmploymentID) *DesiredShift {
+func NewDesiredShift(timeRange *TimeRange, employmentID EmploymentID) *DesiredShift {
 	return &DesiredShift{
-		Since:        since,
-		Till:         till,
+		TimeRange:    timeRange,
 		EmploymentID: employmentID,
 	}
 }

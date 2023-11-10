@@ -1,20 +1,33 @@
-import { DesiredShift } from '@/resources/types'
 import { Dayjs } from 'dayjs'
 import { memo } from 'react'
 import ShiftItem from './ShiftItem'
+import ShiftItemButton from './ShiftItemButton'
 
 export type DesiredShiftsDateProps = {
   month: number
   date: Dayjs
   onAddButtonClicked: () => void
-  desiredShifts: DesiredShift[]
+  onDesiredShiftItemClicked: (desiredShift: {
+    id: number
+    since: string
+    till: string
+  }) => void
+  desiredShifts: Array<{ id: number; since: string; till: string }>
+  shifts: Array<{
+    since: string
+    till: string
+    id: number
+    employment: { worker: { name: { firstName: string; lastName: string } } }
+  }>
 }
 
 const DesiredShiftsDate = ({
   date,
   month,
   onAddButtonClicked,
+  onDesiredShiftItemClicked,
   desiredShifts,
+  shifts,
 }: DesiredShiftsDateProps): JSX.Element => {
   const textColor = (): string => {
     if (date.month() !== month) {
@@ -25,12 +38,13 @@ const DesiredShiftsDate = ({
     }
     return ''
   }
+  const isCurrentMonth = month === date.month()
 
   return (
     <div className="">
       <div className="d-flex align-items-center">
         <span className={textColor()}>{date.date()}</span>
-        {month === date.month() && (
+        {isCurrentMonth && (
           <button
             className="mt-2 btn btn-outline-primary ms-2 btn-sm"
             onClick={onAddButtonClicked}
@@ -39,11 +53,24 @@ const DesiredShiftsDate = ({
           </button>
         )}
       </div>
-      <ul className="list-unstyled">
-        {desiredShifts.map((desiredShift) => (
-          <ShiftItem key={desiredShift.id} shift={desiredShift} />
-        ))}
-      </ul>
+      {isCurrentMonth && (
+        <ul className="list-unstyled">
+          {desiredShifts.map((desiredShift) => (
+            <li key={desiredShift.id}>
+              <ShiftItemButton
+                onClick={() => onDesiredShiftItemClicked(desiredShift)}
+                className="bg-info"
+                shift={desiredShift}
+              />
+            </li>
+          ))}
+          {shifts.map((shift) => (
+            <li key={shift.id}>
+              <ShiftItem className="border border-info" shift={shift} />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

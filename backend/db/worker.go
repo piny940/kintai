@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"kintai_backend/domain"
 	"time"
 )
@@ -9,7 +10,7 @@ type workerRepo struct {
 	db *DB
 }
 
-func NewWorkerRepo(db *DB) *workerRepo {
+func NewWorkerRepo(db *DB) domain.IWorkerRepo {
 	return &workerRepo{db: db}
 }
 
@@ -45,6 +46,38 @@ func (u *workerRepo) FindById(id domain.WorkerID) (*domain.Worker, error) {
 	return workerTable.toDomain(), nil
 }
 
+func (u *workerRepo) FindAllByIds(ids []domain.WorkerID) ([]*domain.Worker, error) {
+	var workers = make([]*domain.Worker, 0)
+	strParams, args := arrayParam(ids)
+	rows, err := u.db.Client.Query(
+		fmt.Sprintf("select * from workers where id in (%s)", strParams),
+		args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var workerTable WorkerTable
+		if err := rows.Scan(
+			&workerTable.ID,
+			&workerTable.Status,
+			&workerTable.Email,
+			&workerTable.EncryptedPassword,
+			&workerTable.FirstName,
+			&workerTable.LastName,
+			&workerTable.CreatedAt,
+			&workerTable.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		workers = append(workers, workerTable.toDomain())
+	}
+
+	return workers, nil
+}
+
 func (u *workerRepo) FindByEmail(email domain.WorkerEmail) (*domain.Worker, error) {
 	var workerTable WorkerTable
 	if err := u.db.Client.QueryRow(
@@ -66,9 +99,14 @@ func (u *workerRepo) FindByEmail(email domain.WorkerEmail) (*domain.Worker, erro
 	return workerTable.toDomain(), nil
 }
 
-func (u *workerRepo) List() ([]*domain.Worker, error) {
+func (u *workerRepo) List(companyId domain.CompanyID) ([]*domain.Worker, error) {
 	var workers = make([]*domain.Worker, 0)
-	rows, err := u.db.Client.Query("select * from workers")
+	rows, err := u.db.Client.Query(
+		`select workers.* from workers
+			inner join employments on employments.worker_id = workers.id
+			where employments.company_id = $1`,
+		companyId,
+	)
 	if err != nil {
 		return nil, err
 	}
