@@ -22,3 +22,12 @@ query getMonthReport($companyId: Uint!, $month: Time!) {
     }
   }
 }
+query getDateReport($companyId: Uint!, $date: Time!) {
+  dateReport(companyId: $companyId, date: $date) {
+    workTime
+    stamps {
+      id
+      stampedAt
+    }
+  }
+}

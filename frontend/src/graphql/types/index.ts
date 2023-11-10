@@ -162,6 +162,7 @@ export type Query = {
   companyDesiredShifts: DesiredShift[]
   companyShifts: Shift[]
   companyWorkers: Worker[]
+  dateReport: WorkReport
   desiredShifts: DesiredShift[]
   me?: Maybe<Worker>
   monthReport: MonthReport
@@ -187,6 +188,11 @@ export type QueryCompanyShiftsArgs = {
 
 export type QueryCompanyWorkersArgs = {
   companyId: Scalars['Uint']['input']
+}
+
+export type QueryDateReportArgs = {
+  companyId: Scalars['Uint']['input']
+  date: Scalars['Time']['input']
 }
 
 export type QueryDesiredShiftsArgs = {
@@ -479,6 +485,20 @@ export type GetMonthReportQuery = {
       key: number
       value: { __typename?: 'WorkReport'; workTime: number }
     }>
+  }
+}
+
+export type GetDateReportQueryVariables = Exact<{
+  companyId: Scalars['Uint']['input']
+  date: Scalars['Time']['input']
+}>
+
+export type GetDateReportQuery = {
+  __typename?: 'Query'
+  dateReport: {
+    __typename?: 'WorkReport'
+    workTime: number
+    stamps: Array<{ __typename?: 'Stamp'; id: number; stampedAt: string }>
   }
 }
 
@@ -1545,6 +1565,84 @@ export type GetMonthReportSuspenseQueryHookResult = ReturnType<
 export type GetMonthReportQueryResult = Apollo.QueryResult<
   GetMonthReportQuery,
   GetMonthReportQueryVariables
+>
+export const GetDateReportDocument = gql`
+  query getDateReport($companyId: Uint!, $date: Time!) {
+    dateReport(companyId: $companyId, date: $date) {
+      workTime
+      stamps {
+        id
+        stampedAt
+      }
+    }
+  }
+`
+
+/**
+ * __useGetDateReportQuery__
+ *
+ * To run a query within a React component, call `useGetDateReportQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDateReportQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDateReportQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useGetDateReportQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetDateReportQuery,
+    GetDateReportQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetDateReportQuery, GetDateReportQueryVariables>(
+    GetDateReportDocument,
+    options
+  )
+}
+export function useGetDateReportLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetDateReportQuery,
+    GetDateReportQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetDateReportQuery, GetDateReportQueryVariables>(
+    GetDateReportDocument,
+    options
+  )
+}
+export function useGetDateReportSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetDateReportQuery,
+    GetDateReportQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<
+    GetDateReportQuery,
+    GetDateReportQueryVariables
+  >(GetDateReportDocument, options)
+}
+export type GetDateReportQueryHookResult = ReturnType<
+  typeof useGetDateReportQuery
+>
+export type GetDateReportLazyQueryHookResult = ReturnType<
+  typeof useGetDateReportLazyQuery
+>
+export type GetDateReportSuspenseQueryHookResult = ReturnType<
+  typeof useGetDateReportSuspenseQuery
+>
+export type GetDateReportQueryResult = Apollo.QueryResult<
+  GetDateReportQuery,
+  GetDateReportQueryVariables
 >
 export const GetWorkStatusDocument = gql`
   query getWorkStatus($companyId: Uint!) {
