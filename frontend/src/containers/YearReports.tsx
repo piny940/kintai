@@ -1,4 +1,4 @@
-import YearReport from '@/components/Kintai/YearReport'
+import YearReport from '@/containers/YearReport'
 import { useGetCompanyQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
 import dayjs from 'dayjs'
