@@ -8,8 +8,7 @@ type DesiredShiftID int
 
 type DesiredShift struct {
 	ID           DesiredShiftID
-	Since        time.Time
-	Till         time.Time
+	TimeRange    *TimeRange
 	EmploymentID EmploymentID
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
@@ -29,10 +28,9 @@ type IDesiredShiftRepo interface {
 	Delete(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 }
 
-func NewDesiredShift(since time.Time, till time.Time, employmentID EmploymentID) *DesiredShift {
+func NewDesiredShift(timeRange *TimeRange, employmentID EmploymentID) *DesiredShift {
 	return &DesiredShift{
-		Since:        since,
-		Till:         till,
+		TimeRange:    timeRange,
 		EmploymentID: employmentID,
 	}
 }
