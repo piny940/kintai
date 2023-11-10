@@ -4,7 +4,13 @@ import { useCompanyId } from '@/hooks/calendar'
 import Error from 'next/error'
 import { memo, useEffect, useState } from 'react'
 
-const YEAR_LIST = [2021, 2022, 2023]
+const YEAR_LIST = (() => {
+  const years = []
+  for (let i = 2021; i <= new Date().getFullYear(); i++) {
+    years.push(i)
+  }
+  return years
+})()
 const YearReports = (): JSX.Element => {
   const companyId = useCompanyId()
   const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
