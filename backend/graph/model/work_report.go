@@ -9,6 +9,6 @@ func NewWorkReport(workReport *domain.WorkReport) (*WorkReport, error) {
 	}
 	return &WorkReport{
 		Stamps:   NewStamps(workReport.GetStamps()),
-		WorkTime: int(workTime),
+		WorkTime: int(workTime.Seconds()),
 	}, nil
 }
