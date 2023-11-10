@@ -13,6 +13,17 @@ type YearReport {
   workReports: [MonthWorkReportMap!]!
 }
 
+type DateWorkReportMap {
+  key: Int!
+  value: WorkReport!
+}
+type MonthReport {
+  employmentId: Uint!
+  month: Time!
+  workReports: [DateWorkReportMap!]!
+}
+
 extend type Query {
   yearReport(companyId: Uint!, year: Time!): YearReport!
+  monthReport(companyId: Uint!, month: Time!): MonthReport!
 }
