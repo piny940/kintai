@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 require('dotenv').config()
 
-const BACKEND = process.env.BACKEND_HOST
-
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -13,7 +11,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${BACKEND}/v1/:path*`,
+        destination: `${process.env.BACKEND_HOST}/v1/:path*`,
       },
     ]
   },
