@@ -40,7 +40,11 @@ func NewDesiredShiftUseCase(
 }
 
 func (u *desiredShiftUseCase) Create(employmentId domain.EmploymentID, since, till time.Time) (*domain.DesiredShift, error) {
-	desiredShift := domain.NewDesiredShift(since, till, employmentId)
+	timeRange, err := domain.NewTimeRange(since, till)
+	if err != nil {
+		return nil, err
+	}
+	desiredShift := domain.NewDesiredShift(timeRange, employmentId)
 	desiredShiftResult, err := u.desiredShiftRepo.Create(desiredShift)
 	if err != nil {
 		return nil, err
@@ -82,8 +86,11 @@ func (u *desiredShiftUseCase) Update(
 	if employment.WorkerID != currentWorkerId {
 		return nil, fmt.Errorf("権限がありません")
 	}
-	desiredShift.Since = since
-	desiredShift.Till = till
+	timeRange, err := domain.NewTimeRange(since, till)
+	if err != nil {
+		return nil, err
+	}
+	desiredShift.TimeRange = timeRange
 	desiredShift, err = u.desiredShiftRepo.Update(desiredShift)
 	if err != nil {
 		return nil, err

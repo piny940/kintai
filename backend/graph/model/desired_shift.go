@@ -17,8 +17,8 @@ type DesiredShift struct {
 func NewDesiredShift(desiredShift *domain.DesiredShift) *DesiredShift {
 	return &DesiredShift{
 		ID:           uint(desiredShift.ID),
-		Since:        desiredShift.Since,
-		Till:         desiredShift.Till,
+		Since:        desiredShift.TimeRange.Since(),
+		Till:         desiredShift.TimeRange.Till(),
 		EmploymentID: uint(desiredShift.EmploymentID),
 		CreatedAt:    desiredShift.CreatedAt,
 		UpdatedAt:    desiredShift.UpdatedAt,

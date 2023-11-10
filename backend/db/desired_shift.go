@@ -2,6 +2,7 @@ package db
 
 import (
 	"kintai_backend/domain"
+	"time"
 )
 
 type desiredShiftRepo struct {
@@ -12,6 +13,14 @@ func NewDesiredShiftRepo(db *DB) domain.IDesiredShiftRepo {
 	return &desiredShiftRepo{db: db}
 }
 
+type desiredShiftTable struct {
+	ID           domain.DesiredShiftID
+	Since        time.Time
+	Till         time.Time
+	EmploymentID domain.EmploymentID
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
 type desiredShiftQuery struct {
 	queryObj
 }
@@ -48,7 +57,7 @@ func (r *desiredShiftRepo) List(query *domain.DesiredShiftQuery) ([]*domain.Desi
 	defer rows.Close()
 
 	for rows.Next() {
-		var desiredShift domain.DesiredShift
+		var desiredShift desiredShiftTable
 		if err := rows.Scan(
 			&desiredShift.ID,
 			&desiredShift.Since,
@@ -59,19 +68,19 @@ func (r *desiredShiftRepo) List(query *domain.DesiredShiftQuery) ([]*domain.Desi
 		); err != nil {
 			return nil, err
 		}
-		desiredShifts = append(desiredShifts, &desiredShift)
+		desiredShifts = append(desiredShifts, desiredShift.toDomain())
 	}
 
 	return desiredShifts, nil
 }
 
 func (r *desiredShiftRepo) Create(desiredShift *domain.DesiredShift) (*domain.DesiredShift, error) {
-	var desiredShiftResult domain.DesiredShift
+	var desiredShiftResult desiredShiftTable
 
 	if err := r.db.Client.QueryRow(
 		"insert into desired_shifts (since, till, employment_id) values ($1, $2, $3) returning *",
-		desiredShift.Since,
-		desiredShift.Till,
+		desiredShift.TimeRange.Since(),
+		desiredShift.TimeRange.Till(),
 		desiredShift.EmploymentID,
 	).Scan(
 		&desiredShiftResult.ID,
@@ -83,7 +92,7 @@ func (r *desiredShiftRepo) Create(desiredShift *domain.DesiredShift) (*domain.De
 	); err != nil {
 		return nil, err
 	}
-	return &desiredShiftResult, nil
+	return desiredShiftResult.toDomain(), nil
 }
 
 func (r *desiredShiftRepo) ListAll(companyId domain.CompanyID, query *domain.DesiredShiftQuery) ([]*domain.DesiredShift, error) {
@@ -105,7 +114,7 @@ func (r *desiredShiftRepo) ListAll(companyId domain.CompanyID, query *domain.Des
 	defer rows.Close()
 
 	for rows.Next() {
-		var desiredShift domain.DesiredShift
+		var desiredShift desiredShiftTable
 		if err := rows.Scan(
 			&desiredShift.ID,
 			&desiredShift.Since,
@@ -116,14 +125,14 @@ func (r *desiredShiftRepo) ListAll(companyId domain.CompanyID, query *domain.Des
 		); err != nil {
 			return nil, err
 		}
-		desiredShifts = append(desiredShifts, &desiredShift)
+		desiredShifts = append(desiredShifts, desiredShift.toDomain())
 	}
 
 	return desiredShifts, nil
 }
 
 func (r *desiredShiftRepo) FindById(desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
-	var desiredShift domain.DesiredShift
+	var desiredShift desiredShiftTable
 	if err := r.db.Client.QueryRow("select * from desired_shifts where id = $1", desiredShiftId).Scan(
 		&desiredShift.ID,
 		&desiredShift.Since,
@@ -134,15 +143,15 @@ func (r *desiredShiftRepo) FindById(desiredShiftId domain.DesiredShiftID) (*doma
 	); err != nil {
 		return nil, err
 	}
-	return &desiredShift, nil
+	return desiredShift.toDomain(), nil
 }
 
 func (r *desiredShiftRepo) Update(desiredShift *domain.DesiredShift) (*domain.DesiredShift, error) {
-	var desiredShiftResult domain.DesiredShift
+	var desiredShiftResult desiredShiftTable
 	if err := r.db.Client.QueryRow(
 		"update desired_shifts set since = $1, till = $2, employment_id = $3 where id = $4 returning *",
-		desiredShift.Since,
-		desiredShift.Till,
+		desiredShift.TimeRange.Since(),
+		desiredShift.TimeRange.Till(),
 		desiredShift.EmploymentID,
 		desiredShift.ID,
 	).Scan(
@@ -155,11 +164,11 @@ func (r *desiredShiftRepo) Update(desiredShift *domain.DesiredShift) (*domain.De
 	); err != nil {
 		return nil, err
 	}
-	return &desiredShiftResult, nil
+	return desiredShiftResult.toDomain(), nil
 }
 
 func (r *desiredShiftRepo) Delete(desiredShiftId domain.DesiredShiftID) (*domain.DesiredShift, error) {
-	var desiredShift domain.DesiredShift
+	var desiredShift desiredShiftTable
 	if err := r.db.Client.QueryRow("delete from desired_shifts where id = $1 returning *", desiredShiftId).Scan(
 		&desiredShift.ID,
 		&desiredShift.Since,
@@ -170,5 +179,16 @@ func (r *desiredShiftRepo) Delete(desiredShiftId domain.DesiredShiftID) (*domain
 	); err != nil {
 		return nil, err
 	}
-	return &desiredShift, nil
+	return desiredShift.toDomain(), nil
+}
+
+func (desiredShiftTable *desiredShiftTable) toDomain() *domain.DesiredShift {
+	timeRange, _ := domain.NewTimeRange(desiredShiftTable.Since, desiredShiftTable.Till)
+	return &domain.DesiredShift{
+		ID:           desiredShiftTable.ID,
+		TimeRange:    timeRange,
+		EmploymentID: desiredShiftTable.EmploymentID,
+		CreatedAt:    desiredShiftTable.CreatedAt,
+		UpdatedAt:    desiredShiftTable.UpdatedAt,
+	}
 }
