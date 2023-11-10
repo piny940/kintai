@@ -1,5 +1,5 @@
 query getYearReport($companyId: Uint!, $year: Time!) {
-  getYearReport(companyId: $companyId, year: $year) {
+  yearReport(companyId: $companyId, year: $year) {
     employmentId
     year
     workReports {

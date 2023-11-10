@@ -14,5 +14,5 @@ type YearReport {
 }
 
 extend type Query {
-  getYearReport(companyId: Uint!, year: Time!): YearReport!
+  yearReport(companyId: Uint!, year: Time!): YearReport!
 }

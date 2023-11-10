@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"sort"
+	"time"
+)
 
 type StampService struct {
 	employmentId EmploymentID
@@ -17,6 +20,7 @@ func NewStampService(employmentId EmploymentID, stampRepo IStampRepo) *StampServ
 }
 
 func (ss *StampService) GetYearReport(year time.Time) (*YearReport, error) {
+	year = time.Date(year.Year(), 1, 1, 0, 0, 0, 0, time.Local)
 	nextYear := year.AddDate(1, 0, 0)
 	stamps, err := ss.stampRepo.List(&StampQuery{
 		EmploymentId: &ss.employmentId,
@@ -28,10 +32,10 @@ func (ss *StampService) GetYearReport(year time.Time) (*YearReport, error) {
 	}
 	report := make(map[time.Month]*WorkReport)
 	for month := time.Month(1); month <= 12; month++ {
-		fromTime := time.Date(year.Year(), month, 1, 0, 0, 0, 0, time.UTC)
+		fromTime := time.Date(year.Year(), month, 1, 0, 0, 0, 0, time.Local)
 		toTime := fromTime.AddDate(0, 1, 0)
-		stamps := ss.filterStamps(stamps, fromTime, toTime)
-		report[month] = NewWorkReport(ss.employmentId, fromTime, toTime, stamps, ss.stampRepo)
+		filteredStamps := ss.sortStamps(ss.filterStamps(stamps, fromTime, toTime))
+		report[month] = NewWorkReport(ss.employmentId, fromTime, toTime, filteredStamps, ss.stampRepo)
 	}
 
 	return &YearReport{
@@ -45,9 +49,17 @@ func (ss *StampService) filterStamps(stamps []*Stamp, fromTime, toTime time.Time
 	var result []*Stamp
 	for _, stamp := range stamps {
 		if stamp.StampedAt.After(fromTime) && stamp.StampedAt.Before(toTime) {
-			result = append(stamps, stamp)
+			result = append(result, stamp)
 		}
 	}
+	return result
+}
+func (ss *StampService) sortStamps(stamps []*Stamp) []*Stamp {
+	result := make([]*Stamp, len(stamps))
+	copy(result, stamps)
+	sort.SliceStable(result, func(i, j int) bool {
+		return stamps[i].StampedAt.Before(stamps[j].StampedAt)
+	})
 	return result
 }
 
