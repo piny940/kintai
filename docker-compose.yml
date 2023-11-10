@@ -2,45 +2,45 @@ version: '3.8'
 
 services:
   backend:
-    container_name: kintai_backend
-    image: kintai_backend
+    container_name: kintai-backend
+    image: kintai-backend
     build:
       context: ./backend
-    env_file: ./backend/.env.development
+      dockerfile: Dockerfile
+    env_file: ./backend/.env
     ports:
-      - 8080:8080
+      - 4800:8080
     depends_on:
       - db
-    volumes:
-      - ./backend:/app
-      - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
+    # volumes:
+    #   - ./backend:/app
+    #   - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
 
   frontend:
-    container_name: kintai_frontend
-    image: kintai_frontend
+    container_name: kintai-frontend
+    image: kintai-frontend
     build:
+      dockerfile: Dockerfile
       context: ./frontend
-    volumes:
-      - ./frontend:/app
-      - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
-    environment:
-      NODE_ENV: development
+    # volumes:
+    #   - ./frontend:/app
+    #   - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
     ports:
-      - 3001:3001
+      - 3080:4400
     depends_on:
       - backend
 
   db:
-    container_name: kintai_db
-    image: postgres:14
+    container_name: kintai-db
+    image: postgres:15.0-alpine
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: kintai_development
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: kintai_production
     volumes:
-      - db-data:/var/lib/postgresql/data
-      - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
+      - database:/var/lib/postgresql/data
+    #   - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
 
 volumes:
-  db-data:
+  database:

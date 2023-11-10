@@ -14,4 +14,4 @@ WORKDIR /app
 EXPOSE 8080
 
 # What the container should run when it is started.
-ENTRYPOINT [ "go", "run", "main.go" ]
+ENTRYPOINT [ "go", "run", "main.go", "-e", "production" ]
