@@ -26,4 +26,5 @@ type MonthReport {
 extend type Query {
   yearReport(companyId: Uint!, year: Time!): YearReport!
   monthReport(companyId: Uint!, month: Time!): MonthReport!
+  dateReport(companyId: Uint!, date: Time!): WorkReport!
 }
