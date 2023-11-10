@@ -98,8 +98,8 @@ func (r *shiftRepo) Create(shift *domain.Shift) (*domain.Shift, error) {
 
 	if err := r.db.Client.QueryRow(
 		"insert into shifts (since, till, employment_id) values ($1, $2, $3) returning *",
-		shift.TimeRange.Since,
-		shift.TimeRange.Till,
+		shift.TimeRange.Since(),
+		shift.TimeRange.Till(),
 		shift.EmploymentID,
 	).Scan(
 		&shiftResult.ID,
@@ -119,8 +119,8 @@ func (r *shiftRepo) Update(shift *domain.Shift) (*domain.Shift, error) {
 
 	if err := r.db.Client.QueryRow(
 		"update shifts set since = $1, till = $2, employment_id = $3 where id = $4 returning *",
-		shift.TimeRange.Since,
-		shift.TimeRange.Till,
+		shift.TimeRange.Since(),
+		shift.TimeRange.Till(),
 		shift.EmploymentID,
 		shift.ID,
 	).Scan(
@@ -153,9 +153,10 @@ func (r *shiftRepo) Delete(shiftId domain.ShiftId) (*domain.Shift, error) {
 }
 
 func (shiftTable *shiftTable) toDomain() *domain.Shift {
+	timeRange, _ := domain.NewTimeRange(shiftTable.Since, shiftTable.Till)
 	return &domain.Shift{
 		ID:           shiftTable.ID,
-		TimeRange:    &domain.TimeRange{Since: shiftTable.Since, Till: shiftTable.Till},
+		TimeRange:    timeRange,
 		EmploymentID: shiftTable.EmploymentID,
 		CreatedAt:    shiftTable.CreatedAt,
 		UpdatedAt:    shiftTable.UpdatedAt,

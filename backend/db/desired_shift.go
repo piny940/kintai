@@ -79,8 +79,8 @@ func (r *desiredShiftRepo) Create(desiredShift *domain.DesiredShift) (*domain.De
 
 	if err := r.db.Client.QueryRow(
 		"insert into desired_shifts (since, till, employment_id) values ($1, $2, $3) returning *",
-		desiredShift.TimeRange.Since,
-		desiredShift.TimeRange.Till,
+		desiredShift.TimeRange.Since(),
+		desiredShift.TimeRange.Till(),
 		desiredShift.EmploymentID,
 	).Scan(
 		&desiredShiftResult.ID,
@@ -150,8 +150,8 @@ func (r *desiredShiftRepo) Update(desiredShift *domain.DesiredShift) (*domain.De
 	var desiredShiftResult desiredShiftTable
 	if err := r.db.Client.QueryRow(
 		"update desired_shifts set since = $1, till = $2, employment_id = $3 where id = $4 returning *",
-		desiredShift.TimeRange.Since,
-		desiredShift.TimeRange.Till,
+		desiredShift.TimeRange.Since(),
+		desiredShift.TimeRange.Till(),
 		desiredShift.EmploymentID,
 		desiredShift.ID,
 	).Scan(
@@ -183,9 +183,10 @@ func (r *desiredShiftRepo) Delete(desiredShiftId domain.DesiredShiftID) (*domain
 }
 
 func (desiredShiftTable *desiredShiftTable) toDomain() *domain.DesiredShift {
+	timeRange, _ := domain.NewTimeRange(desiredShiftTable.Since, desiredShiftTable.Till)
 	return &domain.DesiredShift{
 		ID:           desiredShiftTable.ID,
-		TimeRange:    &domain.TimeRange{Since: desiredShiftTable.Since, Till: desiredShiftTable.Till},
+		TimeRange:    timeRange,
 		EmploymentID: desiredShiftTable.EmploymentID,
 		CreatedAt:    desiredShiftTable.CreatedAt,
 		UpdatedAt:    desiredShiftTable.UpdatedAt,

@@ -3,8 +3,8 @@ package domain
 import "time"
 
 type TimeRange struct {
-	Since time.Time
-	Till  time.Time
+	since time.Time
+	till  time.Time
 }
 type errInvalidRange struct{}
 
@@ -17,10 +17,17 @@ func NewTimeRange(since time.Time, till time.Time) (*TimeRange, error) {
 		return nil, &errInvalidRange{}
 	}
 	return &TimeRange{
-		Since: since,
-		Till:  till,
+		since: since,
+		till:  till,
 	}, nil
 }
 func isRangeValid(since time.Time, till time.Time) bool {
 	return since.Before(till)
+}
+
+func (t *TimeRange) Since() time.Time {
+	return t.since
+}
+func (t *TimeRange) Till() time.Time {
+	return t.till
 }

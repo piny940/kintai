@@ -25,9 +25,9 @@ type IShiftRepo interface {
 	Delete(shiftId ShiftId) (*Shift, error)
 }
 
-func NewShift(timeRange *TimeRange, employmentID EmploymentID) (*Shift, error) {
+func NewShift(timeRange *TimeRange, employmentID EmploymentID) *Shift {
 	return &Shift{
 		TimeRange:    timeRange,
 		EmploymentID: employmentID,
-	}, nil
+	}
 }

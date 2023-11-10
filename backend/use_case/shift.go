@@ -68,7 +68,11 @@ func (u *shiftUseCase) Create(
 		return nil, fmt.Errorf("権限がありません")
 	}
 
-	shift := domain.NewShift(since, till, employment.ID)
+	timeRange, err := domain.NewTimeRange(since, till)
+	if err != nil {
+		return nil, err
+	}
+	shift := domain.NewShift(timeRange, employment.ID)
 	shiftResult, err := u.shiftRepo.Create(shift)
 	if err != nil {
 		return nil, err
@@ -102,8 +106,11 @@ func (u *shiftUseCase) Update(
 	if err != nil {
 		return nil, err
 	}
-	shift.Since = since
-	shift.Till = till
+	timeRange, err := domain.NewTimeRange(since, till)
+	if err != nil {
+		return nil, err
+	}
+	shift.TimeRange = timeRange
 	shift.EmploymentID = newEmployment.ID
 	shiftResult, err := u.shiftRepo.Update(shift)
 	if err != nil {
