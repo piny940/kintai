@@ -1,6 +1,7 @@
 import YearReport from '@/components/Kintai/YearReport'
 import { useGetCompanyQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
+import dayjs from 'dayjs'
 import Error from 'next/error'
 import { memo, useState } from 'react'
 
@@ -36,7 +37,7 @@ const YearReports = (): JSX.Element => {
           ))}
         </select>
       </p>
-      <YearReport year={year} />
+      <YearReport year={dayjs().year(year)} />
     </div>
   )
 }
