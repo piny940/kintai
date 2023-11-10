@@ -44,6 +44,7 @@ FROM base as final
 # Use production node environment by default.
 ENV NODE_ENV production
 RUN chown node:node -R /usr/src/app
+RUN apk add curl
 
 # Run the application as a non-root user.
 USER node
@@ -57,6 +58,7 @@ COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/next.config.js ./next.config.js
 COPY --from=build /usr/src/app/.next ./.next
 COPY ./public ./public
+COPY .env .env
 
 # Run the application.
 CMD yarn start

@@ -10,6 +10,8 @@ services:
     env_file: ./backend/.env
     ports:
       - 4800:8080
+    stdin_open: true
+    tty: true
     depends_on:
       - db
     # volumes:
@@ -27,12 +29,13 @@ services:
     #   - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
     ports:
       - 3080:4400
+    restart: always
     depends_on:
       - backend
 
   db:
     container_name: kintai-db
-    image: postgres:15.0-alpine
+    image: postgres:15.1-alpine
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}

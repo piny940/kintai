@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 require('dotenv').config()
 
+console.log(process.env.BACKEND_HOST)
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
