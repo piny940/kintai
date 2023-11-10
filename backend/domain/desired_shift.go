@@ -1,13 +1,14 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type DesiredShiftID int
 
 type DesiredShift struct {
 	ID           DesiredShiftID
-	Since        time.Time
-	Till         time.Time
+	TimeRange    *TimeRange
 	EmploymentID EmploymentID
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
@@ -21,13 +22,15 @@ type DesiredShiftQuery struct {
 type IDesiredShiftRepo interface {
 	List(query *DesiredShiftQuery) ([]*DesiredShift, error)
 	ListAll(companyId CompanyID, query *DesiredShiftQuery) ([]*DesiredShift, error)
+	FindById(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 	Create(desiredShift *DesiredShift) (*DesiredShift, error)
+	Update(desiredShift *DesiredShift) (*DesiredShift, error)
+	Delete(desiredShiftId DesiredShiftID) (*DesiredShift, error)
 }
 
-func NewDesiredShift(since time.Time, till time.Time, employmentID EmploymentID) *DesiredShift {
+func NewDesiredShift(timeRange *TimeRange, employmentID EmploymentID) *DesiredShift {
 	return &DesiredShift{
-		Since:        since,
-		Till:         till,
+		TimeRange:    timeRange,
 		EmploymentID: employmentID,
 	}
 }

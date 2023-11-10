@@ -29,3 +29,19 @@ mutation createShift(
     id
   }
 }
+mutation updateShift(
+  $id: Uint!
+  $since: Time!
+  $till: Time!
+  $workerId: Uint!
+) {
+  updateShift(id: $id, since: $since, till: $till, workerId: $workerId) {
+    id
+  }
+}
+
+mutation deleteShift($id: Uint!) {
+  deleteShift(id: $id) {
+    id
+  }
+}

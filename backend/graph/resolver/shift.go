@@ -32,6 +32,41 @@ func (r *mutationResolver) CreateShift(ctx context.Context, since time.Time, til
 	return model.NewShift(shift), nil
 }
 
+func (r *mutationResolver) UpdateShift(ctx context.Context, id uint, since time.Time, till time.Time, workerID uint) (*model.Shift, error) {
+	registry := registry.GetRegistry()
+	currentWorkerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	shift, err := registry.ShiftUseCase().Update(
+		*currentWorkerId,
+		domain.ShiftId(id),
+		since,
+		till,
+		domain.WorkerID(workerID),
+	)
+	if err != nil {
+		return nil, newError(err, "シフトの更新に失敗しました")
+	}
+	return model.NewShift(shift), nil
+}
+
+func (r *mutationResolver) DeleteShift(ctx context.Context, id uint) (*model.Shift, error) {
+	registry := registry.GetRegistry()
+	currentWorkerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	shift, err := registry.ShiftUseCase().Delete(
+		*currentWorkerId,
+		domain.ShiftId(id),
+	)
+	if err != nil {
+		return nil, newError(err, "シフトの削除に失敗しました")
+	}
+	return model.NewShift(shift), nil
+}
+
 func (r *queryResolver) CompanyShifts(ctx context.Context, companyID uint, fromTime *time.Time, toTime *time.Time) ([]*model.Shift, error) {
 	registry := registry.GetRegistry()
 	workerId, err := currentWorkerId(ctx)

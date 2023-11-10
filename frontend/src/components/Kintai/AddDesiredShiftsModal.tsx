@@ -1,4 +1,11 @@
-import { FormEventHandler, memo, useCallback, useState } from 'react'
+import {
+  FormEventHandler,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { ModalFormBox } from '../Common/ModalFormBox'
 import { Dayjs } from 'dayjs'
 import { toDigit } from '@/utils/helpers'
@@ -25,10 +32,11 @@ const AddDesiredShiftsModal = ({
   const [sinceMinute, setSinceMinute] = useState<number>(MINUTE_OPTIONS[0])
   const [tillHour, setTillHour] = useState<number>(TILL_HOUR_OPTIONS[0])
   const [tillMinute, setTillMinute] = useState<number>(MINUTE_OPTIONS[0])
+  const [alert, setAlert] = useState('')
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   const companyId = useCompanyId()
-  const [createDesiredShift, { error: desiredShiftError }] =
-    useCreateDesiredShiftMutation()
+  const [createDesiredShift] = useCreateDesiredShiftMutation()
   const client = useApolloClient()
 
   const postDesiredShift = useCallback(
@@ -43,7 +51,11 @@ const AddDesiredShiftsModal = ({
           },
         })
         await client.refetchQueries({ include: [GetDesiredShiftsDocument] })
-      } catch {}
+        closeButtonRef.current?.click()
+        setAlert('')
+      } catch (error: any) {
+        setAlert(error.message)
+      }
     },
     [companyId, createDesiredShift, client]
   )
@@ -60,18 +72,23 @@ const AddDesiredShiftsModal = ({
     [date, sinceHour, sinceMinute, tillHour, tillMinute, postDesiredShift]
   )
 
+  useEffect(() => {
+    setAlert('')
+  }, [date])
+
   return (
     <ModalFormBox
       title="希望シフト作成"
-      alert={desiredShiftError?.message || ''}
+      alert={alert}
       targetID={targetID}
       submitButtonText="作成"
       onSubmit={onSubmit}
+      closeButtonRef={closeButtonRef}
     >
       {date && (
         <div className="mx-3">
           <h4>
-            {date.month()}月{date.date()}日
+            {date.month() + 1}月{date.date()}日
           </h4>
           <div className="row my-3">
             <div className="col-md-3 fw-bold col-form-label">開始時間</div>

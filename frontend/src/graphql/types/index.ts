@@ -90,9 +90,13 @@ export type Mutation = {
   __typename?: 'Mutation'
   createDesiredShift: DesiredShift
   createShift: Shift
+  deleteDesiredShift: DesiredShift
+  deleteShift: Shift
   login?: Maybe<LoginResponse>
   logout: Scalars['Boolean']['output']
   pushStamp: Stamp
+  updateDesiredShift: DesiredShift
+  updateShift: Shift
 }
 
 export type MutationCreateDesiredShiftArgs = {
@@ -108,6 +112,14 @@ export type MutationCreateShiftArgs = {
   workerId: Scalars['Uint']['input']
 }
 
+export type MutationDeleteDesiredShiftArgs = {
+  id: Scalars['Uint']['input']
+}
+
+export type MutationDeleteShiftArgs = {
+  id: Scalars['Uint']['input']
+}
+
 export type MutationLoginArgs = {
   email: Scalars['String']['input']
   password: Scalars['String']['input']
@@ -115,6 +127,19 @@ export type MutationLoginArgs = {
 
 export type MutationPushStampArgs = {
   companyId: Scalars['Uint']['input']
+}
+
+export type MutationUpdateDesiredShiftArgs = {
+  id: Scalars['Uint']['input']
+  since: Scalars['Time']['input']
+  till: Scalars['Time']['input']
+}
+
+export type MutationUpdateShiftArgs = {
+  id: Scalars['Uint']['input']
+  since: Scalars['Time']['input']
+  till: Scalars['Time']['input']
+  workerId: Scalars['Uint']['input']
 }
 
 export type Query = {
@@ -297,6 +322,26 @@ export type CreateDesiredShiftMutation = {
   createDesiredShift: { __typename?: 'DesiredShift'; id: number }
 }
 
+export type UpdateDesiredShiftMutationVariables = Exact<{
+  id: Scalars['Uint']['input']
+  since: Scalars['Time']['input']
+  till: Scalars['Time']['input']
+}>
+
+export type UpdateDesiredShiftMutation = {
+  __typename?: 'Mutation'
+  updateDesiredShift: { __typename?: 'DesiredShift'; id: number }
+}
+
+export type DeleteDesiredShiftMutationVariables = Exact<{
+  id: Scalars['Uint']['input']
+}>
+
+export type DeleteDesiredShiftMutation = {
+  __typename?: 'Mutation'
+  deleteDesiredShift: { __typename?: 'DesiredShift'; id: number }
+}
+
 export type LoginMutationVariables = Exact<{
   email: Scalars['String']['input']
   password: Scalars['String']['input']
@@ -348,6 +393,27 @@ export type CreateShiftMutationVariables = Exact<{
 export type CreateShiftMutation = {
   __typename?: 'Mutation'
   createShift: { __typename?: 'Shift'; id: number }
+}
+
+export type UpdateShiftMutationVariables = Exact<{
+  id: Scalars['Uint']['input']
+  since: Scalars['Time']['input']
+  till: Scalars['Time']['input']
+  workerId: Scalars['Uint']['input']
+}>
+
+export type UpdateShiftMutation = {
+  __typename?: 'Mutation'
+  updateShift: { __typename?: 'Shift'; id: number }
+}
+
+export type DeleteShiftMutationVariables = Exact<{
+  id: Scalars['Uint']['input']
+}>
+
+export type DeleteShiftMutation = {
+  __typename?: 'Mutation'
+  deleteShift: { __typename?: 'Shift'; id: number }
 }
 
 export type PushStampMutationVariables = Exact<{
@@ -778,6 +844,108 @@ export type CreateDesiredShiftMutationOptions = Apollo.BaseMutationOptions<
   CreateDesiredShiftMutation,
   CreateDesiredShiftMutationVariables
 >
+export const UpdateDesiredShiftDocument = gql`
+  mutation updateDesiredShift($id: Uint!, $since: Time!, $till: Time!) {
+    updateDesiredShift(id: $id, since: $since, till: $till) {
+      id
+    }
+  }
+`
+export type UpdateDesiredShiftMutationFn = Apollo.MutationFunction<
+  UpdateDesiredShiftMutation,
+  UpdateDesiredShiftMutationVariables
+>
+
+/**
+ * __useUpdateDesiredShiftMutation__
+ *
+ * To run a mutation, you first call `useUpdateDesiredShiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDesiredShiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDesiredShiftMutation, { data, loading, error }] = useUpdateDesiredShiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      since: // value for 'since'
+ *      till: // value for 'till'
+ *   },
+ * });
+ */
+export function useUpdateDesiredShiftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateDesiredShiftMutation,
+    UpdateDesiredShiftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<
+    UpdateDesiredShiftMutation,
+    UpdateDesiredShiftMutationVariables
+  >(UpdateDesiredShiftDocument, options)
+}
+export type UpdateDesiredShiftMutationHookResult = ReturnType<
+  typeof useUpdateDesiredShiftMutation
+>
+export type UpdateDesiredShiftMutationResult =
+  Apollo.MutationResult<UpdateDesiredShiftMutation>
+export type UpdateDesiredShiftMutationOptions = Apollo.BaseMutationOptions<
+  UpdateDesiredShiftMutation,
+  UpdateDesiredShiftMutationVariables
+>
+export const DeleteDesiredShiftDocument = gql`
+  mutation deleteDesiredShift($id: Uint!) {
+    deleteDesiredShift(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteDesiredShiftMutationFn = Apollo.MutationFunction<
+  DeleteDesiredShiftMutation,
+  DeleteDesiredShiftMutationVariables
+>
+
+/**
+ * __useDeleteDesiredShiftMutation__
+ *
+ * To run a mutation, you first call `useDeleteDesiredShiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDesiredShiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDesiredShiftMutation, { data, loading, error }] = useDeleteDesiredShiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteDesiredShiftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteDesiredShiftMutation,
+    DeleteDesiredShiftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<
+    DeleteDesiredShiftMutation,
+    DeleteDesiredShiftMutationVariables
+  >(DeleteDesiredShiftDocument, options)
+}
+export type DeleteDesiredShiftMutationHookResult = ReturnType<
+  typeof useDeleteDesiredShiftMutation
+>
+export type DeleteDesiredShiftMutationResult =
+  Apollo.MutationResult<DeleteDesiredShiftMutation>
+export type DeleteDesiredShiftMutationOptions = Apollo.BaseMutationOptions<
+  DeleteDesiredShiftMutation,
+  DeleteDesiredShiftMutationVariables
+>
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -1020,6 +1188,114 @@ export type CreateShiftMutationResult =
 export type CreateShiftMutationOptions = Apollo.BaseMutationOptions<
   CreateShiftMutation,
   CreateShiftMutationVariables
+>
+export const UpdateShiftDocument = gql`
+  mutation updateShift(
+    $id: Uint!
+    $since: Time!
+    $till: Time!
+    $workerId: Uint!
+  ) {
+    updateShift(id: $id, since: $since, till: $till, workerId: $workerId) {
+      id
+    }
+  }
+`
+export type UpdateShiftMutationFn = Apollo.MutationFunction<
+  UpdateShiftMutation,
+  UpdateShiftMutationVariables
+>
+
+/**
+ * __useUpdateShiftMutation__
+ *
+ * To run a mutation, you first call `useUpdateShiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShiftMutation, { data, loading, error }] = useUpdateShiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      since: // value for 'since'
+ *      till: // value for 'till'
+ *      workerId: // value for 'workerId'
+ *   },
+ * });
+ */
+export function useUpdateShiftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateShiftMutation,
+    UpdateShiftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<UpdateShiftMutation, UpdateShiftMutationVariables>(
+    UpdateShiftDocument,
+    options
+  )
+}
+export type UpdateShiftMutationHookResult = ReturnType<
+  typeof useUpdateShiftMutation
+>
+export type UpdateShiftMutationResult =
+  Apollo.MutationResult<UpdateShiftMutation>
+export type UpdateShiftMutationOptions = Apollo.BaseMutationOptions<
+  UpdateShiftMutation,
+  UpdateShiftMutationVariables
+>
+export const DeleteShiftDocument = gql`
+  mutation deleteShift($id: Uint!) {
+    deleteShift(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteShiftMutationFn = Apollo.MutationFunction<
+  DeleteShiftMutation,
+  DeleteShiftMutationVariables
+>
+
+/**
+ * __useDeleteShiftMutation__
+ *
+ * To run a mutation, you first call `useDeleteShiftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteShiftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteShiftMutation, { data, loading, error }] = useDeleteShiftMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteShiftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteShiftMutation,
+    DeleteShiftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<DeleteShiftMutation, DeleteShiftMutationVariables>(
+    DeleteShiftDocument,
+    options
+  )
+}
+export type DeleteShiftMutationHookResult = ReturnType<
+  typeof useDeleteShiftMutation
+>
+export type DeleteShiftMutationResult =
+  Apollo.MutationResult<DeleteShiftMutation>
+export type DeleteShiftMutationOptions = Apollo.BaseMutationOptions<
+  DeleteShiftMutation,
+  DeleteShiftMutationVariables
 >
 export const PushStampDocument = gql`
   mutation pushStamp($companyId: Uint!) {

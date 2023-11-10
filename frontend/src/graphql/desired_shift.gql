@@ -34,3 +34,13 @@ mutation createDesiredShift($companyId: Uint!, $since: Time!, $till: Time!) {
     id
   }
 }
+mutation updateDesiredShift($id: Uint!, $since: Time!, $till: Time!) {
+  updateDesiredShift(id: $id, since: $since, till: $till) {
+    id
+  }
+}
+mutation deleteDesiredShift($id: Uint!) {
+  deleteDesiredShift(id: $id) {
+    id
+  }
+}

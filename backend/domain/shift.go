@@ -6,8 +6,7 @@ type ShiftId uint
 
 type Shift struct {
 	ID           ShiftId
-	Since        time.Time
-	Till         time.Time
+	TimeRange    *TimeRange
 	EmploymentID EmploymentID
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
@@ -20,13 +19,15 @@ type ShiftQuery struct {
 }
 type IShiftRepo interface {
 	ListAll(companyId CompanyID, shiftQuery *ShiftQuery) ([]*Shift, error)
+	FindById(shiftId ShiftId) (*Shift, error)
 	Create(shift *Shift) (*Shift, error)
+	Update(shift *Shift) (*Shift, error)
+	Delete(shiftId ShiftId) (*Shift, error)
 }
 
-func NewShift(since time.Time, till time.Time, employmentID EmploymentID) *Shift {
+func NewShift(timeRange *TimeRange, employmentID EmploymentID) *Shift {
 	return &Shift{
-		Since:        since,
-		Till:         till,
+		TimeRange:    timeRange,
 		EmploymentID: employmentID,
 	}
 }
