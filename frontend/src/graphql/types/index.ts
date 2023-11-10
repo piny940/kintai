@@ -150,9 +150,9 @@ export type Query = {
   companyShifts: Shift[]
   companyWorkers: Worker[]
   desiredShifts: DesiredShift[]
-  getYearReport: YearReport
   me?: Maybe<Worker>
   workStatus: WorkStatus
+  yearReport: YearReport
 }
 
 export type QueryCompanyArgs = {
@@ -181,13 +181,13 @@ export type QueryDesiredShiftsArgs = {
   toTime?: InputMaybe<Scalars['Time']['input']>
 }
 
-export type QueryGetYearReportArgs = {
-  companyId: Scalars['Uint']['input']
-  year: Scalars['Time']['input']
-}
-
 export type QueryWorkStatusArgs = {
   companyId: Scalars['Uint']['input']
+}
+
+export type QueryYearReportArgs = {
+  companyId: Scalars['Uint']['input']
+  year: Scalars['Time']['input']
 }
 
 export type Shift = {
@@ -432,7 +432,7 @@ export type GetYearReportQueryVariables = Exact<{
 
 export type GetYearReportQuery = {
   __typename?: 'Query'
-  getYearReport: {
+  yearReport: {
     __typename?: 'YearReport'
     employmentId: number
     year: string
@@ -1348,7 +1348,7 @@ export type PushStampMutationOptions = Apollo.BaseMutationOptions<
 >
 export const GetYearReportDocument = gql`
   query getYearReport($companyId: Uint!, $year: Time!) {
-    getYearReport(companyId: $companyId, year: $year) {
+    yearReport(companyId: $companyId, year: $year) {
       employmentId
       year
       workReports {
