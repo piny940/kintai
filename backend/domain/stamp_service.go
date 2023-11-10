@@ -82,6 +82,20 @@ func (ss *StampService) GetMonthReport(month time.Time) (*MonthReport, error) {
 		Report:       report,
 	}, nil
 }
+func (ss *StampService) getDateReport(date time.Time) (*WorkReport, error) {
+	date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.Local)
+	nextDate := date.AddDate(0, 0, 1)
+	stamps, err := ss.stampRepo.List(&StampQuery{
+		EmploymentId: &ss.employmentId,
+		FromTime:     &date,
+		ToTime:       &nextDate,
+	})
+	if err != nil {
+		return nil, err
+	}
+	filteredStamps := ss.sortStamps(ss.filterStamps(stamps, date, nextDate))
+	return NewWorkReport(ss.employmentId, date, nextDate, filteredStamps, ss.stampRepo), nil
+}
 
 func (ss *StampService) filterStamps(stamps []*Stamp, fromTime, toTime time.Time) []*Stamp {
 	var result []*Stamp
