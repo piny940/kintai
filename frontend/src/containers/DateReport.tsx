@@ -1,6 +1,7 @@
-import { useGetCompanyQuery } from '@/graphql/types'
+import { useGetCompanyQuery, useGetDateReportQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
-import { Dayjs } from 'dayjs'
+import { secondToTime } from '@/utils/helpers'
+import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
 
 export type DateReportProps = {
@@ -12,9 +13,12 @@ const DateReport = ({ date }: DateReportProps): JSX.Element => {
   const { data: companyData, error } = useGetCompanyQuery({
     variables: { id: companyId },
   })
+  const { data: dateReportData } = useGetDateReportQuery({
+    variables: { companyId: companyId, date: date.toISOString() },
+  })
 
   if (error) return <Error statusCode={404} />
-  if (!companyData?.company) return <>loading...</>
+  if (!companyData?.company || !dateReportData) return <>loading...</>
   return (
     <div className="">
       <h1>
@@ -23,18 +27,20 @@ const DateReport = ({ date }: DateReportProps): JSX.Element => {
       <table className="table">
         <thead>
           <tr>
-            <th>出勤</th>
-            <th>退勤</th>
-            <th>休憩</th>
-            <th>勤務時間</th>
+            <th>打刻日時</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
+          {dateReportData.dateReport.stamps.map((stamp) => (
+            <tr key={stamp.id}>
+              <td>{dayjs(stamp.stampedAt).format('YYYY/MM/DD HH:mm:ss')}</td>
+              <td></td>
+            </tr>
+          ))}
           <tr>
-            <td>9:00</td>
-            <td>18:00</td>
-            <td>1:00</td>
-            <td>8:00</td>
+            <th>{secondToTime(dateReportData.dateReport.workTime)}</th>
+            <th>合計</th>
           </tr>
         </tbody>
       </table>
