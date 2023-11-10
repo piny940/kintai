@@ -1,7 +1,7 @@
 import { useGetCompanyQuery, useGetMonthReportQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
 import { secondToTime, toDigit } from '@/utils/helpers'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import Error from 'next/error'
 import Link from 'next/link'
 import { memo, useMemo } from 'react'
@@ -23,7 +23,7 @@ const MonthReport = ({ month }: MonthReportProps): JSX.Element => {
     const dates = []
     for (
       let i = 1;
-      month.date(i).isBefore(month.endOf('month')) && i < 32;
+      month.date(i).startOf('date').isBefore(dayjs()) && i < 32;
       i++
     ) {
       dates.push(month.date(i))
