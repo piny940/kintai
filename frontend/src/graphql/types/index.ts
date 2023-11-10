@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 import * as Apollo from '@apollo/client'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
-export type Exact<T extends { [key: string]: unknown }> = {
+export type Exact<T extends Record<string, unknown>> = {
   [K in keyof T]: T[K]
 }
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
@@ -12,7 +12,7 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
 export type MakeEmpty<
-  T extends { [key: string]: unknown },
+  T extends Record<string, unknown>,
   K extends keyof T
 > = { [_ in K]?: never }
 export type Incremental<T> =
@@ -144,12 +144,12 @@ export type MutationUpdateShiftArgs = {
 
 export type Query = {
   __typename?: 'Query'
-  companies: Array<Company>
+  companies: Company[]
   company: Company
-  companyDesiredShifts: Array<DesiredShift>
-  companyShifts: Array<Shift>
-  companyWorkers: Array<Worker>
-  desiredShifts: Array<DesiredShift>
+  companyDesiredShifts: DesiredShift[]
+  companyShifts: Shift[]
+  companyWorkers: Worker[]
+  desiredShifts: DesiredShift[]
   getYearReport: YearReport
   me?: Maybe<Worker>
   workStatus: WorkStatus
@@ -212,7 +212,7 @@ export type Stamp = {
 
 export type WorkReport = {
   __typename?: 'WorkReport'
-  stamps: Array<Stamp>
+  stamps: Stamp[]
   workTime: Scalars['Int']['output']
 }
 
@@ -246,7 +246,7 @@ export enum WorkerStatus {
 export type YearReport = {
   __typename?: 'YearReport'
   employmentId: Scalars['Uint']['output']
-  workReports: Array<MonthWorkReportMap>
+  workReports: MonthWorkReportMap[]
   year: Scalars['Time']['output']
 }
 
@@ -264,7 +264,7 @@ export type GetCompanyQuery = {
   }
 }
 
-export type GetCompaniesQueryVariables = Exact<{ [key: string]: never }>
+export type GetCompaniesQueryVariables = Exact<Record<string, never>>
 
 export type GetCompaniesQuery = {
   __typename?: 'Query'
@@ -355,7 +355,7 @@ export type LoginMutation = {
   } | null
 }
 
-export type LogoutMutationVariables = Exact<{ [key: string]: never }>
+export type LogoutMutationVariables = Exact<Record<string, never>>
 
 export type LogoutMutation = { __typename?: 'Mutation'; logout: boolean }
 
@@ -425,6 +425,25 @@ export type PushStampMutation = {
   pushStamp: { __typename?: 'Stamp'; id: number }
 }
 
+export type GetYearReportQueryVariables = Exact<{
+  companyId: Scalars['Uint']['input']
+  year: Scalars['Time']['input']
+}>
+
+export type GetYearReportQuery = {
+  __typename?: 'Query'
+  getYearReport: {
+    __typename?: 'YearReport'
+    employmentId: number
+    year: string
+    workReports: Array<{
+      __typename?: 'MonthWorkReportMap'
+      key: number
+      value: { __typename?: 'WorkReport'; workTime: number }
+    }>
+  }
+}
+
 export type GetWorkStatusQueryVariables = Exact<{
   companyId: Scalars['Uint']['input']
 }>
@@ -434,7 +453,7 @@ export type GetWorkStatusQuery = {
   workStatus: WorkStatus
 }
 
-export type GetMeQueryVariables = Exact<{ [key: string]: never }>
+export type GetMeQueryVariables = Exact<Record<string, never>>
 
 export type GetMeQuery = {
   __typename?: 'Query'
@@ -1326,6 +1345,87 @@ export type PushStampMutationResult = Apollo.MutationResult<PushStampMutation>
 export type PushStampMutationOptions = Apollo.BaseMutationOptions<
   PushStampMutation,
   PushStampMutationVariables
+>
+export const GetYearReportDocument = gql`
+  query getYearReport($companyId: Uint!, $year: Time!) {
+    getYearReport(companyId: $companyId, year: $year) {
+      employmentId
+      year
+      workReports {
+        key
+        value {
+          workTime
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useGetYearReportQuery__
+ *
+ * To run a query within a React component, call `useGetYearReportQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetYearReportQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetYearReportQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *      year: // value for 'year'
+ *   },
+ * });
+ */
+export function useGetYearReportQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetYearReportQuery,
+    GetYearReportQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetYearReportQuery, GetYearReportQueryVariables>(
+    GetYearReportDocument,
+    options
+  )
+}
+export function useGetYearReportLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetYearReportQuery,
+    GetYearReportQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetYearReportQuery, GetYearReportQueryVariables>(
+    GetYearReportDocument,
+    options
+  )
+}
+export function useGetYearReportSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetYearReportQuery,
+    GetYearReportQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<
+    GetYearReportQuery,
+    GetYearReportQueryVariables
+  >(GetYearReportDocument, options)
+}
+export type GetYearReportQueryHookResult = ReturnType<
+  typeof useGetYearReportQuery
+>
+export type GetYearReportLazyQueryHookResult = ReturnType<
+  typeof useGetYearReportLazyQuery
+>
+export type GetYearReportSuspenseQueryHookResult = ReturnType<
+  typeof useGetYearReportSuspenseQuery
+>
+export type GetYearReportQueryResult = Apollo.QueryResult<
+  GetYearReportQuery,
+  GetYearReportQueryVariables
 >
 export const GetWorkStatusDocument = gql`
   query getWorkStatus($companyId: Uint!) {
