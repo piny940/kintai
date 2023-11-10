@@ -1,4 +1,4 @@
-import YearReport from '@/containers/YearReport'
+import YearReport from '@/containers/YearReports'
 
 const WorkReportsPage = (): JSX.Element => {
   return <YearReport />

@@ -11,12 +11,6 @@ type WorkReport struct {
 	stamps       []*Stamp
 	stampRepo    IStampRepo
 }
-type MonthWorkReportMap map[time.Month]*WorkReport
-type YearReport struct {
-	EmploymentId EmploymentID
-	Year         time.Time
-	Report       MonthWorkReportMap
-}
 
 func NewWorkReport(employmentId EmploymentID, fromTime, toTime time.Time, stamps []*Stamp, stampRepo IStampRepo) *WorkReport {
 	return &WorkReport{

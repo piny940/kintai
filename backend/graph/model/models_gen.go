@@ -9,8 +9,19 @@ import (
 	"time"
 )
 
+type DateWorkReportMap struct {
+	Key   int         `json:"key"`
+	Value *WorkReport `json:"value"`
+}
+
 type LoginResponse struct {
 	Worker *Worker `json:"worker,omitempty"`
+}
+
+type MonthReport struct {
+	EmploymentID uint                 `json:"employmentId"`
+	Month        time.Time            `json:"month"`
+	WorkReports  []*DateWorkReportMap `json:"workReports"`
 }
 
 type MonthWorkReportMap struct {

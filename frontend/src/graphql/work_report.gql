@@ -10,3 +10,15 @@ query getYearReport($companyId: Uint!, $year: Time!) {
     }
   }
 }
+query getMonthReport($companyId: Uint!, $month: Time!) {
+  monthReport(companyId: $companyId, month: $month) {
+    employmentId
+    month
+    workReports {
+      key
+      value {
+        workTime
+      }
+    }
+  }
+}

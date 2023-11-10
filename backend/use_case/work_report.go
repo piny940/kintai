@@ -6,7 +6,16 @@ import (
 )
 
 type IWorkReportUseCase interface {
-	GetYearReport(year time.Time, workerId domain.WorkerID, companyId domain.CompanyID) (*domain.YearReport, error)
+	GetYearReport(
+		year time.Time,
+		workerId domain.WorkerID,
+		companyId domain.CompanyID,
+	) (*domain.YearReport, error)
+	GetMonthReport(
+		month time.Time,
+		workerId domain.WorkerID,
+		companyId domain.CompanyID,
+	) (*domain.MonthReport, error)
 }
 
 type workReportUseCase struct {
@@ -18,11 +27,27 @@ func NewWorkReportUseCase(employmentRepo domain.IEmploymentRepo, stampRepo domai
 	return &workReportUseCase{employmentRepo: employmentRepo, stampRepo: stampRepo}
 }
 
-func (wu workReportUseCase) GetYearReport(year time.Time, workerId domain.WorkerID, companyId domain.CompanyID) (*domain.YearReport, error) {
+func (wu workReportUseCase) GetYearReport(
+	year time.Time,
+	workerId domain.WorkerID,
+	companyId domain.CompanyID,
+) (*domain.YearReport, error) {
 	employment, err := wu.employmentRepo.Find(companyId, workerId)
 	if err != nil {
 		return nil, err
 	}
 	service := domain.NewStampService(employment.ID, wu.stampRepo)
 	return service.GetYearReport(year)
+}
+func (wu workReportUseCase) GetMonthReport(
+	month time.Time,
+	workerId domain.WorkerID,
+	companyId domain.CompanyID,
+) (*domain.MonthReport, error) {
+	employment, err := wu.employmentRepo.Find(companyId, workerId)
+	if err != nil {
+		return nil, err
+	}
+	service := domain.NewStampService(employment.ID, wu.stampRepo)
+	return service.GetMonthReport(month)
 }

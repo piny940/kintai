@@ -11,6 +11,18 @@ type StampService struct {
 	toTime       time.Time
 	stampRepo    IStampRepo
 }
+type MonthWorkReportMap map[time.Month]*WorkReport
+type YearReport struct {
+	EmploymentId EmploymentID
+	Year         time.Time
+	Report       MonthWorkReportMap
+}
+type DateWorkReportMap map[int]*WorkReport
+type MonthReport struct {
+	EmploymentId EmploymentID
+	Month        time.Time
+	Report       DateWorkReportMap
+}
 
 func NewStampService(employmentId EmploymentID, stampRepo IStampRepo) *StampService {
 	return &StampService{
@@ -41,6 +53,32 @@ func (ss *StampService) GetYearReport(year time.Time) (*YearReport, error) {
 	return &YearReport{
 		EmploymentId: ss.employmentId,
 		Year:         year,
+		Report:       report,
+	}, nil
+}
+
+func (ss *StampService) GetMonthReport(month time.Time) (*MonthReport, error) {
+	month = time.Date(month.Year(), month.Month(), 1, 0, 0, 0, 0, time.Local)
+	nextMonth := month.AddDate(0, 1, 0)
+	stamps, err := ss.stampRepo.List(&StampQuery{
+		EmploymentId: &ss.employmentId,
+		FromTime:     &month,
+		ToTime:       &nextMonth,
+	})
+	if err != nil {
+		return nil, err
+	}
+	report := make(map[int]*WorkReport)
+	for current := month; current.Before(nextMonth); current = current.AddDate(0, 0, 1) {
+		fromTime := current
+		toTime := current.AddDate(0, 0, 1)
+		filteredStamps := ss.sortStamps(ss.filterStamps(stamps, fromTime, toTime))
+		report[current.Day()] = NewWorkReport(ss.employmentId, fromTime, toTime, filteredStamps, ss.stampRepo)
+	}
+
+	return &MonthReport{
+		EmploymentId: ss.employmentId,
+		Month:        month,
 		Report:       report,
 	}, nil
 }

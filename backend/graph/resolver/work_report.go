@@ -24,3 +24,16 @@ func (r *queryResolver) YearReport(ctx context.Context, companyID uint, year tim
 	}
 	return model.NewYearReport(report)
 }
+
+func (r *queryResolver) MonthReport(ctx context.Context, companyID uint, month time.Time) (*model.MonthReport, error) {
+	registry := registry.GetRegistry()
+	workerId, err := currentWorkerId(ctx)
+	if err != nil {
+		return nil, newError(err, "ログインしてください")
+	}
+	report, err := registry.WorkReportUseCase().GetMonthReport(month, *workerId, domain.CompanyID(companyID))
+	if err != nil {
+		return nil, newError(err, "勤務実績の取得に失敗しました")
+	}
+	return model.NewMonthReport(report)
+}

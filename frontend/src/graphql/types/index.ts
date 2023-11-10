@@ -42,6 +42,12 @@ export type Company = {
   updatedAt: Scalars['Time']['output']
 }
 
+export type DateWorkReportMap = {
+  __typename?: 'DateWorkReportMap'
+  key: Scalars['Int']['output']
+  value: WorkReport
+}
+
 export type DesiredShift = {
   __typename?: 'DesiredShift'
   createdAt: Scalars['Time']['output']
@@ -78,6 +84,13 @@ export enum EmploymentStatus {
 export type LoginResponse = {
   __typename?: 'LoginResponse'
   worker?: Maybe<Worker>
+}
+
+export type MonthReport = {
+  __typename?: 'MonthReport'
+  employmentId: Scalars['Uint']['output']
+  month: Scalars['Time']['output']
+  workReports: DateWorkReportMap[]
 }
 
 export type MonthWorkReportMap = {
@@ -151,6 +164,7 @@ export type Query = {
   companyWorkers: Worker[]
   desiredShifts: DesiredShift[]
   me?: Maybe<Worker>
+  monthReport: MonthReport
   workStatus: WorkStatus
   yearReport: YearReport
 }
@@ -179,6 +193,11 @@ export type QueryDesiredShiftsArgs = {
   companyId: Scalars['Uint']['input']
   fromTime?: InputMaybe<Scalars['Time']['input']>
   toTime?: InputMaybe<Scalars['Time']['input']>
+}
+
+export type QueryMonthReportArgs = {
+  companyId: Scalars['Uint']['input']
+  month: Scalars['Time']['input']
 }
 
 export type QueryWorkStatusArgs = {
@@ -438,6 +457,25 @@ export type GetYearReportQuery = {
     year: string
     workReports: Array<{
       __typename?: 'MonthWorkReportMap'
+      key: number
+      value: { __typename?: 'WorkReport'; workTime: number }
+    }>
+  }
+}
+
+export type GetMonthReportQueryVariables = Exact<{
+  companyId: Scalars['Uint']['input']
+  month: Scalars['Time']['input']
+}>
+
+export type GetMonthReportQuery = {
+  __typename?: 'Query'
+  monthReport: {
+    __typename?: 'MonthReport'
+    employmentId: number
+    month: string
+    workReports: Array<{
+      __typename?: 'DateWorkReportMap'
       key: number
       value: { __typename?: 'WorkReport'; workTime: number }
     }>
@@ -1426,6 +1464,87 @@ export type GetYearReportSuspenseQueryHookResult = ReturnType<
 export type GetYearReportQueryResult = Apollo.QueryResult<
   GetYearReportQuery,
   GetYearReportQueryVariables
+>
+export const GetMonthReportDocument = gql`
+  query getMonthReport($companyId: Uint!, $month: Time!) {
+    monthReport(companyId: $companyId, month: $month) {
+      employmentId
+      month
+      workReports {
+        key
+        value {
+          workTime
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useGetMonthReportQuery__
+ *
+ * To run a query within a React component, call `useGetMonthReportQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMonthReportQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMonthReportQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *      month: // value for 'month'
+ *   },
+ * });
+ */
+export function useGetMonthReportQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetMonthReportQuery,
+    GetMonthReportQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetMonthReportQuery, GetMonthReportQueryVariables>(
+    GetMonthReportDocument,
+    options
+  )
+}
+export function useGetMonthReportLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetMonthReportQuery,
+    GetMonthReportQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetMonthReportQuery, GetMonthReportQueryVariables>(
+    GetMonthReportDocument,
+    options
+  )
+}
+export function useGetMonthReportSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetMonthReportQuery,
+    GetMonthReportQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<
+    GetMonthReportQuery,
+    GetMonthReportQueryVariables
+  >(GetMonthReportDocument, options)
+}
+export type GetMonthReportQueryHookResult = ReturnType<
+  typeof useGetMonthReportQuery
+>
+export type GetMonthReportLazyQueryHookResult = ReturnType<
+  typeof useGetMonthReportLazyQuery
+>
+export type GetMonthReportSuspenseQueryHookResult = ReturnType<
+  typeof useGetMonthReportSuspenseQuery
+>
+export type GetMonthReportQueryResult = Apollo.QueryResult<
+  GetMonthReportQuery,
+  GetMonthReportQueryVariables
 >
 export const GetWorkStatusDocument = gql`
   query getWorkStatus($companyId: Uint!) {
