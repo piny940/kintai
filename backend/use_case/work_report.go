@@ -51,3 +51,15 @@ func (wu workReportUseCase) GetMonthReport(
 	service := domain.NewStampService(employment.ID, wu.stampRepo)
 	return service.GetMonthReport(month)
 }
+func (wu workReportUseCase) GetDateReport(
+	date time.Time,
+	workerId domain.WorkerID,
+	companyId domain.CompanyID,
+) (*domain.WorkReport, error) {
+	employment, err := wu.employmentRepo.Find(companyId, workerId)
+	if err != nil {
+		return nil, err
+	}
+	service := domain.NewStampService(employment.ID, wu.stampRepo)
+	return service.GetDateReport(date)
+}

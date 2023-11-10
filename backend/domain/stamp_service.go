@@ -82,7 +82,7 @@ func (ss *StampService) GetMonthReport(month time.Time) (*MonthReport, error) {
 		Report:       report,
 	}, nil
 }
-func (ss *StampService) getDateReport(date time.Time) (*WorkReport, error) {
+func (ss *StampService) GetDateReport(date time.Time) (*WorkReport, error) {
 	date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.Local)
 	nextDate := date.AddDate(0, 0, 1)
 	stamps, err := ss.stampRepo.List(&StampQuery{
