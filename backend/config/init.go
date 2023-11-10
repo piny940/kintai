@@ -10,7 +10,7 @@ import (
 var c *viper.Viper
 
 func Init(env string) {
-	godotenv.Load(fmt.Sprintf(".env.%s", env))
+	loadDotenv(env)
 	c = viper.New()
 	c.SetConfigFile("yaml")
 	c.SetConfigName(env)
@@ -22,4 +22,12 @@ func Init(env string) {
 
 func GetConfig() *viper.Viper {
 	return c
+}
+
+func loadDotenv(env string) {
+	if env == "production" {
+		godotenv.Load(".env")
+	} else {
+		godotenv.Load(fmt.Sprintf(".env.%s", env))
+	}
 }

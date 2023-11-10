@@ -17,9 +17,9 @@ var db *DB
 
 func Init() {
 	c := config.GetConfig()
-	dsn := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=%s",
-		os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"), os.Getenv("DB_NAME"), os.Getenv("DB_SSLMODE"))
+	dsn := fmt.Sprintf("user=%s password=%s host=%s dbname=%s sslmode=%s",
+		os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("POSTGRES_HOST"),
+		os.Getenv("POSTGRES_NAME"), os.Getenv("POSTGRES_SSLMODE"))
 	client, err := sql.Open(c.GetString("db.provider"), dsn)
 	if err != nil {
 		panic(err)

@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 
-const BACKEND =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:8080'
-    : 'https://example.com'
+const envPath =
+  process.env.NODE_ENV === 'production' ? '.env' : '.env.development'
+require('dotenv').config({ path: envPath })
 
 const nextConfig = {
   reactStrictMode: true,
@@ -15,7 +14,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${BACKEND}/v1/:path*`,
+        destination: `${process.env.BACKEND_HOST}/:path*`,
       },
     ]
   },
