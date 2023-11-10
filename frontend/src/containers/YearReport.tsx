@@ -1,8 +1,8 @@
 import YearReport from '@/components/Kintai/YearReport'
-import { useGetCompanyLazyQuery } from '@/graphql/types'
+import { useGetCompanyQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
 import Error from 'next/error'
-import { memo, useEffect, useState } from 'react'
+import { memo, useState } from 'react'
 
 const YEAR_LIST = (() => {
   const years = []
@@ -13,19 +13,16 @@ const YEAR_LIST = (() => {
 })()
 const YearReports = (): JSX.Element => {
   const companyId = useCompanyId()
-  const [loadCompany, { data: companyData, error }] = useGetCompanyLazyQuery()
+  const { data: companyData, error } = useGetCompanyQuery({
+    variables: { id: companyId },
+  })
   const [year, setYear] = useState<number>(new Date().getFullYear())
-
-  useEffect(() => {
-    if (!companyId) return
-    void loadCompany({ variables: { id: companyId } })
-  }, [companyId, loadCompany])
 
   if (error) return <Error statusCode={404} />
   if (!companyData?.company) return <>loading...</>
   return (
     <div>
-      <h1>勤務実績</h1>
+      <h1>勤務実績 - {companyData.company.name}</h1>
       <p>
         <select
           className="form-select"
