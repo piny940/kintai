@@ -24,19 +24,19 @@ const Calendar = ({
     <div className="calendar">
       <div className="d-flex justify-content-around mb-2">
         <button
-          className="btn btn-outline-primary btn-sm"
+          className="btn btn-outline-secondary btn-sm"
           onClick={goPrevMonth}
         >
-          前月
+          &lt; 前月
         </button>
         <span className="h3 m-0">
           {year}年{month + 1}月
         </span>
         <button
-          className="btn btn-outline-primary btn-sm"
+          className="btn btn-outline-secondary btn-sm"
           onClick={goNextMonth}
         >
-          翌月
+          &gt; 翌月
         </button>
       </div>
       <table className="table table-striped">
