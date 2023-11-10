@@ -18,7 +18,7 @@ func NewShift(shift *domain.Shift) *Shift {
 	return &Shift{
 		ID:           uint(shift.ID),
 		Since:        shift.TimeRange.Since(),
-		Till:         shift.TimeRange.Since(),
+		Till:         shift.TimeRange.Till(),
 		EmploymentID: uint(shift.EmploymentID),
 		CreatedAt:    shift.CreatedAt,
 		UpdatedAt:    shift.UpdatedAt,
