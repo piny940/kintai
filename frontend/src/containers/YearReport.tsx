@@ -1,3 +1,4 @@
+import YearReport from '@/components/Kintai/YearReport'
 import { useGetCompanyLazyQuery } from '@/graphql/types'
 import { useCompanyId } from '@/hooks/calendar'
 import Error from 'next/error'
@@ -32,6 +33,7 @@ const YearReports = (): JSX.Element => {
           ))}
         </select>
       </p>
+      <YearReport year={year} />
     </div>
   )
 }
