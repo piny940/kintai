@@ -29,7 +29,7 @@
     "react-hook-form": "^7.44.3",
     "react-is": "^18.2.0",
     "sharp": "^0.32.1",
-    "styled-components": "^5.3.9",
+    "styled-components": "^6.1.1",
     "swr": "^2.1.5"
   },
   "devDependencies": {
