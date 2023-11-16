@@ -30,7 +30,7 @@
     "react-is": "^18.2.0",
     "sharp": "^0.32.1",
     "styled-components": "^6.1.1",
-    "swr": "^2.1.5"
+    "swr": "^2.2.4"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.0",
