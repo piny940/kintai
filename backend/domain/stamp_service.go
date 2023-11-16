@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"sort"
 	"time"
 )
@@ -46,7 +47,9 @@ func (ss *StampService) GetYearReport(year time.Time) (*YearReport, error) {
 	for month := time.Month(1); month <= 12; month++ {
 		fromTime := time.Date(year.Year(), month, 1, 0, 0, 0, 0, time.Local)
 		toTime := fromTime.AddDate(0, 1, 0)
+		fmt.Println(fromTime, toTime)
 		filteredStamps := ss.sortStamps(ss.filterStamps(stamps, fromTime, toTime))
+		fmt.Println(filteredStamps)
 		report[month] = NewWorkReport(ss.employmentId, fromTime, toTime, filteredStamps, ss.stampRepo)
 	}
 

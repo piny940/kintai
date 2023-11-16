@@ -1,8 +1,6 @@
 package domain
 
-import (
-	"time"
-)
+import "time"
 
 type WorkReport struct {
 	employmentId EmploymentID
@@ -29,11 +27,10 @@ func (wr *WorkReport) GetWorkTime() (time.Duration, error) {
 		return 0, err
 	}
 	startIdx := 0
-	if *workStatusAtStart == WorkStatusWorking {
+	if *workStatusAtStart == WorkStatusWorking && len(wr.stamps) > 0 {
 		startIdx = 1
 		duration += wr.stamps[0].StampedAt.Sub(wr.fromTime)
 	}
-
 	for i := startIdx; i+1 < len(wr.stamps); i += 2 {
 		duration += wr.stamps[i+1].StampedAt.Sub(wr.stamps[i].StampedAt)
 	}
@@ -42,8 +39,14 @@ func (wr *WorkReport) GetWorkTime() (time.Duration, error) {
 	if err != nil {
 		return 0, err
 	}
-	if *workStatusAtEnd == WorkStatusWorking {
-		duration += wr.toTime.Sub(wr.stamps[len(wr.stamps)-1].StampedAt)
+	if *workStatusAtEnd == WorkStatusWorking && len(wr.stamps) > 0 {
+		var endTime time.Time
+		if time.Now().Before(wr.toTime) {
+			endTime = time.Now()
+		} else {
+			endTime = wr.toTime
+		}
+		duration += endTime.Sub(wr.stamps[len(wr.stamps)-1].StampedAt)
 	}
 
 	return duration, nil
