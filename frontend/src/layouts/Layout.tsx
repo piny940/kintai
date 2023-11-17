@@ -15,6 +15,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter()
 
   useEffect(() => {
+    if (router.pathname === '/accounts/sign_in') return
     if (loading) return
     if (data?.me) return
     void router.push('/accounts/sign_in')
