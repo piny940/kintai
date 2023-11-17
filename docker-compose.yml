@@ -20,6 +20,8 @@ services:
       dockerfile: Dockerfile
       context: ./frontend
     restart: always
+    environment:
+      - BACKEND_HOST=http://backend:8080
     depends_on:
       - backend
 

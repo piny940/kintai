@@ -6,10 +6,6 @@
    ```
 2. `backend/.env.sample`に従って`backend/.env`を記述  
   `POSTGRES_USER`、`POSTGRES_PASSWORD`は上で入力した値と同じものを使用する
-1. `frontend/.env`に以下を記述
-   ```
-   BACKEND_HOST=http://backend:8080
-   ```
 2. `docker compose up -d`
 
 ## 開発環境
