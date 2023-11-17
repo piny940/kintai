@@ -29,7 +29,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <header>
         <Navbar />
       </header>
-      <main className="mt-3">{loading ? <div>Loading...</div> : children}</main>
+      <main className="mt-3 mb-5">
+        {loading ? <div>Loading...</div> : children}
+      </main>
     </div>
   )
 }
