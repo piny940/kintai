@@ -9,3 +9,11 @@ update desired_shifts
   where id = 1 returning *;
 
 delete from desired_shifts where id = 1 returning *;
+
+select * from desired_shifts
+  where employment_id in (
+    select id from employments
+    where company_id = 1
+  )
+  and since >= '2023-12-01 00:00:00'
+  and till < '2024-01-01 00:00:00';
