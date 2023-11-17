@@ -47,9 +47,10 @@ func (r *shiftRepo) ListAll(companyId domain.CompanyID, query *domain.ShiftQuery
 	var shifts []*domain.Shift
 
 	queryObj := newShiftQuery(query)
-	queryStr := `select shifts.* from shifts
-			inner join employments on shifts.employment_id = employments.id
-			where employments.company_id = $1`
+	queryStr := `select * from shifts
+			where employment_id in (
+				select id from employments where company_id = $1
+			)`
 	filter, params := queryObj.toFilter([]interface{}{companyId})
 	if queryObj.exists() {
 		queryStr += " and " + filter
