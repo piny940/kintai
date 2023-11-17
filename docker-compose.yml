@@ -8,15 +8,10 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     env_file: ./backend/.env
-    ports:
-      - 4800:8080
     stdin_open: true
     tty: true
     depends_on:
       - db
-    # volumes:
-    #   - ./backend:/app
-    #   - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
 
   frontend:
     container_name: kintai-frontend
@@ -24,11 +19,6 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./frontend
-    # volumes:
-    #   - ./frontend:/app
-    #   - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
-    ports:
-      - 3080:4400
     restart: always
     depends_on:
       - backend
@@ -43,7 +33,19 @@ services:
       POSTGRES_DB: kintai_production
     volumes:
       - database:/var/lib/postgresql/data
-    #   - /usr/share/zoneinfo/Asia/Tokyo:/etc/localtime
+
+  nginx:
+    container_name: kintai-nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 54070:3080
+      - 54080:4080
+    depends_on:
+      - backend
+      - frontend
 
 volumes:
   database:
