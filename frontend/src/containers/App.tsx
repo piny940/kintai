@@ -96,9 +96,15 @@ export const App: React.FC = () => {
                 </Link>
                 <Link
                   className="list-group-item"
+                  href={`/companies/${company.id}/shifts`}
+                >
+                  シフト表
+                </Link>
+                <Link
+                  className="list-group-item"
                   href={`/companies/${company.id}/desired_shifts`}
                 >
-                  希望シフト
+                  希望シフト作成
                 </Link>
               </div>
             </section>
