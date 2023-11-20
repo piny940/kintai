@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FormEventHandler, memo, useState } from 'react'
 
-const SignIn = (): JSX.Element => {
+const SignUp = (): JSX.Element => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const client = useApolloClient()
@@ -25,7 +25,7 @@ const SignIn = (): JSX.Element => {
 
   return (
     <div className="container">
-      <h1>ログイン</h1>
+      <h1>ユーザー作成</h1>
       <form onSubmit={submit}>
         <label className="form-group row my-2">
           <div className="col-form-label col-md-3">メールアドレス</div>
@@ -63,8 +63,8 @@ const SignIn = (): JSX.Element => {
           </div>
         )}
         <div className="">
-          <Link href="/sign_up" className="py-0">
-            &gt;アカウント新規作成
+          <Link href="/sign_in" className="py-0">
+            &gt;アカウントをすでにお持ちの場合はこちら
           </Link>
         </div>
         <div className="row my-2">
@@ -80,4 +80,4 @@ const SignIn = (): JSX.Element => {
   )
 }
 
-export default memo(SignIn)
+export default memo(SignUp)
