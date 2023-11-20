@@ -1,4 +1,5 @@
 import DateReport from '@/containers/DateReport'
+import LoginRequired from '@/containers/LoginRequired'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
 
@@ -8,7 +9,11 @@ const DateReportShowPage = (): JSX.Element => {
   const year = Number(monthStr) / 100
   const month = Number(monthStr) % 100
   const date = Number(router.query.date as string)
-  return <DateReport date={dayjs().year(year).month(month).date(date)} />
+  return (
+    <LoginRequired>
+      <DateReport date={dayjs().year(year).month(month).date(date)} />
+    </LoginRequired>
+  )
 }
 
 export default DateReportShowPage

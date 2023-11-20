@@ -63,7 +63,7 @@ const SignIn = (): JSX.Element => {
           </div>
         )}
         <div className="">
-          <Link href="/sign_up" className="py-0">
+          <Link href="/accounts/sign_up" className="py-0">
             &gt;アカウント新規作成
           </Link>
         </div>

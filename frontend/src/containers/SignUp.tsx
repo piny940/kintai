@@ -63,7 +63,7 @@ const SignUp = (): JSX.Element => {
           </div>
         )}
         <div className="">
-          <Link href="/sign_in" className="py-0">
+          <Link href="/accounts/sign_in" className="py-0">
             &gt;アカウントをすでにお持ちの場合はこちら
           </Link>
         </div>
