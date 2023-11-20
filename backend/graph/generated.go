@@ -110,6 +110,7 @@ type ComplexityRoot struct {
 		Login              func(childComplexity int, email string, password string) int
 		Logout             func(childComplexity int) int
 		PushStamp          func(childComplexity int, companyID uint) int
+		SignUp             func(childComplexity int, email string, password string, firstName string, lastName string) int
 		UpdateDesiredShift func(childComplexity int, id uint, since time.Time, till time.Time) int
 		UpdateShift        func(childComplexity int, id uint, since time.Time, till time.Time, workerID uint) int
 	}
@@ -192,6 +193,7 @@ type MutationResolver interface {
 	UpdateShift(ctx context.Context, id uint, since time.Time, till time.Time, workerID uint) (*model.Shift, error)
 	DeleteShift(ctx context.Context, id uint) (*model.Shift, error)
 	PushStamp(ctx context.Context, companyID uint) (*model.Stamp, error)
+	SignUp(ctx context.Context, email string, password string, firstName string, lastName string) (*model.Worker, error)
 }
 type QueryResolver interface {
 	Company(ctx context.Context, id uint) (*model.Company, error)
@@ -510,6 +512,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.PushStamp(childComplexity, args["companyId"].(uint)), true
+
+	case "Mutation.signUp":
+		if e.complexity.Mutation.SignUp == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_signUp_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SignUp(childComplexity, args["email"].(string), args["password"].(string), args["firstName"].(string), args["lastName"].(string)), true
 
 	case "Mutation.updateDesiredShift":
 		if e.complexity.Mutation.UpdateDesiredShift == nil {
@@ -1112,6 +1126,48 @@ func (ec *executionContext) field_Mutation_pushStamp_args(ctx context.Context, r
 		}
 	}
 	args["companyId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_signUp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["email"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["password"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["password"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["firstName"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("firstName"))
+		arg2, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["firstName"] = arg2
+	var arg3 string
+	if tmp, ok := rawArgs["lastName"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastName"))
+		arg3, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["lastName"] = arg3
 	return args, nil
 }
 
@@ -3405,6 +3461,77 @@ func (ec *executionContext) fieldContext_Mutation_pushStamp(ctx context.Context,
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_pushStamp_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_signUp(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_signUp(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SignUp(rctx, fc.Args["email"].(string), fc.Args["password"].(string), fc.Args["firstName"].(string), fc.Args["lastName"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Worker)
+	fc.Result = res
+	return ec.marshalNWorker2ᚖkintai_backendᚋgraphᚋmodelᚐWorker(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_signUp(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Worker_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Worker_status(ctx, field)
+			case "email":
+				return ec.fieldContext_Worker_email(ctx, field)
+			case "name":
+				return ec.fieldContext_Worker_name(ctx, field)
+			case "workStatus":
+				return ec.fieldContext_Worker_workStatus(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Worker_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Worker_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Worker", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_signUp_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -7762,6 +7889,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "pushStamp":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_pushStamp(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "signUp":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_signUp(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

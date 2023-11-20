@@ -6,10 +6,15 @@ package resolver
 
 import (
 	"context"
+	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
 )
+
+func (r *mutationResolver) SignUp(ctx context.Context, email string, password string, firstName string, lastName string) (*model.Worker, error) {
+	panic(fmt.Errorf("not implemented: SignUp - signUp"))
+}
 
 func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {
 	worker, err := currentWorker(ctx)

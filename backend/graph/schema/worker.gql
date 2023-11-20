@@ -19,3 +19,12 @@ extend type Query {
   me: Worker
   companyWorkers(companyId: Uint!): [Worker!]!
 }
+
+extend type Mutation {
+  signUp(
+    email: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+  ): Worker!
+}
