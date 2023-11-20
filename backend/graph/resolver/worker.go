@@ -6,14 +6,24 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"kintai_backend/domain"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
 )
 
-func (r *mutationResolver) SignUp(ctx context.Context, email string, password string, firstName string, lastName string) (*model.Worker, error) {
-	panic(fmt.Errorf("not implemented: SignUp - signUp"))
+func (r *mutationResolver) SignUp(ctx context.Context, email string, password string, passwordConfirmation string, firstName string, lastName string) (*model.Worker, error) {
+	registry := registry.GetRegistry()
+	name := domain.NewWorkerName(firstName, lastName)
+	if password != passwordConfirmation {
+		return nil, newError(nil, "パスワードと確認用パスワードが一致しません")
+	}
+	worker, err := registry.WorkerUseCase().SignUp(
+		domain.WorkerEmail(email), domain.WorkerRawPassword(password), name,
+	)
+	if err != nil {
+		return nil, newError(err, "登録に失敗しました")
+	}
+	return model.NewWorker(worker), nil
 }
 
 func (r *queryResolver) Me(ctx context.Context) (*model.Worker, error) {

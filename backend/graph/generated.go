@@ -110,7 +110,7 @@ type ComplexityRoot struct {
 		Login              func(childComplexity int, email string, password string) int
 		Logout             func(childComplexity int) int
 		PushStamp          func(childComplexity int, companyID uint) int
-		SignUp             func(childComplexity int, email string, password string, firstName string, lastName string) int
+		SignUp             func(childComplexity int, email string, password string, passwordConfirmation string, firstName string, lastName string) int
 		UpdateDesiredShift func(childComplexity int, id uint, since time.Time, till time.Time) int
 		UpdateShift        func(childComplexity int, id uint, since time.Time, till time.Time, workerID uint) int
 	}
@@ -193,7 +193,7 @@ type MutationResolver interface {
 	UpdateShift(ctx context.Context, id uint, since time.Time, till time.Time, workerID uint) (*model.Shift, error)
 	DeleteShift(ctx context.Context, id uint) (*model.Shift, error)
 	PushStamp(ctx context.Context, companyID uint) (*model.Stamp, error)
-	SignUp(ctx context.Context, email string, password string, firstName string, lastName string) (*model.Worker, error)
+	SignUp(ctx context.Context, email string, password string, passwordConfirmation string, firstName string, lastName string) (*model.Worker, error)
 }
 type QueryResolver interface {
 	Company(ctx context.Context, id uint) (*model.Company, error)
@@ -523,7 +523,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.SignUp(childComplexity, args["email"].(string), args["password"].(string), args["firstName"].(string), args["lastName"].(string)), true
+		return e.complexity.Mutation.SignUp(childComplexity, args["email"].(string), args["password"].(string), args["passwordConfirmation"].(string), args["firstName"].(string), args["lastName"].(string)), true
 
 	case "Mutation.updateDesiredShift":
 		if e.complexity.Mutation.UpdateDesiredShift == nil {
@@ -1151,23 +1151,32 @@ func (ec *executionContext) field_Mutation_signUp_args(ctx context.Context, rawA
 	}
 	args["password"] = arg1
 	var arg2 string
-	if tmp, ok := rawArgs["firstName"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("firstName"))
+	if tmp, ok := rawArgs["passwordConfirmation"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordConfirmation"))
 		arg2, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["firstName"] = arg2
+	args["passwordConfirmation"] = arg2
 	var arg3 string
-	if tmp, ok := rawArgs["lastName"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastName"))
+	if tmp, ok := rawArgs["firstName"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("firstName"))
 		arg3, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["lastName"] = arg3
+	args["firstName"] = arg3
+	var arg4 string
+	if tmp, ok := rawArgs["lastName"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastName"))
+		arg4, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["lastName"] = arg4
 	return args, nil
 }
 
@@ -3481,7 +3490,7 @@ func (ec *executionContext) _Mutation_signUp(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().SignUp(rctx, fc.Args["email"].(string), fc.Args["password"].(string), fc.Args["firstName"].(string), fc.Args["lastName"].(string))
+		return ec.resolvers.Mutation().SignUp(rctx, fc.Args["email"].(string), fc.Args["password"].(string), fc.Args["passwordConfirmation"].(string), fc.Args["firstName"].(string), fc.Args["lastName"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
