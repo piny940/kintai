@@ -12,3 +12,21 @@ query getCompanyWorkers($companyId: Uint!) {
     }
   }
 }
+
+mutation signUp(
+  $email: String!
+  $password: String!
+  $passwordConfirmation: String!
+  $firstName: String!
+  $lastName: String!
+) {
+  signUp(
+    email: $email
+    password: $password
+    passwordConfirmation: $passwordConfirmation
+    firstName: $firstName
+    lastName: $lastName
+  ) {
+    id
+  }
+}
