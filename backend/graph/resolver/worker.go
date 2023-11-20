@@ -6,6 +6,7 @@ package resolver
 
 import (
 	"context"
+	"kintai_backend/auth"
 	"kintai_backend/domain"
 	"kintai_backend/graph/model"
 	"kintai_backend/registry"
@@ -23,6 +24,11 @@ func (r *mutationResolver) SignUp(ctx context.Context, email string, password st
 	if err != nil {
 		return nil, newError(err, "登録に失敗しました")
 	}
+	echoCtx, err := echoContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	auth.Login(echoCtx, worker)
 	return model.NewWorker(worker), nil
 }
 
