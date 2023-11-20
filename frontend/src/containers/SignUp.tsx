@@ -1,4 +1,4 @@
-import { useLoginMutation } from '@/graphql/types'
+import { useSignUpMutation } from '@/graphql/types'
 import { useApolloClient } from '@apollo/client'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -13,14 +13,20 @@ const SignUp = (): JSX.Element => {
 
   const client = useApolloClient()
   const router = useRouter()
-  const [login, { error }] = useLoginMutation()
+  const [signUp, { error }] = useSignUpMutation()
 
   const submit: FormEventHandler = async (e) => {
     e.preventDefault()
 
     try {
-      await login({
-        variables: { email, password },
+      await signUp({
+        variables: {
+          email,
+          password,
+          passwordConfirmation,
+          firstName,
+          lastName,
+        },
       })
       await client.resetStore()
       void router.push('/')
