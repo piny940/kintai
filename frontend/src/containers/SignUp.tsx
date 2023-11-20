@@ -7,6 +7,10 @@ import { FormEventHandler, memo, useState } from 'react'
 const SignUp = (): JSX.Element => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
   const client = useApolloClient()
   const router = useRouter()
   const [login, { error }] = useLoginMutation()
@@ -54,6 +58,45 @@ const SignUp = (): JSX.Element => {
             />
           </div>
         </label>
+        <label className="form-group row my-2">
+          <div className="col-form-label col-md-3">パスワード(確認用)</div>
+          <div className="col-md-9">
+            <input
+              type="password"
+              className="form-control"
+              value={passwordConfirmation}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
+          </div>
+        </label>
+        <div className="row">
+          <label className="form-group col-md-6 pe-2 row">
+            <span className="col-form-label">氏</span>
+            <div className="">
+              <input
+                type="text"
+                className="form-control"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </div>
+          </label>
+          <label className="form-group col-md-6 px-2 my-2 row">
+            <span className="col-form-label">名</span>
+            <div className="">
+              <input
+                type="text"
+                className="form-control"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+            </div>
+          </label>
+        </div>
 
         {error && (
           <div className="row mb-2">
