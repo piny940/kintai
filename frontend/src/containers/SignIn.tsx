@@ -1,5 +1,6 @@
 import { useLoginMutation } from '@/graphql/types'
 import { useApolloClient } from '@apollo/client'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FormEventHandler, memo, useState } from 'react'
 
@@ -61,6 +62,11 @@ const SignIn = (): JSX.Element => {
             </div>
           </div>
         )}
+        <div className="">
+          <Link href="/accounts/sign_up" className="py-0">
+            &gt;アカウント新規作成
+          </Link>
+        </div>
         <div className="row my-2">
           <button
             type="submit"

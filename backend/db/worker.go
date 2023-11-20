@@ -136,9 +136,12 @@ func (u *workerRepo) List(companyId domain.CompanyID) ([]*domain.Worker, error) 
 func (u *workerRepo) Create(worker *domain.Worker) (*domain.Worker, error) {
 	var workerTable WorkerTable
 	if err := u.db.Client.QueryRow(
-		"insert into workers (email, password) values ($1, $2) returning *",
+		"insert into workers (email, encrypted_password, status, last_name, first_name) values ($1, $2, $3, $4, $5) returning *",
 		worker.Email,
 		worker.Password.HashedPassword,
+		worker.Status,
+		worker.Name.LastName,
+		worker.Name.FirstName,
 	).Scan(
 		&workerTable.ID,
 		&workerTable.Status,

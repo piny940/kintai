@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 import * as Apollo from '@apollo/client'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
-export type Exact<T extends Record<string, unknown>> = {
+export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
 }
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
@@ -12,8 +12,8 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
 export type MakeEmpty<
-  T extends Record<string, unknown>,
-  K extends keyof T
+  T extends { [key: string]: unknown },
+  K extends keyof T,
 > = { [_ in K]?: never }
 export type Incremental<T> =
   | T
@@ -90,7 +90,7 @@ export type MonthReport = {
   __typename?: 'MonthReport'
   employmentId: Scalars['Uint']['output']
   month: Scalars['Time']['output']
-  workReports: DateWorkReportMap[]
+  workReports: Array<DateWorkReportMap>
 }
 
 export type MonthWorkReportMap = {
@@ -108,6 +108,7 @@ export type Mutation = {
   login?: Maybe<LoginResponse>
   logout: Scalars['Boolean']['output']
   pushStamp: Stamp
+  signUp: Worker
   updateDesiredShift: DesiredShift
   updateShift: Shift
 }
@@ -142,6 +143,14 @@ export type MutationPushStampArgs = {
   companyId: Scalars['Uint']['input']
 }
 
+export type MutationSignUpArgs = {
+  email: Scalars['String']['input']
+  firstName: Scalars['String']['input']
+  lastName: Scalars['String']['input']
+  password: Scalars['String']['input']
+  passwordConfirmation: Scalars['String']['input']
+}
+
 export type MutationUpdateDesiredShiftArgs = {
   id: Scalars['Uint']['input']
   since: Scalars['Time']['input']
@@ -157,13 +166,13 @@ export type MutationUpdateShiftArgs = {
 
 export type Query = {
   __typename?: 'Query'
-  companies: Company[]
+  companies: Array<Company>
   company: Company
-  companyDesiredShifts: DesiredShift[]
-  companyShifts: Shift[]
-  companyWorkers: Worker[]
+  companyDesiredShifts: Array<DesiredShift>
+  companyShifts: Array<Shift>
+  companyWorkers: Array<Worker>
   dateReport: WorkReport
-  desiredShifts: DesiredShift[]
+  desiredShifts: Array<DesiredShift>
   me?: Maybe<Worker>
   monthReport: MonthReport
   workStatus: WorkStatus
@@ -237,7 +246,7 @@ export type Stamp = {
 
 export type WorkReport = {
   __typename?: 'WorkReport'
-  stamps: Stamp[]
+  stamps: Array<Stamp>
   workTime: Scalars['Int']['output']
 }
 
@@ -271,7 +280,7 @@ export enum WorkerStatus {
 export type YearReport = {
   __typename?: 'YearReport'
   employmentId: Scalars['Uint']['output']
-  workReports: MonthWorkReportMap[]
+  workReports: Array<MonthWorkReportMap>
   year: Scalars['Time']['output']
 }
 
@@ -289,7 +298,7 @@ export type GetCompanyQuery = {
   }
 }
 
-export type GetCompaniesQueryVariables = Exact<Record<string, never>>
+export type GetCompaniesQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetCompaniesQuery = {
   __typename?: 'Query'
@@ -380,7 +389,7 @@ export type LoginMutation = {
   } | null
 }
 
-export type LogoutMutationVariables = Exact<Record<string, never>>
+export type LogoutMutationVariables = Exact<{ [key: string]: never }>
 
 export type LogoutMutation = { __typename?: 'Mutation'; logout: boolean }
 
@@ -511,7 +520,7 @@ export type GetWorkStatusQuery = {
   workStatus: WorkStatus
 }
 
-export type GetMeQueryVariables = Exact<Record<string, never>>
+export type GetMeQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetMeQuery = {
   __typename?: 'Query'
@@ -529,6 +538,19 @@ export type GetCompanyWorkersQuery = {
     id: number
     name: { __typename?: 'WorkerName'; firstName: string; lastName: string }
   }>
+}
+
+export type SignUpMutationVariables = Exact<{
+  email: Scalars['String']['input']
+  password: Scalars['String']['input']
+  passwordConfirmation: Scalars['String']['input']
+  firstName: Scalars['String']['input']
+  lastName: Scalars['String']['input']
+}>
+
+export type SignUpMutation = {
+  __typename?: 'Mutation'
+  signUp: { __typename?: 'Worker'; id: number }
 }
 
 export const GetCompanyDocument = gql`
@@ -1850,4 +1872,67 @@ export type GetCompanyWorkersSuspenseQueryHookResult = ReturnType<
 export type GetCompanyWorkersQueryResult = Apollo.QueryResult<
   GetCompanyWorkersQuery,
   GetCompanyWorkersQueryVariables
+>
+export const SignUpDocument = gql`
+  mutation signUp(
+    $email: String!
+    $password: String!
+    $passwordConfirmation: String!
+    $firstName: String!
+    $lastName: String!
+  ) {
+    signUp(
+      email: $email
+      password: $password
+      passwordConfirmation: $passwordConfirmation
+      firstName: $firstName
+      lastName: $lastName
+    ) {
+      id
+    }
+  }
+`
+export type SignUpMutationFn = Apollo.MutationFunction<
+  SignUpMutation,
+  SignUpMutationVariables
+>
+
+/**
+ * __useSignUpMutation__
+ *
+ * To run a mutation, you first call `useSignUpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignUpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signUpMutation, { data, loading, error }] = useSignUpMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *      passwordConfirmation: // value for 'passwordConfirmation'
+ *      firstName: // value for 'firstName'
+ *      lastName: // value for 'lastName'
+ *   },
+ * });
+ */
+export function useSignUpMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SignUpMutation,
+    SignUpMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<SignUpMutation, SignUpMutationVariables>(
+    SignUpDocument,
+    options
+  )
+}
+export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>
+export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>
+export type SignUpMutationOptions = Apollo.BaseMutationOptions<
+  SignUpMutation,
+  SignUpMutationVariables
 >
