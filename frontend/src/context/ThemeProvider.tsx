@@ -29,6 +29,10 @@ interface ThemeProviderProps {
 const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>('light')
 
+  useEffect(() => {
+    document.querySelector('html')?.setAttribute('data-bs-theme', theme)
+  }, [theme])
+
   const _setTheme = (theme: Theme) => {
     toStorage('theme', theme)
     setTheme(theme)
