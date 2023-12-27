@@ -25,9 +25,7 @@ func GetConfig() *viper.Viper {
 }
 
 func loadDotenv(env string) {
-	if env == "production" {
-		godotenv.Load(".env")
-	} else {
+	if env != "production" {
 		godotenv.Load(fmt.Sprintf(".env.%s", env))
 	}
 }

@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 
-const envPath =
-  process.env.NODE_ENV === 'production' ? '.env' : '.env.development'
-require('dotenv').config({ path: envPath })
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: '.env.development' })
+}
 
 const nextConfig = {
   reactStrictMode: true,
