@@ -23,6 +23,8 @@ jobs:
           push: true
           context: ./backend
           file: ./backend/Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: |
             ghcr.io/piny940/kintai-backend:1.0.${{ github.run_number }}
             ghcr.io/piny940/kintai-backend:latest
