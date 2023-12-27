@@ -3,7 +3,8 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config({ path: '.env.development' })
 }
-process.env.BACKEND_HOST ||= 'http://kintai-backend.svc.cluster.local:4400'
+process.env.BACKEND_HOST ||=
+  'http://kintai-backend.default.svc.cluster.local:4400'
 
 const nextConfig = {
   reactStrictMode: true,
