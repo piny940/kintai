@@ -19,6 +19,5 @@ RUN mkdir /lib64 \
 
 COPY --from=build /app/main .
 COPY --from=build /app/config ./config
-COPY --from=build /app/.env ./.env
 
 CMD [ "/app/main", "-e", "production" ]
