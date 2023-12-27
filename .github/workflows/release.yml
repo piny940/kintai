@@ -23,7 +23,7 @@ jobs:
         with:
           push: true
           context: ./frontend
-          file: Dockerfile
+          file: ./frontend/Dockerfile
           tags: |
             ghcr.io/piny940/kintai-frontend:1.0.${{ github.run_number }}
             ghcr.io/piny940/kintai-frontend:latest
@@ -45,7 +45,7 @@ jobs:
         with:
           push: true
           context: ./backend
-          file: Dockerfile
+          file: ./backend/Dockerfile
           tags: |
             ghcr.io/piny940/kintai-backend:1.0.${{ github.run_number }}
             ghcr.io/piny940/kintai-backend:latest
