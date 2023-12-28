@@ -9,6 +9,9 @@ process.env.BACKEND_HOST ||=
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  compiler: {
+    styledComponents: true,
+  },
   images: {
     domains: ['storage.googleapis.com'],
   },
