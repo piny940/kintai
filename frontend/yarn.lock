@@ -2492,12 +2492,11 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-apollo-link-scalars@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/apollo-link-scalars/-/apollo-link-scalars-4.0.2.tgz#72add20ac0915f3f99b339c3f34ad4c3402faba6"
-  integrity sha512-FHGJKa68Y+ceezjke4ao8QoGdhsoCRdqM0YKE+W20a0C59SjS6geTG6D8IGrx4U5IcwxPlcNWtXceavGrKbVrw==
+apollo-link-scalars@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/apollo-link-scalars/-/apollo-link-scalars-4.0.3.tgz#7b86d73deff69955f33178e37ce600d9584611d9"
+  integrity sha512-mKH/1oGLK8hUZ+VkY36OM0Ejgq25Jb+XcS3bu3OKH1416dGPlT3Jo6Oe3FtodDKjzTEda518vXF5TmaWupUNqA==
   dependencies:
-    lodash "^4.17.21"
     zen-observable-ts "^1.1.0"
 
 "aproba@^1.0.3 || ^2.0.0":
