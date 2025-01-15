@@ -1,12 +1,12 @@
 module kintai_backend
 
-go 1.22.5
+go 1.23
 
 toolchain go1.23.4
 
 require (
 	github.com/99designs/gqlgen v0.17.63
-	github.com/gorilla/sessions v1.2.1
+	github.com/gorilla/sessions v1.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.11.2
 	github.com/lib/pq v1.10.9
@@ -23,7 +23,7 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gorilla/securecookie v1.1.1 // indirect
+	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/graph-gophers/dataloader/v7 v7.1.0
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
