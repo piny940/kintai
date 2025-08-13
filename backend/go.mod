@@ -8,7 +8,7 @@ require (
 	github.com/99designs/gqlgen v0.17.78
 	github.com/gorilla/sessions v1.4.0
 	github.com/joho/godotenv v1.5.1
-	github.com/labstack/echo/v4 v4.13.3
+	github.com/labstack/echo/v4 v4.13.4
 	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.19.0
 	github.com/vektah/gqlparser/v2 v2.5.30
@@ -54,7 +54,7 @@ require (
 	golang.org/x/net v0.42.0 // indirect
 	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
-	golang.org/x/time v0.8.0 // indirect
+	golang.org/x/time v0.11.0 // indirect
 	golang.org/x/tools v0.35.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
