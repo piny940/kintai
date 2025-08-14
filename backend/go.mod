@@ -2,7 +2,7 @@ module kintai_backend
 
 go 1.23.0
 
-toolchain go1.23.4
+toolchain go1.25.0
 
 require (
 	github.com/99designs/gqlgen v0.17.78
