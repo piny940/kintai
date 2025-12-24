@@ -24,7 +24,7 @@
     "react-calendar": "^4.8.0",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
-    "react-is": "^18.3.1",
+    "react-is": "^19.1.0",
     "styled-components": "^6.1.11",
     "swr": "^2.3.0"
   },
