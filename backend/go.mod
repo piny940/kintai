@@ -9,7 +9,7 @@ require (
 	github.com/gorilla/sessions v1.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.15.1
-	github.com/lib/pq v1.10.9
+	github.com/lib/pq v1.12.0
 	github.com/spf13/viper v1.21.0
 	github.com/vektah/gqlparser/v2 v2.5.32
 	golang.org/x/crypto v0.48.0
