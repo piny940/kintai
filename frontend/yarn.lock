@@ -2615,12 +2615,10 @@ anymatch@^3.0.3:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-apollo-link-scalars@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/apollo-link-scalars/-/apollo-link-scalars-4.0.3.tgz#7b86d73deff69955f33178e37ce600d9584611d9"
-  integrity sha512-mKH/1oGLK8hUZ+VkY36OM0Ejgq25Jb+XcS3bu3OKH1416dGPlT3Jo6Oe3FtodDKjzTEda518vXF5TmaWupUNqA==
-  dependencies:
-    zen-observable-ts "^1.1.0"
+apollo-link-scalars@^5.0.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/apollo-link-scalars/-/apollo-link-scalars-5.1.0.tgz#c53ec7a2f5cdcf1462566b287de178c431933b9d"
+  integrity sha512-wCEB8V74Vb5A+pUhY47wxPJggdyc3b/LhmBe2wIYII8bh70K0/sLgU7/QOrwok3ZQ1a8PEF6zwTfaGlXSeu1PA==
 
 "aproba@^1.0.3 || ^2.0.0":
   version "2.0.0"
@@ -8738,7 +8736,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zen-observable-ts@^1.1.0, zen-observable-ts@^1.2.5:
+zen-observable-ts@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-1.2.5.tgz#6c6d9ea3d3a842812c6e9519209365a122ba8b58"
   integrity sha512-QZWQekv6iB72Naeake9hS1KxHlotfRpe+WGNbNx5/ta+R3DNjVO2bswf63gXlWDcs+EMd7XY8HfVQyP1X6T4Zg==
