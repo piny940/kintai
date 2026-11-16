@@ -13,7 +13,7 @@
   "dependencies": {
     "@apollo/client": "^3.10.4",
     "@popperjs/core": "^2.11.8",
-    "apollo-link-scalars": "^4.0.3",
+    "apollo-link-scalars": "^5.0.0",
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.11",
     "dayjs-plugin-utc": "^0.1.2",
